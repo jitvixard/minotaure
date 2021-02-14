@@ -5,8 +5,12 @@ namespace src.config.control
     public abstract class ControlConfig
     {
         
-        protected abstract bool Tapping();
-        protected abstract bool Holding();
+        public abstract bool OnClick();
+        public abstract bool OnHold();
+        public abstract bool OnRelease();
+
+        public abstract Vector3 InputPosition(); 
+        
 
         public static ControlConfig GetControl()
         {
