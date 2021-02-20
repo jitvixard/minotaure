@@ -6,17 +6,17 @@ namespace src.config.control
     {
         public override bool OnClick()
         {
-            throw new System.NotImplementedException();
+            return Input.GetMouseButtonDown(0);
         }
 
         public override bool OnHold()
         {
-            throw new System.NotImplementedException();
+            return false;
         }
 
         public override bool OnRelease()
         {
-            throw new System.NotImplementedException();
+            return false;
         }
 
         public override Vector3 InputPosition()

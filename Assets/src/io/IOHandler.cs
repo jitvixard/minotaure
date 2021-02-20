@@ -29,7 +29,17 @@ namespace src.io
             RaycastHit hit;
             if (Physics.Raycast(camera.ScreenPointToRay(control.InputPosition()), out hit, 100f))
             {
-                
+                print("hit");
+                switch (hit.collider.tag)
+                {
+                    case Environment.TAG_MOVEMENT:
+                        print("moving");
+                        playerController.MoveTo(hit.collider.gameObject);
+                        break;
+                    
+                    default:
+                        break;
+                }
             }
         }
     }
