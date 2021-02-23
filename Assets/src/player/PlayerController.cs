@@ -23,16 +23,8 @@ namespace src.player
 
         public void MoveTo(GameObject tile)
         {
-            foreach (var child in tile.GetComponentsInChildren<Transform>())
-            {
-                if (child.CompareTag(Environment.TILE_REF))
-                {
-                    print("found ref");
-                    target = child.position;
-                    movementRoutine = StartCoroutine(MoveRoutine());
-                    break;
-                }
-            }
+            target = tile.transform.position;
+            movementRoutine = StartCoroutine(MoveRoutine());
         }
 
         IEnumerator MoveRoutine()

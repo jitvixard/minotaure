@@ -6,6 +6,9 @@ TagManager:
   tags:
   - TileReference
   - MovementTile
+  - CentreTile
+  - CentrePoint
+  - StartTile
   layers:
   - Default
   - TransparentFX
@@ -16,7 +19,7 @@ TagManager:
   - 
   - 
   - Player
-  - 
+  - Floor
   - 
   - 
   - 
