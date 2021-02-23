@@ -25,10 +25,11 @@ namespace src
             
             //setting look (if required)
             lookTarget = lookTarget == null
-                ? GameObject.FindWithTag(Environment.TAG_CENTRE).transform
+                ? GameObject.FindWithTag(Environment.LOOK_AT).transform
                 : lookTarget;
             levelBase = GameObject.Find(Environment.LEVEL_BASE);
 
+            //initiates the look at
             LookAt();
         }
 

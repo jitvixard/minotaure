@@ -5,10 +5,10 @@ namespace src.util
         public const string PLAYER = "Player";
         public const string TILE_REF = "TileReference";
 
-        public const string TAG_CENTRE = "CentrePoint";
         public const string TAG_MOVEMENT = "MovementTile";
 
         public const string LEVEL_BASE = "level_base";
+        public const string LOOK_AT = "look_point";
 
         public const float STOPPING_DISTANCE = 0.1f;
 
