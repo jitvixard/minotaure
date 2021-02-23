@@ -30,9 +30,9 @@ namespace src.io
             if (Physics.Raycast(camera.ScreenPointToRay(control.InputPosition()), out hit, 100f))
             {
                 print("hit");
-                switch (hit.collider.tag)
+                switch (hit.collider.gameObject.layer)
                 {
-                    case Environment.TAG_MOVEMENT:
+                    case Environment.LAYER_FLOOR:
                         print("moving");
                         playerController.MoveTo(hit.collider.gameObject);
                         break;
