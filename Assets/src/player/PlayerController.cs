@@ -8,9 +8,8 @@ namespace src.player
 {
     public class PlayerController : MonoBehaviour
     {
-        NavMeshAgent agent;
-
         //navigation
+        NavMeshAgent agent;
         Vector3 target;
         
         //routines
@@ -21,9 +20,10 @@ namespace src.player
             agent = GetComponent<NavMeshAgent>();
         }
 
-        public void MoveTo(GameObject tile)
+        public void Move(GameObject tile)
         {
             target = tile.transform.position;
+            if (!(movementRoutine is null)) StopCoroutine(movementRoutine);
             movementRoutine = StartCoroutine(MoveRoutine());
         }
 
@@ -40,7 +40,6 @@ namespace src.player
                 yield return null;
             }
 
-            print("stopping");
             agent.SetDestination(transform.position);
             movementRoutine = null;
         } 

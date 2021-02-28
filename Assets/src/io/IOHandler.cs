@@ -26,20 +26,13 @@ namespace src.io
 
         void Cast()
         {
-            RaycastHit hit;
-            if (Physics.Raycast(camera.ScreenPointToRay(control.InputPosition()), out hit, 100f))
+            if (!Physics.Raycast(camera.ScreenPointToRay(control.InputPosition()), out var hit, 100f)) return;
+            
+            switch (hit.collider.gameObject.layer)
             {
-                print("hit");
-                switch (hit.collider.gameObject.layer)
-                {
-                    case Environment.LAYER_FLOOR:
-                        print("moving");
-                        playerController.MoveTo(hit.collider.gameObject);
-                        break;
-                    
-                    default:
-                        break;
-                }
+                case Environment.LAYER_FLOOR:
+                    playerController.Move(hit.collider.gameObject);
+                    break;
             }
         }
     }
