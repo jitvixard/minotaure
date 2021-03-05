@@ -9,6 +9,7 @@ TagManager:
   - CentreTile
   - CentrePoint
   - StartTile
+  - LookAt
   layers:
   - Default
   - TransparentFX
