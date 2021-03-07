@@ -38,7 +38,7 @@ namespace src.io
             }
         }
 
-        public static Vector3 ClickToScreenPoint(RectTransform screenTransform, Camera inputCamera)
+        public static Vector3 ScreenClickToViewportPoint(RectTransform screenTransform, Camera inputCamera)
         {
             //TODO investigate loss of fractions 
             var anchoredPos = screenTransform.anchoredPosition;
@@ -46,13 +46,13 @@ namespace src.io
             var yOffset = -(inputCamera.pixelHeight / 2 + anchoredPos.y);
             var xScreenHit = Input.mousePosition.x + xOffset;
             var yScreenHit = Input.mousePosition.y + yOffset;
-
-            return new Vector3(xScreenHit, yScreenHit, 0f);
-        }
-
-        public static Vector3 ScreenPointToViewport(Rect viewRect, Vector3 screenPosition)
-        {
-            return Vector3.zero;
+            
+            var screenHit = new Vector3(xScreenHit, yScreenHit, 0f);
+            var rect = screenTransform.rect;
+            return new Vector3(
+                (screenHit.x + rect.width / 2) / rect.width,
+                (screenHit.y + rect.height / 2) / rect.height,
+                0);
         }
     }
 }
