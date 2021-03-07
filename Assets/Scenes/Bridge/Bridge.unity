@@ -443,7 +443,7 @@ GameObject:
   - component: {fileID: 641284042}
   - component: {fileID: 641284041}
   - component: {fileID: 641284043}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: screen_camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
