@@ -2,6 +2,8 @@ using System;
 using src.config.control;
 using src.player;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.Rendering;
 using Environment = src.util.Environment;
 
 namespace src.io
@@ -21,7 +23,7 @@ namespace src.io
 
         void Update()
         {
-            if (control.OnClick()) Cast();
+            //if (control.OnClick()) Cast();
         }
 
         void Cast()
@@ -34,6 +36,23 @@ namespace src.io
                     playerController.Move(hit.collider.gameObject);
                     break;
             }
+        }
+
+        public static Vector3 ClickToScreenPoint(RectTransform screenTransform, Camera inputCamera)
+        {
+            //TODO investigate loss of fractions 
+            var anchoredPos = screenTransform.anchoredPosition;
+            var xOffset = -(inputCamera.pixelWidth / 2 + anchoredPos.x);
+            var yOffset = -(inputCamera.pixelHeight / 2 + anchoredPos.y);
+            var xScreenHit = Input.mousePosition.x + xOffset;
+            var yScreenHit = Input.mousePosition.y + yOffset;
+
+            return new Vector3(xScreenHit, yScreenHit, 0f);
+        }
+
+        public static Vector3 ScreenPointToViewport(Rect viewRect, Vector3 screenPosition)
+        {
+            return Vector3.zero;
         }
     }
 }
