@@ -1130,6 +1130,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7dbc90146d45d1640a0eeae0db37bfe7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hoverColor: {r: 0, g: 0.64860415, b: 1, a: 1}
+  transitionDuration: 1
 --- !u!1 &901266876
 GameObject:
   m_ObjectHideFlags: 0
@@ -1140,7 +1142,6 @@ GameObject:
   m_Component:
   - component: {fileID: 901266880}
   - component: {fileID: 901266879}
-  - component: {fileID: 901266878}
   - component: {fileID: 901266877}
   - component: {fileID: 901266882}
   - component: {fileID: 901266881}
@@ -1182,14 +1183,6 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
---- !u!81 &901266878
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 901266876}
-  m_Enabled: 1
 --- !u!20 &901266879
 Camera:
   m_ObjectHideFlags: 0
@@ -1432,6 +1425,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7dbc90146d45d1640a0eeae0db37bfe7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hoverColor: {r: 0, g: 0.64860415, b: 1, a: 1}
+  transitionDuration: 1
 --- !u!1 &1033316556
 GameObject:
   m_ObjectHideFlags: 0
