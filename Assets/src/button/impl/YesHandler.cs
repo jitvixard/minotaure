@@ -6,7 +6,7 @@ namespace src.button.impl
     {
         public override void OnPointerDownDelegate()
         {
-            //TODO Start the game
+            transform.parent.GetComponent<InitialQuestion>().FadeOut();
         }
     }
 }
