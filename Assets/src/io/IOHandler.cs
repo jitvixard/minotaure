@@ -1,4 +1,5 @@
 using System;
+using src.config;
 using src.config.control;
 using src.player;
 using UnityEngine;
@@ -12,30 +13,23 @@ namespace src.io
     {
         Camera camera;
         ControlConfig control; //config relating to control input
-        PlayerController playerController; //controls player character
+
+        public Preferences preferences;
+
+        [Header("Player Preferences: UI")] 
+        [SerializeField] Color accentColor;
+        [SerializeField] Color selectionColor;
+        [SerializeField] float transitionTime;
 
         void Awake()
         {
             camera = Camera.main;
             control = ControlConfig.GetControl();
-            playerController = GameObject.FindWithTag(Environment.PLAYER).GetComponent<PlayerController>();
-        }
 
-        void Update()
-        {
-            //if (control.OnClick()) Cast();
-        }
-
-        void Cast()
-        {
-            if (!Physics.Raycast(camera.ScreenPointToRay(control.InputPosition()), out var hit, 100f)) return;
-            
-            switch (hit.collider.gameObject.layer)
-            {
-                case Environment.LAYER_FLOOR:
-                    playerController.Move(hit.collider.gameObject);
-                    break;
-            }
+            preferences = new Preferences(
+                accentColor,
+                selectionColor, 
+                transitionTime);
         }
 
         public static Vector3 ScreenClickToViewportPoint(RectTransform screenTransform, Camera inputCamera)
@@ -53,6 +47,11 @@ namespace src.io
                 (screenHit.x + rect.width / 2) / rect.width,
                 (screenHit.y + rect.height / 2) / rect.height,
                 0);
+        }
+
+        public Color GetSelectionColor()
+        {
+            return preferences.selectionColor;
         }
     }
 }
