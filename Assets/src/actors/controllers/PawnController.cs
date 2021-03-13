@@ -5,6 +5,6 @@ namespace src.controllers
 {
     public class PawnController : MonoBehaviour
     {
-        IStateMachine
+        
     }
 }

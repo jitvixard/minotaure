@@ -28,10 +28,5 @@ namespace src.controllers
 
             stateMachine = StateMachineFactory.Get(Actor);
         }
-
-        void Update()
-        {
-            stateMachine.UpdateState();
-        }
     }
 }

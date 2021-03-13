@@ -7,11 +7,6 @@ namespace src.ai
         /*
          * Overrides from State Machine
          */
-        
-        
-        /*
-         * Overrides from State Machine
-         */
         public override void UpdateState()
         {
             throw new System.NotImplementedException();
