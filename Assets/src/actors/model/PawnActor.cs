@@ -1,4 +1,4 @@
-using src.controllers;
+using src.actors.controllers;
 
 namespace src.actors.model
 {

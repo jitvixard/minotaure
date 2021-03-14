@@ -4,8 +4,10 @@ namespace src.util
     {
         public const string PLAYER = "Player";
         public const string TILE_REF = "TileReference";
+        public const string OVERHEAD_UI = "overhead_ui";
 
         public const string TAG_MOVEMENT = "MovementTile";
+        public const string TAG_PAWN = "Pawn";
 
         public const string LEVEL_BASE = "level_base";
         public const string LOOK_AT = "look_point";

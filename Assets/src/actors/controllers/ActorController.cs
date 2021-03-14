@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using src.actors.model;
 using src.ai;
 using src.util;
@@ -7,7 +6,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Environment = src.util.Environment;
 
-namespace src.controllers
+namespace src.actors.controllers
 {
     public class ActorController : MonoBehaviour
     {

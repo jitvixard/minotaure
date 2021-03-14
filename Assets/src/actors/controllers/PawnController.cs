@@ -1,9 +1,6 @@
-using src.ai;
-using UnityEngine;
-
-namespace src.controllers
+namespace src.actors.controllers
 {
-    public class PawnController : MonoBehaviour
+    public class PawnController : ActorController
     {
         
     }

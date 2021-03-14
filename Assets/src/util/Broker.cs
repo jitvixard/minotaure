@@ -1,5 +1,5 @@
+using src.actors.controllers;
 using src.actors.model;
-using src.controllers;
 using UnityEngine;
 
 namespace src.util

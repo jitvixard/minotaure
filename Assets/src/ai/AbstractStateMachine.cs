@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Diagnostics;
-using src.controllers;
+using src.actors.controllers;
 using UnityEngine;
 using Environment = src.util.Environment;
 using Random = UnityEngine.Random;
@@ -54,7 +54,6 @@ namespace src.ai
          */
         protected virtual IEnumerator IdleRoutine()
         {
-            print("starting idle");
             var watch = new Stopwatch();
             watch.Start();
             var waitTime = Random.Range(Environment.IDLE_WAIT_LOWER, Environment.IDLE_WAIT_LOWER) * 1000;
@@ -62,12 +61,10 @@ namespace src.ai
 
             while (watch.ElapsedMilliseconds < waitTime) yield return null; //waiting
             
-            print("sending move");
             Controller.Move(GetLocationAroundUnit(Environment.IDLE_RANGE)); //move to random point
 
             while (Controller.Actor.Moving) yield return null; //waiting
 
-            print("ending idle");
             if (State == State.Idle) Idle(); //refresh idle state
         }
         

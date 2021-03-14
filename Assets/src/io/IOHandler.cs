@@ -1,4 +1,5 @@
 using System;
+using src.actors.controllers;
 using src.config;
 using src.config.control;
 using src.player;
@@ -11,15 +12,19 @@ namespace src.io
 {
     public class IOHandler : MonoBehaviour
     {
-        Camera camera;
+        new Camera camera;
         ControlConfig control; //config relating to control input
 
         public Preferences preferences;
 
-        [Header("Player Preferences: UI")] 
+        [Header("Player Preferences:   UI")] 
         [SerializeField] Color accentColor;
         [SerializeField] Color selectionColor;
         [SerializeField] float transitionTime;
+        
+        //Buffer for selected actors
+        ActorController actorBuffer;
+        PawnController pawnBuffer;
 
         void Awake()
         {
@@ -30,6 +35,25 @@ namespace src.io
                 accentColor,
                 selectionColor, 
                 transitionTime);
+        }
+
+        public void HandleHit(RaycastHit hit)
+        {
+            var selected = hit.collider.gameObject;
+            if (selected.name.Equals(Environment.OVERHEAD_UI)) HandleSelection(selected.transform.parent.gameObject);
+        }
+        
+        void HandleSelection(GameObject selected)
+        {
+            if (!selected.TryGetComponent<ActorController>(out var controller)) return;
+            
+            actorBuffer = controller;
+            switch (controller)
+            {
+                case PawnController p:
+                    pawnBuffer = p;
+                    break;
+            }
         }
 
         public static Vector3 ScreenClickToViewportPoint(RectTransform screenTransform, Camera inputCamera)

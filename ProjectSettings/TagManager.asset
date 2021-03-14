@@ -10,6 +10,7 @@ TagManager:
   - CentrePoint
   - StartTile
   - LookAt
+  - Pawn
   layers:
   - Default
   - TransparentFX
