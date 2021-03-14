@@ -41,18 +41,25 @@ namespace src.io
         {
             var selected = hit.collider.gameObject;
             if (selected.name.Equals(Environment.OVERHEAD_UI)) HandleSelection(selected.transform.parent.gameObject);
+            //TODO Handle Movement Case
+            //TODO Handle Attack Case
+            //TODO Handle PickUp Case
         }
         
         void HandleSelection(GameObject selected)
         {
             if (!selected.TryGetComponent<ActorController>(out var controller)) return;
-            
-            actorBuffer = controller;
-            switch (controller)
+
+            if (controller is PawnController)
             {
-                case PawnController p:
-                    pawnBuffer = p;
-                    break;
+                if (!(pawnBuffer is null)) pawnBuffer.Select(false); //deselect old
+                pawnBuffer = controller.Select(true) as PawnController; //select new
+                actorBuffer = pawnBuffer; //assign to actor buffer too
+            }
+            else
+            {
+                if (!(actorBuffer is null)) actorBuffer.Select(false); //deselect old
+                actorBuffer = controller.Select(true); //select new
             }
         }
 

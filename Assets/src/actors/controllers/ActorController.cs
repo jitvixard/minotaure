@@ -8,7 +8,7 @@ using Environment = src.util.Environment;
 
 namespace src.actors.controllers
 {
-    public class ActorController : MonoBehaviour
+    public abstract class ActorController : MonoBehaviour
     {
         //Properties ====================
         //actor data model
@@ -20,8 +20,10 @@ namespace src.actors.controllers
         //Variables =====================
         //state machine
         AbstractStateMachine stateMachine;
-
+        //routines
         protected Coroutine moveRoutine; 
+        //status
+        bool selected = false;
 
         
         void Awake()
@@ -31,11 +33,27 @@ namespace src.actors.controllers
             stateMachine = StateMachineFactory.Get(Actor);
         }
 
+        /*===============================
+         *  Interaction
+         ==============================*/
+        public ActorController Select(bool selected)
+        {
+            if (selected) stateMachine.Stop();
+            else stateMachine.Resume();
+            return this;
+        }
+        
+        /*===============================
+         *  Orders
+         ==============================*/
         public void Move(Vector3 target)
         {
             moveRoutine = StartCoroutine(MoveRoutine(target));
         }
 
+        /*===============================
+         *  Routines
+         ==============================*/
         IEnumerator MoveRoutine(Vector3 target)
         {
             Actor.Moving = true;
@@ -49,5 +67,10 @@ namespace src.actors.controllers
             Agent.SetDestination(transform.position);
             Actor.Moving = false;
         }
+        
+        /*===============================
+         *  UI & Feedback
+         ==============================*/
+        protected abstract void UpdateUI();
     }
 }

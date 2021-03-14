@@ -12,7 +12,7 @@ namespace src.ai
     {
         public ActorController Controller { get; set; }
 
-        public State State { get; set; }
+        public State CurrentState { get; set; }
 
         protected Coroutine idleRoutine;
         protected Coroutine attackRoutine;
@@ -26,32 +26,29 @@ namespace src.ai
         }
         
         
-        /*
-         *  Directives
-         */
+        /*===============================
+         *  State Directives
+         ==============================*/
         protected virtual void Idle()
         {
-            if (idleRoutine is null)
-            {
-                idleOrigin = transform.position;
-            }
-            
+            if (CurrentState != State.Idle) idleOrigin = transform.position;
+            CurrentState = State.Idle;
             idleRoutine = StartCoroutine(IdleRoutine());
         }
 
         protected virtual void Attack()
         {
-            
+            CurrentState = State.Attack;
         }
 
         protected virtual void Regroup()
         {
-            
+            CurrentState = State.Regroup;
         }
         
-        /*
+        /*===============================
          *  Routines
-         */
+         ==============================*/
         protected virtual IEnumerator IdleRoutine()
         {
             var watch = new Stopwatch();
@@ -65,7 +62,7 @@ namespace src.ai
 
             while (Controller.Actor.Moving) yield return null; //waiting
 
-            if (State == State.Idle) Idle(); //refresh idle state
+            if (CurrentState == State.Idle) Idle(); //refresh idle state
         }
         
         protected virtual IEnumerator AttackRoutine()
@@ -84,26 +81,47 @@ namespace src.ai
             yield break;
         }
         
-        protected virtual void Stop()
+        /*===============================
+         *  Control Functions
+         ==============================*/
+        public virtual void Resume()
         {
+            enabled = true;
+        }
+        
+        public virtual void Stop()
+        {
+            CurrentState = State.Stopped;
+            enabled = false;
+            
             if (!(idleRoutine is null))
             {
                 StopCoroutine(idleRoutine);
                 idleRoutine = null;
             }
+            if (!(attackRoutine is null))
+            {
+                StopCoroutine(attackRoutine);
+                attackRoutine = null;
+            }
+            if (!(regroupRoutine is null))
+            {
+                StopCoroutine(regroupRoutine);
+                regroupRoutine = null;
+            }
         }
         
-        /*
+        /*===============================
          *  Checks
-         */
+         ==============================*/
         void Update()
         {
             UpdateState();
         }
 
-        /*
-         *  Helper Methods
-         */
+        /*===============================
+         *  Helper
+         ==============================*/
         protected Vector3 GetLocationAroundUnit(int radius)
         {
             var randomPoint = (Random.insideUnitCircle * radius);

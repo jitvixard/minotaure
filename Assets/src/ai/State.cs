@@ -5,6 +5,7 @@ namespace src.ai
         Idle,
         Attack,
         Move,
-        Regroup
+        Regroup,
+        Stopped
     }
 }
