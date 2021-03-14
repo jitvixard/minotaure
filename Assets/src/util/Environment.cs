@@ -15,5 +15,9 @@ namespace src.util
         public const int LAYER_FLOOR = 9;
 
         public const string TILE_NAME_FORMAT = "tile_c{0}_r{1}";
+
+        public const float IDLE_WAIT_LOWER = 0.5f;
+        public const float IDLE_WAIT_UPPER = 2.5f;
+        public const int IDLE_RANGE = 3;
     }
 }

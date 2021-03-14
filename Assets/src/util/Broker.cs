@@ -8,13 +8,16 @@ namespace src.util
     {
         public static AbstractActor GetActor(ActorController controller)
         {
+            Debug.Log("Defaulting Actor [" + controller.name + "]");
+            return new PawnActor(controller);
             switch (controller.Actor)
             {
                 case PawnActor p:
-                    return new PawnActor();
+                    return new PawnActor(controller);
                 default:
-                    Debug.Log("Unable to instantiate Actor [" + controller.name + "]");
-                    return null;
+                    //Debug.Log("Unable to instantiate Actor [" + controller.name + "]");
+                    Debug.Log("Defaulting Actor [" + controller.name + "]");
+                    return new PawnActor(controller);
             }
         }
     }
