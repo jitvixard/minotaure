@@ -10,7 +10,7 @@ namespace src.util
         {
             Debug.Log("Defaulting Actor [" + controller.name + "]");
             return new PawnActor(controller);
-            switch (controller.Actor)
+            /*switch (controller.Actor)
             {
                 case PawnActor p:
                     return new PawnActor(controller);
@@ -18,7 +18,7 @@ namespace src.util
                     //Debug.Log("Unable to instantiate Actor [" + controller.name + "]");
                     Debug.Log("Defaulting Actor [" + controller.name + "]");
                     return new PawnActor(controller);
-            }
+            }*/
         }
     }
 }

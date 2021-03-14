@@ -1,6 +1,8 @@
 ﻿using System.Collections;
+using src.actors.handlers;
 using src.actors.model;
 using src.ai;
+using src.io;
 using src.util;
 using UnityEngine;
 using UnityEngine.AI;
@@ -18,19 +20,25 @@ namespace src.actors.controllers
 
 
         //Variables =====================
+        // io
+        protected IOHandler io;
         //state machine
-        AbstractStateMachine stateMachine;
+        protected AbstractStateMachine stateMachine;
+        //ui
+        protected SpriteHandler sprite;
         //routines
         protected Coroutine moveRoutine; 
         //status
-        bool selected = false;
+        protected bool selected = false;
 
-        
+
         void Awake()
         {
+            io = Camera.main.GetComponent<IOHandler>();
             Agent = GetComponent<NavMeshAgent>();
             Actor = Broker.GetActor(this);
             stateMachine = StateMachineFactory.Get(Actor);
+            sprite = new SpriteHandler(this);
         }
 
         /*===============================
@@ -38,8 +46,10 @@ namespace src.actors.controllers
          ==============================*/
         public ActorController Select(bool selected)
         {
+            this.selected = selected;
             if (selected) stateMachine.Stop();
             else stateMachine.Resume();
+            sprite.Refresh();
             return this;
         }
         
@@ -67,10 +77,13 @@ namespace src.actors.controllers
             Agent.SetDestination(transform.position);
             Actor.Moving = false;
         }
-        
+
         /*===============================
          *  UI & Feedback
          ==============================*/
-        protected abstract void UpdateUI();
+        public bool IsSelected()
+        {
+            return selected;
+        }
     }
 }

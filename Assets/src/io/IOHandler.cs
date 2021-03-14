@@ -50,10 +50,14 @@ namespace src.io
         {
             if (!selected.TryGetComponent<ActorController>(out var controller)) return;
 
-            if (controller is PawnController)
+            if (controller is PawnController) //deselect old
             {
-                if (!(pawnBuffer is null)) pawnBuffer.Select(false); //deselect old
-                pawnBuffer = controller.Select(true) as PawnController; //select new
+                if (!(pawnBuffer is null)) 
+                {
+                    pawnBuffer.Select(false); //deselect old
+                }
+
+            pawnBuffer = controller.Select(true) as PawnController; //select new
                 actorBuffer = pawnBuffer; //assign to actor buffer too
             }
             else

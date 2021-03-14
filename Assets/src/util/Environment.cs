@@ -21,5 +21,7 @@ namespace src.util
         public const float IDLE_WAIT_LOWER = 0.5f;
         public const float IDLE_WAIT_UPPER = 2.5f;
         public const int IDLE_RANGE = 3;
+
+        public const float UI_OVERHEAD_SELECTION_INTERVAL = 0.3f;
     }
 }
