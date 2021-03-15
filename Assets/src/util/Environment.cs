@@ -2,26 +2,39 @@ namespace src.util
 {
     public class Environment
     {
-        public const string PLAYER = "Player";
-        public const string TILE_REF = "TileReference";
+        /*===============================
+         *  GameObject Names
+         ==============================*/
         public const string OVERHEAD_UI = "overhead_ui";
 
-        public const string TAG_MOVEMENT = "MovementTile";
+        /*===============================
+         *  Tags
+         ==============================*/
+        public const string TAG_FLOOR = "Floor";
         public const string TAG_PAWN = "Pawn";
 
-        public const string LEVEL_BASE = "level_base";
-        public const string LOOK_AT = "look_point";
-
+        /*===============================
+         *  Navigation
+         ==============================*/
+        public const float SPEED_PAWN_IDLE = 3.5f;
+        public const float SPEED_PAWN = 4.5f;
         public const float STOPPING_DISTANCE = 0.1f;
 
+        /*===============================
+         *  Layers
+         ==============================*/
         public const int LAYER_FLOOR = 9;
 
-        public const string TILE_NAME_FORMAT = "tile_c{0}_r{1}";
-
+        /*===============================
+         *  State Machine Information
+         ==============================*/
         public const float IDLE_WAIT_LOWER = 0.5f;
         public const float IDLE_WAIT_UPPER = 2.5f;
         public const int IDLE_RANGE = 3;
 
+        /*===============================
+         *  UI & UX
+         ==============================*/
         public const float UI_OVERHEAD_SELECTION_INTERVAL = 0.3f;
     }
 }

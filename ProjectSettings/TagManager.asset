@@ -11,6 +11,7 @@ TagManager:
   - StartTile
   - LookAt
   - Pawn
+  - Floor
   layers:
   - Default
   - TransparentFX

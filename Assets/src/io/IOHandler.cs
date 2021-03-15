@@ -41,7 +41,7 @@ namespace src.io
         {
             var selected = hit.collider.gameObject;
             if (selected.name.Equals(Environment.OVERHEAD_UI)) HandleSelection(selected.transform.parent.gameObject);
-            //TODO Handle Movement Case
+            if (selected.CompareTag(Environment.TAG_FLOOR)) HandleFloor(hit.point);
             //TODO Handle Attack Case
             //TODO Handle PickUp Case
         }
@@ -50,14 +50,10 @@ namespace src.io
         {
             if (!selected.TryGetComponent<ActorController>(out var controller)) return;
 
-            if (controller is PawnController) //deselect old
+            if (controller is PawnController)
             {
-                if (!(pawnBuffer is null)) 
-                {
-                    pawnBuffer.Select(false); //deselect old
-                }
-
-            pawnBuffer = controller.Select(true) as PawnController; //select new
+                if (!(pawnBuffer is null)) pawnBuffer.Select(false); //deselect old
+                pawnBuffer = controller.Select(true) as PawnController; //select new
                 actorBuffer = pawnBuffer; //assign to actor buffer too
             }
             else
@@ -65,6 +61,11 @@ namespace src.io
                 if (!(actorBuffer is null)) actorBuffer.Select(false); //deselect old
                 actorBuffer = controller.Select(true); //select new
             }
+        }
+        
+        void HandleFloor(Vector3 point)
+        {
+            if (pawnBuffer) pawnBuffer.Move(point);
         }
 
         public static Vector3 ScreenClickToViewportPoint(RectTransform screenTransform, Camera inputCamera)

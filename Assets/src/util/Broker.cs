@@ -9,16 +9,14 @@ namespace src.util
         public static AbstractActor GetActor(ActorController controller)
         {
             Debug.Log("Defaulting Actor [" + controller.name + "]");
-            return new PawnActor(controller);
-            /*switch (controller.Actor)
+            switch (controller.tag)
             {
-                case PawnActor p:
+                case Environment.TAG_PAWN:
                     return new PawnActor(controller);
                 default:
-                    //Debug.Log("Unable to instantiate Actor [" + controller.name + "]");
-                    Debug.Log("Defaulting Actor [" + controller.name + "]");
+                    Debug.LogWarning("Defaulting Actor [" + controller.name + "]");
                     return new PawnActor(controller);
-            }*/
+            }
         }
     }
 }
