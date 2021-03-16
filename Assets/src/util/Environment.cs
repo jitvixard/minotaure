@@ -6,6 +6,7 @@ namespace src.util
          *  GameObject Names
          ==============================*/
         public const string OVERHEAD_UI = "overhead_ui";
+        public const string SWARM_MEMBER = "swarm_member";
 
         /*===============================
          *  Tags
@@ -36,5 +37,17 @@ namespace src.util
          *  UI & UX
          ==============================*/
         public const float UI_OVERHEAD_SELECTION_INTERVAL = 0.3f;
+        
+        /*===============================
+         *  Swarm
+         ==============================*/
+        public const float SPAWN_DELAY_LOWER = 0.5f;
+        public const float SPAWN_DELAY_UPPER = 4f;
+        public const float SPAWN_MARGIN = 10f;
+        
+        /*===============================
+         *  Resource Paths
+         ==============================*/
+        public const string RESOURCE_SWARM_MEMBER = "Actors/swarm_member";
     }
 }
