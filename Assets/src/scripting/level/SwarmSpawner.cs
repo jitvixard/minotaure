@@ -33,12 +33,7 @@ namespace src.scripting.level
             
             swarmMember = Resources.Load(Environment.RESOURCE_SWARM_MEMBER) as GameObject;
         }
-
-        void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Space)) spawnRoutine = StartCoroutine(Spawning());
-        }
-
+        
         IEnumerator Spawning()
         {
             var wave = waveOrder.Dequeue();
