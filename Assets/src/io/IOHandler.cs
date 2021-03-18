@@ -1,4 +1,5 @@
 using System;
+using src.actors.controllers;
 using src.config;
 using src.config.control;
 using src.player;
@@ -11,15 +12,19 @@ namespace src.io
 {
     public class IOHandler : MonoBehaviour
     {
-        Camera camera;
+        new Camera camera;
         ControlConfig control; //config relating to control input
 
         public Preferences preferences;
 
-        [Header("Player Preferences: UI")] 
+        [Header("Player Preferences:   UI")] 
         [SerializeField] Color accentColor;
         [SerializeField] Color selectionColor;
         [SerializeField] float transitionTime;
+        
+        //Buffer for selected actors
+        ActorController actorBuffer;
+        PawnController pawnBuffer;
 
         void Awake()
         {
@@ -30,6 +35,37 @@ namespace src.io
                 accentColor,
                 selectionColor, 
                 transitionTime);
+        }
+
+        public void HandleHit(RaycastHit hit)
+        {
+            var selected = hit.collider.gameObject;
+            if (selected.name.Equals(Environment.OVERHEAD_UI)) HandleSelection(selected.transform.parent.gameObject);
+            if (selected.CompareTag(Environment.TAG_FLOOR)) HandleFloor(hit.point);
+            //TODO Handle Attack Case
+            //TODO Handle PickUp Case
+        }
+        
+        void HandleSelection(GameObject selected)
+        {
+            if (!selected.TryGetComponent<ActorController>(out var controller)) return;
+
+            if (controller is PawnController)
+            {
+                if (!(pawnBuffer is null)) pawnBuffer.Select(false); //deselect old
+                pawnBuffer = controller.Select(true) as PawnController; //select new
+                actorBuffer = pawnBuffer; //assign to actor buffer too
+            }
+            else
+            {
+                if (!(actorBuffer is null)) actorBuffer.Select(false); //deselect old
+                actorBuffer = controller.Select(true); //select new
+            }
+        }
+        
+        void HandleFloor(Vector3 point)
+        {
+            if (pawnBuffer) pawnBuffer.Move(point);
         }
 
         public static Vector3 ScreenClickToViewportPoint(RectTransform screenTransform, Camera inputCamera)

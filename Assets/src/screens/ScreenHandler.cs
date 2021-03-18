@@ -10,7 +10,7 @@ namespace src.screens
         //cameras
         [SerializeField] Camera castingCamera;
 
-        Camera mainCamera;
+        IOHandler io;
 
         //raycasting
         int filterLayer;
@@ -21,9 +21,7 @@ namespace src.screens
 
         void Awake()
         {
-            agent = GameObject.Find("actor").GetComponent<NavMeshAgent>();
-
-            mainCamera = Camera.main;
+            io = Camera.main.GetComponent<IOHandler>();
             filterLayer = castingCamera.gameObject.layer;
 
             screenTransform = GetComponent<RectTransform>();
@@ -31,14 +29,10 @@ namespace src.screens
 
         public virtual void OnPointerClick(PointerEventData eventData)
         {
-            print("boom");
             var point = IOHandler.ScreenClickToViewportPoint(screenTransform, Camera.main);
             var viewRay = castingCamera.ViewportPointToRay(point);
-            if (Physics.Raycast(viewRay, out var hit))
-            {
-                print("hit " + hit.collider.name);
-                agent.SetDestination(hit.point);
-            }
+            //TODO add raycast filter
+            if (Physics.Raycast(viewRay, out var hit)) io.HandleHit(hit);
         }
 
         protected abstract void HandleHit(RaycastHit hit);

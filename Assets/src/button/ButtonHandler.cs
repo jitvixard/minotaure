@@ -110,8 +110,5 @@ namespace src.button
                 .FirstOrDefault(image => 
                     image.name.Equals("border"));
         }
-    
-    
-    
     }
 }
