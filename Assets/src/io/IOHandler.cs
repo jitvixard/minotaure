@@ -1,8 +1,8 @@
 using System;
 using src.actors.controllers;
+using src.actors.controllers.impl;
 using src.config;
 using src.config.control;
-using src.player;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
