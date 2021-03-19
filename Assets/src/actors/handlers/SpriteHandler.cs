@@ -12,14 +12,14 @@ namespace src.actors.handlers
     {
         public SpriteRenderer Sprite { get; set; }
 
-        ActorController controller;
+        AbstractActorController controller;
         
         Color original;
         Color selected;
 
         Coroutine transitionRoutine;
         
-        public SpriteHandler(ActorController controller)
+        public SpriteHandler(AbstractActorController controller)
         {
             Sprite = controller.GetComponentInChildren<SpriteRenderer>();
             this.controller = controller;

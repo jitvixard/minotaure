@@ -1,4 +1,4 @@
 namespace src.actors.controllers
 {
-    public class PawnController : ActorController { }
+    public class PawnController : AbstractActorController { }
 }

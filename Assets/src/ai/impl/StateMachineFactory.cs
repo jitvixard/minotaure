@@ -10,7 +10,7 @@ namespace src.ai
             {
                 case PawnActor p:
                     var stateMachine = actor.GameObject.AddComponent<PawnStateMachine>();
-                    stateMachine.Controller = actor.Controller;
+                    stateMachine.controller = actor.Controller;
                     return stateMachine;
                 default:
                     return null;

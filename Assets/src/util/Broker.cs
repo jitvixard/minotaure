@@ -6,7 +6,7 @@ namespace src.util
 {
     public class Broker
     {
-        public static AbstractActor GetActor(ActorController controller)
+        public static AbstractActor GetActor(AbstractActorController controller)
         {
             Debug.Log("Defaulting Actor [" + controller.name + "]");
             switch (controller.tag)

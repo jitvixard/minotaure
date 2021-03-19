@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 using Environment = src.util.Environment;
@@ -9,8 +10,8 @@ namespace src.scripting.level
 {
     public class SwarmSpawner : MonoBehaviour
     {
+        readonly List<Vector3> spawnPoints = new List<Vector3>();
         Queue<Wave> waveOrder = new Queue<Wave>(); //TODO populate from JSON
-        Vector3[] spawnPoints;
 
         GameObject swarmMember;
 
@@ -22,14 +23,10 @@ namespace src.scripting.level
             waveOrder.Enqueue(new Wave(3));
             
             //getting spawn points
-            var children = GetComponentsInChildren<Transform>();
-            spawnPoints = new Vector3[children.Length];
-            var index = 0;
-            foreach (var t in GetComponentsInChildren<Transform>())
-            {
-                if (t.name.Equals(name)) continue;
-                spawnPoints[index++] = t.position;
-            }
+            var children = GetComponentsInChildren<Transform>()
+                .Where(t => t.name != name)
+                .Select(t => t.position);
+            spawnPoints.AddRange(children);
             
             swarmMember = Resources.Load(Environment.RESOURCE_SWARM_MEMBER) as GameObject;
         }
@@ -40,7 +37,7 @@ namespace src.scripting.level
             var index = 0;
             while (index < wave.numberOfEntities)
             {
-                var spawnIndex = Random.Range(0, spawnPoints.Length - 1);
+                var spawnIndex = Random.Range(0, spawnPoints.Count - 1);
                 
                 var spawnDelay = Random.Range(Environment.SPAWN_DELAY_LOWER, Environment.SPAWN_DELAY_UPPER);
                 spawnDelay *= 1000; //spawn delay set to millis
@@ -68,7 +65,6 @@ namespace src.scripting.level
         {
             var freshSpawn = Instantiate(swarmMember, position, new Quaternion());
             freshSpawn.name = Environment.SWARM_MEMBER + freshSpawn.GetInstanceID();
-            freshSpawn.GetComponent<NavMeshAgent>().SetDestination(Vector3.zero);
         }
     }
 }

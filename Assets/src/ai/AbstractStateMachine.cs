@@ -8,11 +8,11 @@ using Random = UnityEngine.Random;
 
 namespace src.ai
 {
-    public abstract class AbstractStateMachine : MonoBehaviour 
+    public abstract class AbstractStateMachine : MonoBehaviour
     {
-        public ActorController Controller { get; set; }
+        [NonSerialized] public AbstractActorController controller;
 
-        public State CurrentState { get; set; }
+        public State currentState;
 
         protected Coroutine idleRoutine;
         protected Coroutine attackRoutine;
@@ -20,30 +20,28 @@ namespace src.ai
 
         protected Vector3 idleOrigin;
 
-        public void UpdateState()
-        {
-            if (idleRoutine == null) idleRoutine = StartCoroutine(IdleRoutine());
-        }
-        
-        
+
         /*===============================
-         *  State Directives
+         *  States
          ==============================*/
         protected virtual void Idle()
         {
-            if (CurrentState != State.Idle) idleOrigin = transform.position;
-            CurrentState = State.Idle;
-            idleRoutine = StartCoroutine(IdleRoutine());
+            if (currentState != State.Idle)
+            {
+                idleOrigin = transform.position;
+                currentState = State.Idle;
+            }
+            if (idleRoutine is null) idleRoutine = StartCoroutine(IdleRoutine());
         }
 
         protected virtual void Attack()
         {
-            CurrentState = State.Attack;
+            currentState = State.Attack;
         }
 
         protected virtual void Regroup()
         {
-            CurrentState = State.Regroup;
+            currentState = State.Regroup;
         }
         
         /*===============================
@@ -58,11 +56,13 @@ namespace src.ai
 
             while (watch.ElapsedMilliseconds < waitTime) yield return null; //waiting
             
-            Controller.Move(GetLocationAroundUnit(Environment.IDLE_RANGE)); //move to random point
+            controller.Move(GetLocationAroundUnit(Environment.IDLE_RANGE)); //move to random point
 
-            while (Controller.Actor.Moving) yield return null; //waiting
+            while (controller.Actor.Moving) yield return null; //waiting
 
-            if (CurrentState == State.Idle) Idle(); //refresh idle state
+            idleRoutine = null; //remove this
+
+            if (currentState == State.Idle) Idle(); //refresh idle state
         }
         
         protected virtual IEnumerator AttackRoutine()
@@ -91,7 +91,7 @@ namespace src.ai
         
         public virtual void Stop()
         {
-            CurrentState = State.Stopped;
+            currentState = State.Stopped;
             enabled = false;
             
             if (!(idleRoutine is null))
@@ -114,9 +114,30 @@ namespace src.ai
         /*===============================
          *  Checks
          ==============================*/
-        void Update()
+        protected void Update()
         {
             UpdateState();
+        }
+
+        protected virtual void UpdateState()
+        {
+            if (ShouldIdle()) Idle();
+            if (ShouldAttack()) Attack();
+            if (ShouldRegroup()) Regroup();
+        }
+        protected virtual bool ShouldAttack()
+        {
+            return false;
+        }
+        
+        protected virtual bool ShouldIdle()
+        {
+            return false;
+        }
+        
+        protected virtual bool ShouldRegroup()
+        {
+            return false;
         }
 
         /*===============================

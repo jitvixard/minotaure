@@ -23,7 +23,7 @@ namespace src.io
         [SerializeField] float transitionTime;
         
         //Buffer for selected actors
-        ActorController actorBuffer;
+        AbstractActorController actorBuffer;
         PawnController pawnBuffer;
 
         void Awake()
@@ -48,7 +48,7 @@ namespace src.io
         
         void HandleSelection(GameObject selected)
         {
-            if (!selected.TryGetComponent<ActorController>(out var controller)) return;
+            if (!selected.TryGetComponent<AbstractActorController>(out var controller)) return;
 
             if (controller is PawnController)
             {

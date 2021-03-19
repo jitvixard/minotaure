@@ -10,7 +10,7 @@ using Environment = src.util.Environment;
 
 namespace src.actors.controllers
 {
-    public abstract class ActorController : MonoBehaviour
+    public abstract class AbstractActorController : MonoBehaviour
     {
         //Properties ====================
         //actor data model
@@ -44,7 +44,7 @@ namespace src.actors.controllers
         /*===============================
          *  Interaction
          ==============================*/
-        public ActorController Select(bool selected)
+        public AbstractActorController Select(bool selected)
         {
             this.selected = selected;
             if (selected) stateMachine.Stop();
