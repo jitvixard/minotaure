@@ -22,7 +22,7 @@ namespace src.actors.model
             Controller = controller;
             Moving = false;
             Health = 100;
-            Speed = controller.Agent.speed;
+            Speed = controller.agent.speed;
         }
     }
 }

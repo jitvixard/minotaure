@@ -58,7 +58,7 @@ namespace src.ai
             
             controller.Move(GetLocationAroundUnit(Environment.IDLE_RANGE)); //move to random point
 
-            while (controller.Actor.Moving) yield return null; //waiting
+            while (controller.actor.Moving) yield return null; //waiting
 
             idleRoutine = null; //remove this
 

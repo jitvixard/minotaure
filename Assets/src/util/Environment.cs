@@ -1,3 +1,6 @@
+using src.ai.swarm;
+using UnityEngine;
+
 namespace src.util
 {
     public class Environment
@@ -41,6 +44,7 @@ namespace src.util
         /*===============================
          *  Swarm
          ==============================*/
+        public static readonly SwarmService SwarmService = new SwarmService();
         public const float SPAWN_DELAY_LOWER = 0.5f;
         public const float SPAWN_DELAY_UPPER = 4f;
         public const float SPAWN_MARGIN = 10f;

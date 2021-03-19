@@ -1,6 +1,7 @@
 using System;
 using src.actors.controllers;
 using src.actors.controllers.impl;
+using src.ai.swarm;
 using src.config;
 using src.config.control;
 using UnityEngine;
@@ -21,6 +22,9 @@ namespace src.io
         [SerializeField] Color accentColor;
         [SerializeField] Color selectionColor;
         [SerializeField] float transitionTime;
+
+
+        SwarmService swarmService;
         
         //Buffer for selected actors
         AbstractActorController actorBuffer;
@@ -35,6 +39,9 @@ namespace src.io
                 accentColor,
                 selectionColor, 
                 transitionTime);
+
+            swarmService = Environment.SwarmService;
+            swarmService.IO = this;
         }
 
         public void HandleHit(RaycastHit hit)
@@ -83,6 +90,11 @@ namespace src.io
                 (screenHit.x + rect.width / 2) / rect.width,
                 (screenHit.y + rect.height / 2) / rect.height,
                 0);
+        }
+
+        public PawnController GetCurrentPawn()
+        {
+            return pawnBuffer;
         }
 
         public Color GetSelectionColor()

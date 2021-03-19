@@ -14,9 +14,9 @@ namespace src.actors.controllers
     {
         //Properties ====================
         //actor data model
-        public AbstractActor Actor { get; set; }
+        public AbstractActor actor;
         //nav agent
-        public NavMeshAgent Agent { get; set; }
+        public NavMeshAgent agent;
 
 
         //Variables =====================
@@ -32,14 +32,19 @@ namespace src.actors.controllers
         protected bool selected = false;
 
 
+        /*===============================
+         *  Lifecycle
+         ==============================*/
         protected virtual void Awake()
         {
             io = Camera.main.GetComponent<IOHandler>();
-            Agent = GetComponent<NavMeshAgent>();
-            Actor = ActorFactory.Create(this);
-            stateMachine = StateMachineFactory.Get(Actor);
+            agent = GetComponent<NavMeshAgent>();
+            actor = ActorFactory.Create(this);
+            stateMachine = StateMachineFactory.Get(actor);
             sprite = new SpriteHandler(this);
         }
+
+        public abstract void Die();
 
         /*===============================
          *  Interaction
@@ -66,16 +71,30 @@ namespace src.actors.controllers
          ==============================*/
         protected virtual IEnumerator MoveRoutine(Vector3 target)
         {
-            Actor.Moving = true;
-            Agent.SetDestination(target);
+            actor.Moving = true;
+            agent.SetDestination(target);
 
             while (Vector3.Distance(target, transform.position) > Environment.STOPPING_DISTANCE)
             {
                 yield return null;
             }
 
-            Agent.SetDestination(transform.position);
-            Actor.Moving = false;
+            agent.SetDestination(transform.position);
+            actor.Moving = false;
+        }
+        
+        protected IEnumerator SeekRoutine(Transform target)
+        {
+            actor.Moving = true;
+            agent.SetDestination(target.position);
+            
+            while (Vector3.Distance(target.position, transform.position) > Environment.STOPPING_DISTANCE)
+            {
+                yield return null;
+            }
+
+            agent.SetDestination(transform.position);
+            actor.Moving = false;
         }
 
         /*===============================
