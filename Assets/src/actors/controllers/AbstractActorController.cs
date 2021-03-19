@@ -32,11 +32,11 @@ namespace src.actors.controllers
         protected bool selected = false;
 
 
-        void Awake()
+        protected virtual void Awake()
         {
             io = Camera.main.GetComponent<IOHandler>();
             Agent = GetComponent<NavMeshAgent>();
-            Actor = Broker.GetActor(this);
+            Actor = ActorFactory.Create(this);
             stateMachine = StateMachineFactory.Get(Actor);
             sprite = new SpriteHandler(this);
         }
@@ -44,7 +44,7 @@ namespace src.actors.controllers
         /*===============================
          *  Interaction
          ==============================*/
-        public AbstractActorController Select(bool selected)
+        public virtual AbstractActorController Select(bool selected)
         {
             this.selected = selected;
             if (selected) stateMachine.Stop();
@@ -56,7 +56,7 @@ namespace src.actors.controllers
         /*===============================
          *  Orders
          ==============================*/
-        public void Move(Vector3 target)
+        public virtual void Move(Vector3 target)
         {
             moveRoutine = StartCoroutine(MoveRoutine(target));
         }
@@ -64,7 +64,7 @@ namespace src.actors.controllers
         /*===============================
          *  Routines
          ==============================*/
-        IEnumerator MoveRoutine(Vector3 target)
+        protected virtual IEnumerator MoveRoutine(Vector3 target)
         {
             Actor.Moving = true;
             Agent.SetDestination(target);
@@ -87,3 +87,5 @@ namespace src.actors.controllers
         }
     }
 }
+
+
