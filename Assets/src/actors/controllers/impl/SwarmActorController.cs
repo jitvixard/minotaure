@@ -1,4 +1,5 @@
 using System.Collections;
+using src.ai;
 using src.ai.swarm;
 using src.util;
 using UnityEngine;
@@ -7,13 +8,28 @@ namespace src.actors.controllers.impl
 {
     public class SwarmActorController : AbstractActorController
     {
-        PawnController player;
+        PawnActorController player;
         GameObject target;
 
         SwarmService swarmService;
 
         Coroutine currentRoutine;
+
+        bool inHeatZone = false;
         
+        /*===============================
+         *  Properties
+         ==============================*/
+        public bool InHeatZone
+        {
+            get => inHeatZone;
+            set
+            {
+                HasLeftHeatZone();
+                inHeatZone = value;
+            }
+        }
+
         /*===============================
          *  Instantiation
          ==============================*/
@@ -33,7 +49,14 @@ namespace src.actors.controllers.impl
         /*===============================
          *  Handling of Events & Stimuli
          ==============================*/
-        //TODO Handle if Actor falls out of players range whilst Locating
+        void HasLeftHeatZone()
+        {
+            if (stateMachine.currentState == State.Locate
+            || stateMachine.currentState == State.Attack)
+            {
+                
+            }
+        }
         //TODO Handle destroying a target when attacking
 
 
@@ -63,8 +86,13 @@ namespace src.actors.controllers.impl
          ==============================*/
         IEnumerator LocateRoutine()
         {
-            //TODO Coordinate with SwarmService to find next target
-            yield break;
+            while (target is null)
+            {
+                yield return null;
+                target = swarmService.GetTarget(this);
+            }
+            
+            
         }
         
         IEnumerator AttackRoutine()

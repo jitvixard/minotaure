@@ -19,6 +19,11 @@ namespace src.ai
         protected Coroutine regroupRoutine;
 
         protected Vector3 idleOrigin;
+        
+        /*===============================
+         *  Unity Lifecycle
+         ==============================*/
+        protected abstract void Awake();
 
 
         /*===============================

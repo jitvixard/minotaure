@@ -14,8 +14,11 @@ namespace src.util
         /*===============================
          *  Tags
          ==============================*/
+        public static readonly string[] PoiTags = {"Pawn"};
         public const string TAG_FLOOR = "Floor";
+        public const string TAG_HEAT_ZONE = "HeatZone";
         public const string TAG_PAWN = "Pawn";
+        public const string TAG_SWARM = "SwarmActor";
 
         /*===============================
          *  Navigation
@@ -48,6 +51,13 @@ namespace src.util
         public const float SPAWN_DELAY_LOWER = 0.5f;
         public const float SPAWN_DELAY_UPPER = 4f;
         public const float SPAWN_MARGIN = 10f;
+        public const int SWARM_MAX_ATTACKERS = 3;
+        public const float SWARM_VISION_RANGE = 4f;
+        
+        /*===============================
+         *  ????
+         ==============================*/
+        public const int HEAT_ZONE_DELAY = 5000;
         
         /*===============================
          *  Resource Paths

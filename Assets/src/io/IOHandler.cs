@@ -28,7 +28,7 @@ namespace src.io
         
         //Buffer for selected actors
         AbstractActorController actorBuffer;
-        PawnController pawnBuffer;
+        PawnActorController pawnBuffer;
 
         void Awake()
         {
@@ -57,10 +57,10 @@ namespace src.io
         {
             if (!selected.TryGetComponent<AbstractActorController>(out var controller)) return;
 
-            if (controller is PawnController)
+            if (controller is PawnActorController)
             {
                 if (!(pawnBuffer is null)) pawnBuffer.Select(false); //deselect old
-                pawnBuffer = controller.Select(true) as PawnController; //select new
+                pawnBuffer = controller.Select(true) as PawnActorController; //select new
                 actorBuffer = pawnBuffer; //assign to actor buffer too
             }
             else
@@ -92,7 +92,7 @@ namespace src.io
                 0);
         }
 
-        public PawnController GetCurrentPawn()
+        public PawnActorController GetCurrentPawn()
         {
             return pawnBuffer;
         }

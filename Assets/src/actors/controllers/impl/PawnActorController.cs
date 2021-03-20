@@ -1,6 +1,6 @@
 namespace src.actors.controllers.impl
 {
-    public class PawnController : AbstractActorController
+    public class PawnActorController : AbstractActorController
     {
         public override void Die()
         {

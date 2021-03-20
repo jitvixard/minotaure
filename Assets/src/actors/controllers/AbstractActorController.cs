@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using src.actors.handlers;
 using src.actors.model;
 using src.ai;
@@ -14,9 +15,9 @@ namespace src.actors.controllers
     {
         //Properties ====================
         //actor data model
-        public AbstractActor actor;
+        [NonSerialized] public AbstractActor actor;
         //nav agent
-        public NavMeshAgent agent;
+        [NonSerialized] public NavMeshAgent agent;
 
 
         //Variables =====================

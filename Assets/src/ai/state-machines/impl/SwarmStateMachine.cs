@@ -6,13 +6,22 @@ namespace src.ai
     public class SwarmStateMachine : AbstractStateMachine
     {
         new SwarmActorController controller;
-        
+
+
+        /*===============================
+         *  Unity Lifecycle
+         ==============================*/
+        protected override void Awake()
+        {
+            controller = GetComponent<SwarmActorController>();
+        }
+
         /*===============================
          *  Checks
          ==============================*/
         protected override void UpdateState()
         {
-            //seek -> locate -> attack -> seek
+            //seek -> locate -> attack -> seek (repeat)
             if (ShouldSeek()) Seek();
             if (ShouldLocate()) Locate();
             if (ShouldAttack()) Attack();
@@ -27,8 +36,9 @@ namespace src.ai
         
         bool ShouldLocate()
         {
-            //TODO is the actor in range of the player
-            return false;
+            return controller.InHeatZone 
+                && currentState != State.Attack
+                && currentState != State.Locate;
         }
 
         protected override bool ShouldAttack()
@@ -46,6 +56,7 @@ namespace src.ai
             currentState = State.Seek;
             controller.Seek();
         }
+        
         void Locate()
         {
             currentState = State.Locate;
