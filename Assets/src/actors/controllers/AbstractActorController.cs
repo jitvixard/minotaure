@@ -75,16 +75,21 @@ namespace src.actors.controllers
             io = Camera.main.GetComponent<IOHandler>();
             agent = GetComponent<NavMeshAgent>();
             actor = ActorFactory.Create(this);
-            stateMachine = StateMachineFactory.Get(actor);
+            stateMachine = StateMachineFactory.Create(actor);
             sprite = new SpriteHandler(this);
         }
 
         public abstract void Die();
 
+        void OnDestroy()
+        {
+            Die();
+        }
+
         /*===============================
          *  Interaction
          ==============================*/
-        public virtual AbstractActorController Select(bool selected)
+        public AbstractActorController Select(bool selected)
         {
             this.selected = selected;
             if (selected) stateMachine.Stop();
@@ -236,6 +241,7 @@ namespace src.actors.controllers
 
         public IDestroyable Heal(int damage)
         {
+            actor.health += damage;
             return this;
         }
 

@@ -5,7 +5,7 @@ namespace src.ai
 {
     public static class StateMachineFactory
     {
-        public static AbstractStateMachine Get(AbstractActor actor)
+        public static AbstractStateMachine Create(AbstractActor actor)
         {
             AbstractStateMachine stateMachine;
             

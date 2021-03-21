@@ -44,18 +44,21 @@ namespace src.ai
         
         protected void Seek(Transform transform)
         {
+            print("seek");
             currentState = State.Seek;
             controller.Seek(transform);
         }
 
         protected void Attack()
         {
+            print("attack");
             currentState = State.Attack;
             controller.Attack();
         }
 
         protected void Regroup()
         {
+            print("regroup");
             currentState = State.Regroup;
         }
         
@@ -103,7 +106,8 @@ namespace src.ai
         
         protected bool ShouldRegroup()
         {
-            return !controller.InHeatZone;
+            //return !controller.InHeatZone;
+            return false;
         }
     }
 }

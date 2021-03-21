@@ -21,6 +21,7 @@ namespace src.util
         public const string TAG_FLOOR = "Floor";
         public const string TAG_HEAT_ZONE = "HeatZone";
         public const string TAG_PAWN = "Pawn";
+        public const string TAG_SPAWNER = "Spawner";
         public const string TAG_SWARM = "SwarmActor";
 
         /*===============================
@@ -72,5 +73,13 @@ namespace src.util
          *  Resource Paths
          ==============================*/
         public const string RESOURCE_SWARM_MEMBER = "Actors/swarm_member";
+        
+        /*===============================
+         *  Prototypes
+         ==============================*/
+        public static GameObject GetSwarmProtoype()
+        {
+         return Resources.Load(RESOURCE_SWARM_MEMBER) as GameObject;
+        } 
     }
 }

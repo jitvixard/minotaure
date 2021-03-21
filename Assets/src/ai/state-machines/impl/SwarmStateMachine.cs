@@ -21,6 +21,7 @@ namespace src.ai.impl
         protected override void UpdateState()
         {
             //seek -> locate -> attack -> seek (repeat)
+            print("swarm update");
             if (ShouldSeek()) Seek(controller.Player.transform);
             if (ShouldLocate()) Locate();
             if (ShouldAttack()) Attack();
@@ -52,6 +53,7 @@ namespace src.ai.impl
 
         void Locate()
         {
+            print("Locate");
             CurrentState = State.Locate;
             controller.Locate();
         }

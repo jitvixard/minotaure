@@ -1,7 +1,11 @@
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using src.actors.controllers.impl;
 using src.io;
+using src.scripting.level;
+using src.scripting.progression;
 using src.util;
 using UnityEngine;
 
@@ -12,15 +16,28 @@ namespace src.ai.swarm
         /*===============================
         *  Fields
         ==============================*/
+        IOHandler io;
+        MonoBehaviour monoBehaviour;
+        ProgressionController progressionController;
+        
         readonly HashSet<SwarmActorController> activeMembers = 
             new HashSet<SwarmActorController>();
         readonly HashSet<SwarmActorController> available = 
             new HashSet<SwarmActorController>();
+        readonly List<Vector3> spawnPoints = 
+            new List<Vector3>();
+        readonly Queue<Wave> waveOrder =
+            new Queue<Wave>();
 
         readonly Dictionary<string, List<SwarmActorController>> targetedPoi = 
             new Dictionary<string, List<SwarmActorController>>();
 
+        Coroutine spawnRoutine;
+
         GameObject player;
+        GameObject swarmPrototype;
+
+        bool enabled;
 
         int attackRate = 1000;
         int waveNumber = 1;
@@ -29,6 +46,7 @@ namespace src.ai.swarm
          *  Properties
          ==============================*/
         public IOHandler IO { get; set; }
+    
         public GameObject Player
         {
             get => player;
@@ -59,6 +77,27 @@ namespace src.ai.swarm
         /*===============================
          *  Spawning
          ==============================*/
+        public void Init(ProgressionController progression)
+        {
+            swarmPrototype = Environment.GetSwarmProtoype();
+            
+            if (!monoBehaviour) monoBehaviour = progression;
+            
+            waveOrder.Enqueue(new Wave(1));
+
+            var parentSpawner = GameObject.FindGameObjectWithTag(Environment.TAG_SPAWNER);
+            spawnPoints.AddRange(
+                parentSpawner
+                    .GetComponentsInChildren<Transform>()
+                    .Where(t => t.name != parentSpawner.name)
+                    .Select(t => t.position)
+                    .ToList());
+        }
+        
+        
+        /*===============================
+         *  Spawning
+         ==============================*/
         public bool NextWave()
         {
             SpawnWave();
@@ -68,7 +107,19 @@ namespace src.ai.swarm
 
         void SpawnWave()
         {
-            
+            spawnRoutine = monoBehaviour.StartCoroutine(Spawning());
+        }
+        
+        void Spawn(Vector3 position)
+        {
+            var freshSpawn =
+                GameObject.Instantiate(
+                    swarmPrototype,
+                    position,
+                    new Quaternion());
+            freshSpawn.name = 
+                Environment.SWARM_MEMBER 
+                + freshSpawn.GetInstanceID();
         }
         
         /*===============================
@@ -134,5 +185,39 @@ namespace src.ai.swarm
             activeMembers.Remove(controller);
             return this;
         }
+        
+        /*===============================
+         *  Routines
+         ==============================*/
+        IEnumerator Spawning()
+        {
+            var wave = waveOrder.Dequeue();
+            var index = 0;
+            while (index < wave.numberOfEntities)
+            {
+                var spawnIndex = Random.Range(0, spawnPoints.Count - 1);
+                
+                var spawnDelay = Random.Range(Environment.SPAWN_DELAY_LOWER, Environment.SPAWN_DELAY_UPPER);
+                spawnDelay *= 1000; //spawn delay set to millis
+                var watch = Stopwatch.StartNew();
+                
+                while (watch.ElapsedMilliseconds < spawnDelay)
+                {
+                    yield return null; //waiting for spawn delay to pass
+                }
+
+                var spawnPoint = spawnPoints[index];
+                spawnPoint = new Vector3(
+                    Random.Range(-Environment.SPAWN_MARGIN, Environment.SPAWN_MARGIN),
+                    spawnPoint.y,
+                    spawnPoint.z
+                );
+
+                Spawn(spawnPoint);
+                index++;
+            }
+        }
+        
+        
     }
 }
