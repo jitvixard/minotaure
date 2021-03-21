@@ -4,6 +4,6 @@ namespace src.actors.model
 {
     public class PawnActor : AbstractActor
     {
-        public PawnActor(ActorController controller) : base(controller) { }
+        public PawnActor(AbstractActorController controller) : base(controller) { }
     }
 }

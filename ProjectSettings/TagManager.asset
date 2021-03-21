@@ -12,6 +12,8 @@ TagManager:
   - LookAt
   - Pawn
   - Floor
+  - Spawner
+  - SwarmActor
   layers:
   - Default
   - TransparentFX

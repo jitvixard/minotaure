@@ -1,14 +1,11 @@
-using System;
 using src.actors.controllers;
+using src.actors.controllers.impl;
 using src.config;
 using src.config.control;
-using src.player;
+using src.services;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.Rendering;
-using Environment = src.util.Environment;
 
-namespace src.io
+namespace src.util
 {
     public class IOHandler : MonoBehaviour
     {
@@ -21,11 +18,24 @@ namespace src.io
         [SerializeField] Color accentColor;
         [SerializeField] Color selectionColor;
         [SerializeField] float transitionTime;
+
+
+        PlayerService playerService;
+        SwarmService swarmService;
         
         //Buffer for selected actors
-        ActorController actorBuffer;
-        PawnController pawnBuffer;
+        AbstractActorController selectedActor;
+        
+        /*===============================
+         *  Properties
+         ==============================*/
+        public Color SelectionColor => selectionColor;
+        public AbstractActorController SelectedActor => selectedActor;
 
+
+        /*===============================
+         *  Unity Lifecycle
+         ==============================*/
         void Awake()
         {
             camera = Camera.main;
@@ -35,8 +45,15 @@ namespace src.io
                 accentColor,
                 selectionColor, 
                 transitionTime);
-        }
 
+            //get services
+            playerService = Environment.PlayerService;
+            swarmService = Environment.SwarmService;
+        }
+        
+        /*===============================
+         *  Handling
+         ==============================*/
         public void HandleHit(RaycastHit hit)
         {
             var selected = hit.collider.gameObject;
@@ -48,26 +65,24 @@ namespace src.io
         
         void HandleSelection(GameObject selected)
         {
-            if (!selected.TryGetComponent<ActorController>(out var controller)) return;
+            if (!selected.TryGetComponent<AbstractActorController>(out var controller)) return;
+            
+            //TODO check to see if building
 
-            if (controller is PawnController)
-            {
-                if (!(pawnBuffer is null)) pawnBuffer.Select(false); //deselect old
-                pawnBuffer = controller.Select(true) as PawnController; //select new
-                actorBuffer = pawnBuffer; //assign to actor buffer too
-            }
-            else
-            {
-                if (!(actorBuffer is null)) actorBuffer.Select(false); //deselect old
-                actorBuffer = controller.Select(true); //select new
-            }
+            if (controller is PawnActorController pac) playerService.Possess(pac);
+            
+            if (!(selectedActor == null)) selectedActor.Select(false); //deselect old
+            selectedActor = controller.Select(true); //select new
         }
         
         void HandleFloor(Vector3 point)
         {
-            if (pawnBuffer) pawnBuffer.Move(point);
+            playerService.ClickedFloor(point);
         }
-
+        
+        /*===============================
+         *  Helper Methods
+         ==============================*/
         public static Vector3 ScreenClickToViewportPoint(RectTransform screenTransform, Camera inputCamera)
         {
             //TODO investigate loss of fractions 
@@ -83,11 +98,6 @@ namespace src.io
                 (screenHit.x + rect.width / 2) / rect.width,
                 (screenHit.y + rect.height / 2) / rect.height,
                 0);
-        }
-
-        public Color GetSelectionColor()
-        {
-            return preferences.selectionColor;
         }
     }
 }
