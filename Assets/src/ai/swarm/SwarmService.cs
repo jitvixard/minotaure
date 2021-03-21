@@ -29,7 +29,6 @@ namespace src.ai.swarm
          *  Properties
          ==============================*/
         public IOHandler IO { get; set; }
-
         public GameObject Player
         {
             get => player;
@@ -44,9 +43,7 @@ namespace src.ai.swarm
                     }
             }
         }
-        
         public HeatZone HeatZone { get; set; }
-
         public int AttackRate
         {
             get
@@ -56,7 +53,6 @@ namespace src.ai.swarm
                 return attackRate + variation;
             }
         }
-
         public int WaveNumber => waveNumber;
 
 
