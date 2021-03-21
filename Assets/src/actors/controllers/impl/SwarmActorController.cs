@@ -9,35 +9,10 @@ using UnityEngine;
 namespace src.actors.controllers.impl
 {
     public class SwarmActorController : AbstractActorController
-    {
-        PawnActorController player;
-        SwarmService swarmService;
-
-
+    { 
         /*===============================
-         *  Properties
+         *  LifeCycle
          ==============================*/
-        public GameObject Player
-        {
-            get => player.gameObject;
-            set
-            {
-                if (value.TryGetComponent<PawnActorController>(out var pac))
-                    if (pac.IsSelected)
-                        player = pac;
-            }
-        }
-
-
-        /*===============================
-         *  Instantiation
-         ==============================*/
-        protected override void Awake()
-        {
-            base.Awake();
-            swarmService = Environment.SwarmService.Add(this);
-        }
-
         public override void Die()
         {
             swarmService.Remove(this);
@@ -69,8 +44,11 @@ namespace src.actors.controllers.impl
             }
 
             if (target is null)
-                if (!(io.SelectedPawn is null))
-                    target = io.SelectedPawn.gameObject;
+            {
+                var player = playerService.Player;
+                if (!(playerService.Player is null))
+                    target = player.gameObject;
+            }
         }
     }
 }

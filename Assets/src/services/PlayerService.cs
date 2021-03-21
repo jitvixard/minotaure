@@ -11,12 +11,12 @@ namespace src.player
          *  Fields
          ==============================*/
 
-        readonly GameObject prototypeHeatZone;
-        
         PawnActorController player;
         GameObject heatZone;
-        
-        
+
+        GameObject prototypeHeatZone;
+
+
         /*===============================
          *  Properties
          ==============================*/
@@ -30,27 +30,36 @@ namespace src.player
             }
             set => player = value;
         }
-        
-        
-        /*===============================
-         *  Constructor
-         ==============================*/
-        public PlayerService()
+        public GameObject PrototypeHeatZone
         {
-            prototypeHeatZone = 
-                Resources.Load(Environment.RESOURCE_HEAT_ZONE) 
-                    as GameObject;
+            get
+            {
+                if (prototypeHeatZone) prototypeHeatZone = 
+                    Resources.Load(Environment.RESOURCE_HEAT_ZONE) 
+                        as GameObject;
+                return prototypeHeatZone;
+            }
         }
-        
-        
+
+
         /*===============================
          *  Handling
          ==============================*/
         public void Possess(PawnActorController controller)
         {
             if (player)
+            {
                 player.Select(false);
-            player = controller.Select(true) as PawnActorController;
+                GameObject.Destroy(heatZone);
+            }
+            else
+            {
+                player = controller;
+                player.Select(true);
+                heatZone = GameObject.Instantiate(
+                    PrototypeHeatZone,
+                    player.transform);
+            }
         }
 
         public void ClickedFloor(Vector3 hitPoint)

@@ -4,8 +4,10 @@ using System.Diagnostics;
 using src.actors.handlers;
 using src.actors.model;
 using src.ai;
+using src.ai.swarm;
 using src.interfaces;
 using src.io;
+using src.player;
 using UnityEngine;
 using UnityEngine.AI;
 using Environment = src.util.Environment;
@@ -23,15 +25,13 @@ namespace src.actors.controllers
         //nav agent
         [NonSerialized] public NavMeshAgent agent;
 
+        protected PlayerService playerService;
+        protected SwarmService swarmService;
+
         //tracking
         protected GameObject target;
-        
-        // io
-        protected IOHandler io;
-        
         //state machine
         protected AbstractStateMachine stateMachine;
-        
         //ui
         protected SpriteHandler sprite;
         
@@ -72,11 +72,14 @@ namespace src.actors.controllers
          ==============================*/
         protected virtual void Awake()
         {
-            io = Camera.main.GetComponent<IOHandler>();
+            //setting up actor
             agent = GetComponent<NavMeshAgent>();
             actor = ActorFactory.Create(this);
             stateMachine = StateMachineFactory.Create(actor);
             sprite = new SpriteHandler(this);
+            //assigning services
+            playerService = Environment.PlayerService;
+            swarmService = Environment.SwarmService;
         }
 
         public abstract void Die();
