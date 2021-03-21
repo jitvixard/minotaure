@@ -32,23 +32,21 @@ namespace src.scripting.level
         }
     
         /*===============================
-    *  Events
-    ==============================*/
+        *  Events
+        ==============================*/
         void OnTriggerEnter(Collider other)
         {
+            print("entered:: " + other.name);
             var otherObj = other.gameObject;
-            if (otherObj.CompareTag(Environment.TAG_SWARM))
+            if (otherObj.TryGetComponent<SwarmActorController>(out var controller))
             {
-                if (otherObj.TryGetComponent<SwarmActorController>(out var controller))
+                if (bufferRoutines.ContainsKey(controller.name))
                 {
-                    if (bufferRoutines.ContainsKey(controller.name))
-                    {
-                        StopCoroutine(bufferRoutines[controller.name]);
-                        return;
-                    }
-                    controller.InHeatZone = true;
-                    membersInHeatZone.Add(controller);
-                }
+                    StopCoroutine(bufferRoutines[controller.name]);
+                    return;
+                } 
+                controller.InHeatZone = true; 
+                membersInHeatZone.Add(controller);
             }
             else if (Environment.PoiTags.Contains(otherObj.tag)) pointsOfInterest.Add(otherObj);
         }

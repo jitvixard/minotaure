@@ -53,7 +53,6 @@ namespace src.actors.controllers
             get => target;
             set => target = value;
         }
-        
         public bool InHeatZone
         {
             get => inHeatZone;
@@ -63,8 +62,9 @@ namespace src.actors.controllers
                 inHeatZone = value;
             }
         }
-        
         public bool IsSelected => selected;
+        public State CurrentState => stateMachine.CurrentState;
+        
 
 
         /*===============================

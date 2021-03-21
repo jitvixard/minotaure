@@ -28,7 +28,7 @@ namespace src.actors.controllers.impl
             }
         }
 
-        
+
         /*===============================
          *  Instantiation
          ==============================*/

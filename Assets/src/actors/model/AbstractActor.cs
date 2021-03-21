@@ -33,7 +33,6 @@ public static class ActorFactory
     //TODO get all actors from JSON
     public static AbstractActor Create(AbstractActorController controller)
     {
-        Debug.Log("Defaulting Actor [" + controller.name + "]");
         switch (controller.tag)
         {
             case Environment.TAG_PAWN:

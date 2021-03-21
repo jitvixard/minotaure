@@ -1,10 +1,13 @@
 using src.actors.controllers.impl;
+using src.ai.swarm;
+using src.util;
 
 namespace src.ai.impl
 {
     public class SwarmStateMachine : AbstractStateMachine
     {
         new SwarmActorController controller;
+        readonly SwarmService swarmService = Environment.SwarmService;
 
 
         /*===============================
@@ -21,8 +24,7 @@ namespace src.ai.impl
         protected override void UpdateState()
         {
             //seek -> locate -> attack -> seek (repeat)
-            print("swarm update");
-            if (ShouldSeek()) Seek(controller.Player.transform);
+            if (ShouldSeek()) Seek(swarmService.GetTarget(controller).transform); //defaults to player atm
             if (ShouldLocate()) Locate();
             if (ShouldAttack()) Attack();
         }
@@ -50,7 +52,6 @@ namespace src.ai.impl
         /*===============================
          *  States
          ==============================*/
-
         void Locate()
         {
             print("Locate");

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using src.actors.controllers.impl;
+using src.actors.model;
 using src.io;
 using src.scripting.level;
 using src.scripting.progression;
@@ -24,18 +25,23 @@ namespace src.ai.swarm
             new HashSet<SwarmActorController>();
         readonly HashSet<SwarmActorController> available = 
             new HashSet<SwarmActorController>();
-        readonly List<Vector3> spawnPoints = 
-            new List<Vector3>();
+        
+        readonly HashSet<Wave> activeWaves = 
+            new HashSet<Wave>();
         readonly Queue<Wave> waveOrder =
             new Queue<Wave>();
+        Wave currentWave;
+        
+        readonly List<Vector3> spawnPoints = 
+            new List<Vector3>();
 
         readonly Dictionary<string, List<SwarmActorController>> targetedPoi = 
             new Dictionary<string, List<SwarmActorController>>();
 
         Coroutine spawnRoutine;
-
-        GameObject player;
+        
         GameObject swarmPrototype;
+        GameObject otherAttackPoint;
 
         bool enabled;
 
@@ -45,22 +51,6 @@ namespace src.ai.swarm
         /*===============================
          *  Properties
          ==============================*/
-        public IOHandler IO { get; set; }
-    
-        public GameObject Player
-        {
-            get => player;
-            set
-            {
-                if (value.TryGetComponent<PawnActorController>(out var pac))
-                    if (pac.IsSelected)
-                    {
-                        player = value;
-                        foreach (var sac in activeMembers)
-                            sac.Player = value;
-                    }
-            }
-        }
         public HeatZone HeatZone { get; set; }
         public int AttackRate
         {
@@ -83,7 +73,7 @@ namespace src.ai.swarm
             
             if (!monoBehaviour) monoBehaviour = progression;
             
-            waveOrder.Enqueue(new Wave(1));
+            waveOrder.Enqueue(new Wave(true, 1));
 
             var parentSpawner = GameObject.FindGameObjectWithTag(Environment.TAG_SPAWNER);
             spawnPoints.AddRange(
@@ -120,6 +110,15 @@ namespace src.ai.swarm
             freshSpawn.name = 
                 Environment.SWARM_MEMBER 
                 + freshSpawn.GetInstanceID();
+            
+            if (freshSpawn.TryGetComponent<SwarmActorController>(out var sac))
+            {
+                ((SwarmActor) sac.actor).wave = currentWave;
+            }
+            else
+            {
+                GameObject.Destroy(freshSpawn);
+            }
         }
         
         /*===============================
@@ -127,8 +126,13 @@ namespace src.ai.swarm
          ==============================*/
         public GameObject GetTarget(SwarmActorController controller)
         {
-            available.Add(controller);
+            return controller.CurrentState == State.Locate 
+                ? GetAttackTarget(controller) 
+                : GetSeekTarget(controller);
+        }
 
+        GameObject GetAttackTarget(SwarmActorController controller)
+        {
             var colliders = new Collider[] { }; //colliders within 'vision'
             Physics.OverlapSphereNonAlloc(
                 controller.transform.position,
@@ -156,9 +160,9 @@ namespace src.ai.swarm
                         weight += attackers.Count;
                     
                     return weight 
-                        + Vector3.Distance(
-                            g.transform.position,
-                            controller.transform.position);
+                           + Vector3.Distance(
+                               g.transform.position,
+                               controller.transform.position);
                 }) //sorted by a weight (distance + attackers)
                 .First();
 
@@ -170,6 +174,16 @@ namespace src.ai.swarm
 
             return target;
         }
+
+        GameObject GetSeekTarget(SwarmActorController controller)
+        {
+            var actor = controller.actor;
+            if (actor != null)
+                if (((SwarmActor) actor).wave.attackPlayer)
+                    return Environment.PlayerService.Player.gameObject;
+            return otherAttackPoint ? otherAttackPoint : GetOtherAttackPoint();
+        }
+        
          
         /*===============================
          *  Getters & Setters
@@ -185,15 +199,21 @@ namespace src.ai.swarm
             activeMembers.Remove(controller);
             return this;
         }
+
+        GameObject GetOtherAttackPoint()
+        {
+            //TODO set other attack point
+            return otherAttackPoint;
+        }
         
         /*===============================
          *  Routines
          ==============================*/
         IEnumerator Spawning()
         {
-            var wave = waveOrder.Dequeue();
+            currentWave = waveOrder.Dequeue();
             var index = 0;
-            while (index < wave.numberOfEntities)
+            while (index < currentWave.numberOfEntities)
             {
                 var spawnIndex = Random.Range(0, spawnPoints.Count - 1);
                 
@@ -217,7 +237,5 @@ namespace src.ai.swarm
                 index++;
             }
         }
-        
-        
     }
 }

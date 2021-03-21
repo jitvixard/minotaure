@@ -21,7 +21,6 @@ namespace src.scripting.progression
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                print("hit");
                 swarmService.NextWave();
             }
         }

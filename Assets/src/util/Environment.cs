@@ -1,16 +1,23 @@
 using src.actors.controllers.impl;
 using src.ai.swarm;
+using src.player;
 using UnityEngine;
 
 namespace src.util
 {
- public class Environment
+ public static class Environment
  {
+        /*===============================
+        *  Services
+        ==============================*/
+        public static readonly PlayerService PlayerService = new PlayerService();
+        public static readonly SwarmService SwarmService = new SwarmService();
+        
 
 
         /*===============================
-         *  GameObject Names
-         ==============================*/
+        *  GameObject Names
+        ==============================*/
         public const string OVERHEAD_UI = "overhead_ui";
         public const string SWARM_MEMBER = "swarm_member";
 
@@ -56,7 +63,6 @@ namespace src.util
         /*===============================
          *  Swarm
          ==============================*/
-        public static readonly SwarmService SwarmService = new SwarmService();
         public const float SPAWN_DELAY_LOWER = 0.5f;
         public const float SPAWN_DELAY_UPPER = 4f;
         public const float SPAWN_MARGIN = 10f;
@@ -72,6 +78,7 @@ namespace src.util
         /*===============================
          *  Resource Paths
          ==============================*/
+        public const string RESOURCE_HEAT_ZONE = "Actors/heat_zone";
         public const string RESOURCE_SWARM_MEMBER = "Actors/swarm_member";
         
         /*===============================

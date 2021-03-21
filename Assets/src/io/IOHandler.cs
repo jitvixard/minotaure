@@ -4,6 +4,7 @@ using src.actors.controllers.impl;
 using src.ai.swarm;
 using src.config;
 using src.config.control;
+using src.player;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
@@ -24,18 +25,17 @@ namespace src.io
         [SerializeField] float transitionTime;
 
 
+        PlayerService playerService;
         SwarmService swarmService;
         
         //Buffer for selected actors
         AbstractActorController selectedActor;
-        PawnActorController selectedPawn;
         
         /*===============================
          *  Properties
          ==============================*/
         public Color SelectionColor => selectionColor;
         public AbstractActorController SelectedActor => selectedActor;
-        public PawnActorController SelectedPawn => selectedPawn;
 
 
         /*===============================
@@ -51,8 +51,9 @@ namespace src.io
                 selectionColor, 
                 transitionTime);
 
+            //get services
+            playerService = Environment.PlayerService;
             swarmService = Environment.SwarmService;
-            swarmService.IO = this;
         }
         
         /*===============================
@@ -73,12 +74,7 @@ namespace src.io
             
             //TODO check to see if building
 
-            if (controller is PawnActorController)
-            {
-                if (!(selectedPawn == null)) 
-                    selectedPawn.Select(false); //deselect old
-                selectedPawn = controller.Select(true) as PawnActorController; //select new
-            }
+            if (controller is PawnActorController pac) playerService.Possess(pac);
             
             if (!(selectedActor == null)) selectedActor.Select(false); //deselect old
             selectedActor = controller.Select(true); //select new
@@ -86,7 +82,7 @@ namespace src.io
         
         void HandleFloor(Vector3 point)
         {
-            if (selectedPawn) selectedPawn.Move(point);
+            playerService.ClickedFloor(point);
         }
         
         /*===============================
