@@ -43,6 +43,7 @@ namespace src.scripting.level
                 if (bufferRoutines.ContainsKey(controller.name))
                 {
                     StopCoroutine(bufferRoutines[controller.name]);
+                    bufferRoutines.Remove(controller.name);
                     return;
                 } 
                 controller.InHeatZone = true; 

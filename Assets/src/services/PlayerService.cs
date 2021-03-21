@@ -1,9 +1,8 @@
 using src.actors.controllers.impl;
-using src.io;
 using src.util;
 using UnityEngine;
 
-namespace src.player
+namespace src.services
 {
     public class PlayerService
     {
@@ -28,13 +27,13 @@ namespace src.player
                 Debug.LogWarning("[PlayerService] Attempted Access of 'Player' whilst undefined");
                 return null;
             }
-            set => player = value;
         }
+        
         public GameObject PrototypeHeatZone
         {
             get
             {
-                if (prototypeHeatZone) prototypeHeatZone = 
+                if (!prototypeHeatZone) prototypeHeatZone = 
                     Resources.Load(Environment.RESOURCE_HEAT_ZONE) 
                         as GameObject;
                 return prototypeHeatZone;

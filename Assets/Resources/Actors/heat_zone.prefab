@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5056794395894580583}
   - component: {fileID: 5056794395894580580}
   - component: {fileID: 5056794395894580581}
-  m_Layer: 11
+  m_Layer: 2
   m_Name: heat_zone
   m_TagString: Untagged
   m_Icon: {fileID: 0}

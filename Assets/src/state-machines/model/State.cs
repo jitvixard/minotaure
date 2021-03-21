@@ -1,4 +1,4 @@
-namespace src.ai
+namespace src.model
 {
     public enum State
     {

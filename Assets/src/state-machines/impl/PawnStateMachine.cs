@@ -1,6 +1,6 @@
 using src.actors.controllers.impl;
 
-namespace src.ai.impl
+namespace src.impl
 {
     public class PawnStateMachine : AbstractStateMachine
     {

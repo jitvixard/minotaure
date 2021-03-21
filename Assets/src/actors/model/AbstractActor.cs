@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using src.actors.controllers;
-using src.actors.model;
 using src.util;
 using UnityEngine;
 
@@ -27,24 +26,25 @@ namespace src.actors.model
             damage = 10;
         }
     }
-}
-public static class ActorFactory
-{
-    //TODO get all actors from JSON
-    public static AbstractActor Create(AbstractActorController controller)
+
+    public static class ActorFactory
     {
-        switch (controller.tag)
+        //TODO get all actors from JSON
+        public static AbstractActor Create(AbstractActorController controller)
         {
-            case Environment.TAG_PAWN:
-                return new PawnActor(controller) { attackRate = 1000 };
+            switch (controller.tag)
+            {
+                case Environment.TAG_PAWN:
+                    return new PawnActor(controller) { attackRate = 1000 };
             
-            case Environment.TAG_SWARM:
-                return new SwarmActor(controller) { attackRate = Environment.SwarmService.AttackRate };
+                case Environment.TAG_SWARM:
+                    return new SwarmActor(controller) { attackRate = Environment.SwarmService.AttackRate };
             
-            default:
-                Debug.LogWarning("Defaulting Actor [" + controller.name + "]");
-                return new PawnActor(controller);
+                default:
+                    Debug.LogWarning("Defaulting Actor [" + controller.name + "]");
+                    return new PawnActor(controller);
+            }
+            
         }
-            
     }
 }

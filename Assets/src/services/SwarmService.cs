@@ -4,13 +4,13 @@ using System.Diagnostics;
 using System.Linq;
 using src.actors.controllers.impl;
 using src.actors.model;
-using src.io;
+using src.model;
 using src.scripting.level;
 using src.scripting.progression;
 using src.util;
 using UnityEngine;
 
-namespace src.ai.swarm
+namespace src.services
 {
     public class SwarmService
     {
@@ -88,11 +88,10 @@ namespace src.ai.swarm
         /*===============================
          *  Spawning
          ==============================*/
-        public bool NextWave()
+        public void NextWave()
         {
             SpawnWave();
             waveNumber++;
-            return true;
         }
 
         void SpawnWave()
@@ -133,11 +132,14 @@ namespace src.ai.swarm
 
         GameObject GetAttackTarget(SwarmActorController controller)
         {
-            var colliders = new Collider[] { }; //colliders within 'vision'
+            var colliderArr = new Collider[] { }; //colliders within 'vision'
             Physics.OverlapSphereNonAlloc(
                 controller.transform.position,
                 Environment.SWARM_VISION_RANGE,
-                colliders);
+                colliderArr);
+
+            if (colliderArr.Length == 0) return null;
+            var colliders = colliderArr.ToList();
 
             var target = colliders //points of interest in 'vision'
                 .Select(c => c.gameObject)
@@ -178,9 +180,14 @@ namespace src.ai.swarm
         GameObject GetSeekTarget(SwarmActorController controller)
         {
             var actor = controller.actor;
-            if (actor != null)
-                if (((SwarmActor) actor).wave.attackPlayer)
-                    return Environment.PlayerService.Player.gameObject;
+            if (controller.actor is SwarmActor a)
+            {
+                if (a.wave.attackPlayer)
+                {
+                    var player = Environment.PlayerService.Player;
+                    if (player) return player.gameObject;
+                }
+            }
             return otherAttackPoint ? otherAttackPoint : GetOtherAttackPoint();
         }
         

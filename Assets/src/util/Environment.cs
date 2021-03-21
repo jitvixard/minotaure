@@ -1,6 +1,5 @@
 using src.actors.controllers.impl;
-using src.ai.swarm;
-using src.player;
+using src.services;
 using UnityEngine;
 
 namespace src.util

@@ -1,7 +1,6 @@
 using src.actors.model;
-using src.ai.impl;
 
-namespace src.ai
+namespace src.impl
 {
     public static class StateMachineFactory
     {

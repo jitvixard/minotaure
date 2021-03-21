@@ -1,8 +1,10 @@
 using src.actors.controllers.impl;
-using src.ai.swarm;
+using src.model;
+using src.services;
 using src.util;
+using UnityEngine;
 
-namespace src.ai.impl
+namespace src.impl
 {
     public class SwarmStateMachine : AbstractStateMachine
     {
@@ -45,7 +47,11 @@ namespace src.ai.impl
         protected override bool ShouldAttack()
         {
             return !(controller.Target is null)
-                && CurrentState == State.Locate;
+                && CurrentState == State.Locate
+                && Vector3.Distance(
+                    transform.position, 
+                    controller.Target.transform.position)
+                < Environment.ATTACK_RANGE;
         }
 
 

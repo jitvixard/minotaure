@@ -1,8 +1,9 @@
 ﻿using System;
 using src.actors.controllers;
+using src.model;
 using UnityEngine;
 
-namespace src.ai
+namespace src
 {
     public abstract class AbstractStateMachine : MonoBehaviour
     {
@@ -96,7 +97,8 @@ namespace src.ai
         protected virtual bool ShouldAttack()
         {
             return currentState == State.Idle
-                && !(controller.Target is null);
+                   && !(controller.Target is null)
+                   && controller.InRange;
         }
         
         protected bool ShouldIdle()

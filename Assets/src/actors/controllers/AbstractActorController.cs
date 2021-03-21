@@ -3,11 +3,10 @@ using System.Collections;
 using System.Diagnostics;
 using src.actors.handlers;
 using src.actors.model;
-using src.ai;
-using src.ai.swarm;
+using src.impl;
 using src.interfaces;
-using src.io;
-using src.player;
+using src.model;
+using src.services;
 using UnityEngine;
 using UnityEngine.AI;
 using Environment = src.util.Environment;
@@ -47,7 +46,6 @@ namespace src.actors.controllers
         /*===============================
          *  Properties
          ==============================*/
-        
         public GameObject Target
         {
             get => target;
@@ -63,6 +61,18 @@ namespace src.actors.controllers
             }
         }
         public bool IsSelected => selected;
+
+        public bool InRange
+        {
+            get
+            {
+                if (target == null) return false;
+                return Vector3.Distance(
+                           target.transform.position,
+                           transform.position)
+                       <= Environment.ATTACK_RANGE;
+            }
+        }
         public State CurrentState => stateMachine.CurrentState;
         
 
@@ -216,6 +226,7 @@ namespace src.actors.controllers
                     yield return null;
                 }
                 destroyable = destroyable.Damage(actor.damage);
+                if (targetController.actor.health <= 0) break;
             }
 
             agent.SetDestination(transform.position);

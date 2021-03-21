@@ -1,16 +1,11 @@
-using System;
 using src.actors.controllers;
 using src.actors.controllers.impl;
-using src.ai.swarm;
 using src.config;
 using src.config.control;
-using src.player;
+using src.services;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.Rendering;
-using Environment = src.util.Environment;
 
-namespace src.io
+namespace src.util
 {
     public class IOHandler : MonoBehaviour
     {
