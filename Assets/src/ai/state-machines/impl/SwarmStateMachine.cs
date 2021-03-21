@@ -1,7 +1,6 @@
 using src.actors.controllers.impl;
-using UnityEngine.PlayerLoop;
 
-namespace src.ai
+namespace src.ai.impl
 {
     public class SwarmStateMachine : AbstractStateMachine
     {
@@ -22,7 +21,7 @@ namespace src.ai
         protected override void UpdateState()
         {
             //seek -> locate -> attack -> seek (repeat)
-            if (ShouldSeek()) Seek();
+            if (ShouldSeek()) Seek(controller.Player.transform);
             if (ShouldLocate()) Locate();
             if (ShouldAttack()) Attack();
         }
@@ -30,43 +29,31 @@ namespace src.ai
         //default behaviour
         bool ShouldSeek()
         {
-            //TODO Are they IDLE or not in another state
-            return currentState == State.Idle;
+            return CurrentState == State.Idle;
         }
         
         bool ShouldLocate()
         {
             return controller.InHeatZone 
-                && currentState != State.Attack
-                && currentState != State.Locate;
+                && CurrentState != State.Attack
+                && CurrentState != State.Locate;
         }
 
         protected override bool ShouldAttack()
         {
-            //TODO is the actor in range of the target POI and are they in range fo the player
-            return false;
+            return !(controller.Target is null)
+                && CurrentState == State.Locate;
         }
 
 
         /*===============================
          *  States
          ==============================*/
-        void Seek()
-        {
-            currentState = State.Seek;
-            controller.Seek();
-        }
-        
+
         void Locate()
         {
-            currentState = State.Locate;
+            CurrentState = State.Locate;
             controller.Locate();
-        }
-
-        protected override void Attack()
-        {
-            currentState = State.Attack;
-            controller.Attack();
         }
 
 

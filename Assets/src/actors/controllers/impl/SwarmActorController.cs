@@ -1,6 +1,8 @@
 using System.Collections;
+using System.Diagnostics;
 using src.ai;
 using src.ai.swarm;
+using src.interfaces;
 using src.util;
 using UnityEngine;
 
@@ -9,27 +11,24 @@ namespace src.actors.controllers.impl
     public class SwarmActorController : AbstractActorController
     {
         PawnActorController player;
-        GameObject target;
-
         SwarmService swarmService;
 
-        Coroutine currentRoutine;
 
-        bool inHeatZone = false;
-        
         /*===============================
          *  Properties
          ==============================*/
-        public bool InHeatZone
+        public GameObject Player
         {
-            get => inHeatZone;
+            get => player.gameObject;
             set
             {
-                HasLeftHeatZone();
-                inHeatZone = value;
+                if (value.TryGetComponent<PawnActorController>(out var pac))
+                    if (pac.IsSelected)
+                        player = pac;
             }
         }
 
+        
         /*===============================
          *  Instantiation
          ==============================*/
@@ -37,7 +36,6 @@ namespace src.actors.controllers.impl
         {
             base.Awake();
             swarmService = Environment.SwarmService.Add(this);
-            player = io.GetCurrentPawn();
         }
 
         public override void Die()
@@ -45,60 +43,34 @@ namespace src.actors.controllers.impl
             swarmService.Remove(this);
             Destroy(gameObject);
         }
-
-        /*===============================
-         *  Handling of Events & Stimuli
-         ==============================*/
-        void HasLeftHeatZone()
-        {
-            if (stateMachine.currentState == State.Locate
-            || stateMachine.currentState == State.Attack)
-            {
-                
-            }
-        }
-        //TODO Handle destroying a target when attacking
+        
 
 
         /*===============================
          *  Primary Behaviour
          ==============================*/
-        public void Seek()
-        {
-            if (!(currentRoutine is null)) StopCoroutine(currentRoutine);
-            currentRoutine = StartCoroutine(SeekRoutine(player.transform));
-        }
-        
         public void Locate()
         {
             if (!(currentRoutine is null)) StopCoroutine(currentRoutine);
             currentRoutine = StartCoroutine(LocateRoutine());
         }
 
-        public void Attack()
-        {
-            if (!(currentRoutine is null)) StopCoroutine(currentRoutine);
-            currentRoutine = StartCoroutine(AttackRoutine());
-        }
-        
         /*===============================
          *  Routines
          ==============================*/
         IEnumerator LocateRoutine()
         {
-            while (target is null)
+            var attempts = 0;
+            while (target is null 
+                   && attempts++ < Environment.SWARM_MAX_LOCATE_ATTEMPTS)
             {
                 yield return null;
-                target = swarmService.GetTarget(this);
+                target = swarmService.GetTarget(this);  
             }
-            
-            
-        }
-        
-        IEnumerator AttackRoutine()
-        {
-            //TODO Attack (recursive if possible)
-            yield break;
+
+            if (target is null)
+                if (!(io.SelectedPawn is null))
+                    target = io.SelectedPawn.gameObject;
         }
     }
 }

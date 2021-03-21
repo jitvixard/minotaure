@@ -10,9 +10,9 @@ namespace src.actors.handlers
 {
     public class SpriteHandler
     {
-        public SpriteRenderer Sprite { get; set; }
+        readonly SpriteRenderer sprite;
 
-        AbstractActorController controller;
+        readonly AbstractActorController controller;
         
         Color original;
         Color selected;
@@ -21,19 +21,19 @@ namespace src.actors.handlers
         
         public SpriteHandler(AbstractActorController controller)
         {
-            Sprite = controller.GetComponentInChildren<SpriteRenderer>();
+            sprite = controller.GetComponentInChildren<SpriteRenderer>();
             this.controller = controller;
-            original = Sprite.color;
-            selected = Camera.main.GetComponent<IOHandler>().GetSelectionColor();
+            original = sprite.color;
+            selected = Camera.main.GetComponent<IOHandler>().SelectionColor;
         }
 
         public void Refresh()
         {
-            var targetColor = controller.IsSelected()
+            var targetColor = controller.IsSelected
                 ? selected
                 : original;
             
-            if (targetColor.Compare(Sprite.color)) return;
+            if (targetColor.Compare(sprite.color)) return;
             if (!(transitionRoutine is null)) controller.StopCoroutine(transitionRoutine);
 
             transitionRoutine = controller.StartCoroutine(ChangeColor(targetColor));
@@ -41,16 +41,16 @@ namespace src.actors.handlers
 
         IEnumerator ChangeColor(Color targetColor)
         {
-            var startColor = Sprite.color;
-            var duration = controller.IsSelected() 
+            var startColor = sprite.color;
+            var duration = controller.IsSelected 
                 ? Environment.UI_OVERHEAD_SELECTION_INTERVAL / 2 
                 : Environment.UI_OVERHEAD_SELECTION_INTERVAL;
             var t = 0f;
 
-            while (!Sprite.color.Compare(targetColor))
+            while (!sprite.color.Compare(targetColor))
             {
                 t += Time.deltaTime / duration;
-                Sprite.color = Lerp(startColor, targetColor, t);
+                sprite.color = Lerp(startColor, targetColor, t);
                 yield return null;
             }
         }

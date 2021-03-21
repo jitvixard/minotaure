@@ -9,15 +9,72 @@ namespace src.ai.swarm
 {
     public class SwarmService
     {
+        /*===============================
+        *  Fields
+        ==============================*/
+        readonly HashSet<SwarmActorController> activeMembers = 
+            new HashSet<SwarmActorController>();
+        readonly HashSet<SwarmActorController> available = 
+            new HashSet<SwarmActorController>();
+
+        readonly Dictionary<string, List<SwarmActorController>> targetedPoi = 
+            new Dictionary<string, List<SwarmActorController>>();
+
+        GameObject player;
+
+        int attackRate = 1000;
+        int waveNumber = 1;
+        
+        /*===============================
+         *  Properties
+         ==============================*/
         public IOHandler IO { get; set; }
+
+        public GameObject Player
+        {
+            get => player;
+            set
+            {
+                if (value.TryGetComponent<PawnActorController>(out var pac))
+                    if (pac.IsSelected)
+                    {
+                        player = value;
+                        foreach (var sac in activeMembers)
+                            sac.Player = value;
+                    }
+            }
+        }
+        
         public HeatZone HeatZone { get; set; }
 
-        readonly HashSet<SwarmActorController> activeMembers = new HashSet<SwarmActorController>();
-        readonly HashSet<SwarmActorController> available = new HashSet<SwarmActorController>();
+        public int AttackRate
+        {
+            get
+            {
+                var variation = attackRate / 100;
+                variation *= 5;
+                return attackRate + variation;
+            }
+        }
 
-        readonly Dictionary<string, List<GameObject>> targetedPoi = new Dictionary<string, List<GameObject>>();
+        public int WaveNumber => waveNumber;
 
 
+        /*===============================
+         *  Spawning
+         ==============================*/
+        public bool NextWave()
+        {
+            SpawnWave();
+            waveNumber++;
+            return true;
+        }
+
+        void SpawnWave()
+        {
+            
+        }
+        
         /*===============================
          *  Handling
          ==============================*/
@@ -31,34 +88,48 @@ namespace src.ai.swarm
                 Environment.SWARM_VISION_RANGE,
                 colliders);
 
-            return colliders //points of interest in 'vision'
+            var target = colliders //points of interest in 'vision'
                 .Select(c => c.gameObject)
                 .Where(g =>
                 {
-                    if (!Environment.PoiTags.Contains(g.tag)) return false;
+                    if (!Environment.PoiTags.Contains(g.tag)) 
+                        return false;
                     if (targetedPoi.TryGetValue(g.name, out var attackers))
                     {
-                        if (attackers.Count >= Environment.SWARM_MAX_ATTACKERS) return false;
+                        if (attackers.Count >= Environment.SWARM_MAX_ATTACKERS) 
+                            return false;
                     }
                     return true;
                 }) //sorted to find poi that do not exceed max attacker threshold
                 .OrderBy(g =>
                 {
                     var weight = 0f;
+                    
                     if (targetedPoi.TryGetValue(g.name, out var attackers))
                         weight += attackers.Count;
-                    weight += Vector3.Distance(g.transform.position, controller.transform.position);
-                    return weight;
+                    
+                    return weight 
+                        + Vector3.Distance(
+                            g.transform.position,
+                            controller.transform.position);
                 }) //sorted by a weight (distance + attackers)
                 .First();
+
+            if (target is null) return null;
+            if (!targetedPoi.ContainsKey(target.name)) 
+                targetedPoi.Add(target.name, new List<SwarmActorController>());
+            
+            targetedPoi[target.name].Add(controller);
+
+            return target;
         }
-        
+         
         /*===============================
          *  Getters & Setters
          ==============================*/
         public SwarmService Add(SwarmActorController controller)
         {
-            activeMembers.Add(controller);
+            activeMembers.Add(controller); 
             return this;
         }
         

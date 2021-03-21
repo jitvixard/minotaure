@@ -1,36 +1,70 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
 using src.actors.handlers;
 using src.actors.model;
 using src.ai;
+using src.interfaces;
 using src.io;
-using src.util;
 using UnityEngine;
 using UnityEngine.AI;
 using Environment = src.util.Environment;
+using Random = UnityEngine.Random;
 
 namespace src.actors.controllers
 {
-    public abstract class AbstractActorController : MonoBehaviour
+    public abstract class AbstractActorController : MonoBehaviour, IDestroyable
     {
-        //Properties ====================
+        /*===============================
+         *  Fields
+         ==============================*/
         //actor data model
         [NonSerialized] public AbstractActor actor;
         //nav agent
         [NonSerialized] public NavMeshAgent agent;
 
-
-        //Variables =====================
+        //tracking
+        protected GameObject target;
+        
         // io
         protected IOHandler io;
+        
         //state machine
         protected AbstractStateMachine stateMachine;
+        
         //ui
         protected SpriteHandler sprite;
+        
         //routines
-        protected Coroutine moveRoutine; 
+        protected Coroutine currentRoutine;
+        Coroutine idleRoutine;
+        
         //status
-        protected bool selected = false;
+        bool inHeatZone;
+        bool selected;
+        
+        
+        /*===============================
+         *  Properties
+         ==============================*/
+        
+        public GameObject Target
+        {
+            get => target;
+            set => target = value;
+        }
+        
+        public bool InHeatZone
+        {
+            get => inHeatZone;
+            set
+            {
+                HasLeftHeatZone();
+                inHeatZone = value;
+            }
+        }
+        
+        public bool IsSelected => selected;
 
 
         /*===============================
@@ -62,17 +96,69 @@ namespace src.actors.controllers
         /*===============================
          *  Orders
          ==============================*/
-        public virtual void Move(Vector3 target)
+        public void Move(Vector3 target)
         {
-            moveRoutine = StartCoroutine(MoveRoutine(target));
+            currentRoutine = StartCoroutine(MoveRoutine(target));
         }
+        
+        public void Seek(Transform target)
+        {
+            if (!(currentRoutine is null)) StopCoroutine(currentRoutine);
+            currentRoutine = StartCoroutine(SeekRoutine(target));
+        }
+
+        public void Attack()
+        {
+            if (!(currentRoutine is null)) StopCoroutine(currentRoutine);
+            currentRoutine = StartCoroutine(AttackRoutine());
+        }
+
+        public void Idle()
+        {
+            if (idleRoutine != null) return;
+            idleRoutine = StartCoroutine(IdleRoutine());
+        }
+        
+        /*===============================
+         *  Handling of Events & Stimuli
+         ==============================*/
+        protected void HasLeftHeatZone()
+        {
+            if (stateMachine.CurrentState == State.Locate
+                || stateMachine.CurrentState == State.Attack)
+            {
+                stateMachine.CurrentState = State.Idle;
+            }
+        }
+        
+        //TODO Handle Destruction of Target (?)
 
         /*===============================
          *  Routines
          ==============================*/
-        protected virtual IEnumerator MoveRoutine(Vector3 target)
+        protected IEnumerator IdleRoutine()
         {
-            actor.Moving = true;
+            var watch = new Stopwatch();
+            var origin = transform.position;
+            
+            while (stateMachine.CurrentState == State.Idle)
+            {
+                watch.Start();
+                var waitTime = Random.Range(Environment.IDLE_WAIT_LOWER, Environment.IDLE_WAIT_LOWER) * 1000;
+                waitTime += watch.ElapsedMilliseconds;
+
+                while (watch.ElapsedMilliseconds < waitTime) yield return null; //waiting
+            
+                Move(GetLocationAroundUnit(origin, Environment.IDLE_RANGE)); //move to random point
+
+                while (actor.moving) yield return null; //waiting
+
+                idleRoutine = null;
+            }
+        }
+        protected IEnumerator MoveRoutine(Vector3 target)
+        {
+            actor.moving = true;
             agent.SetDestination(target);
 
             while (Vector3.Distance(target, transform.position) > Environment.STOPPING_DISTANCE)
@@ -81,12 +167,13 @@ namespace src.actors.controllers
             }
 
             agent.SetDestination(transform.position);
-            actor.Moving = false;
+            actor.moving = false;
+            currentRoutine = null;
         }
         
         protected IEnumerator SeekRoutine(Transform target)
         {
-            actor.Moving = true;
+            actor.moving = true;
             agent.SetDestination(target.position);
             
             while (Vector3.Distance(target.position, transform.position) > Environment.STOPPING_DISTANCE)
@@ -95,15 +182,87 @@ namespace src.actors.controllers
             }
 
             agent.SetDestination(transform.position);
-            actor.Moving = false;
+            actor.moving = false;
+            currentRoutine = null;
+        }
+
+        protected IEnumerator AttackRoutine()
+        {
+            var watch = Stopwatch.StartNew();
+            var targetController = target.GetComponent<AbstractActorController>();
+            var targetTransform = target.transform;
+            
+            var destroyable = targetController.Destroyable();
+            if (destroyable is null)
+            {
+                currentRoutine = null;
+                stateMachine.CurrentState = State.Idle;
+                yield break;
+            }
+
+            while (destroyable != null && targetController.actor.health > 0)
+            {
+                while (watch.ElapsedMilliseconds < actor.attackRate)
+                {
+                    agent.SetDestination(targetTransform.position);
+                    yield return null;
+                }
+                destroyable = destroyable.Damage(actor.damage);
+            }
+
+            agent.SetDestination(transform.position);
+            Target = null;
+            currentRoutine = null;
+            stateMachine.CurrentState = State.Idle;
         }
 
         /*===============================
-         *  UI & Feedback
+         *  Destroyable Interface
          ==============================*/
-        public bool IsSelected()
+        //TODO Add Damage Animations
+        public IDestroyable Damage(int damage)
         {
-            return selected;
+            var health = actor.health;
+            health -= damage;
+            actor.health = health;
+            if (health <= 0)
+            {
+                StopAllCoroutines();
+                StartCoroutine(DestroyRoutine());
+                return null;
+            }
+            return this;
+        }
+
+        public IDestroyable Heal(int damage)
+        {
+            return this;
+        }
+
+        public IDestroyable Destroyable()
+        {
+            return this;
+        }
+
+        public IEnumerator DestroyRoutine()
+        {
+            if (stateMachine) stateMachine.StopAllCoroutines();
+            yield return null;
+            Destroy(this);
+        }
+        
+        
+        /*===============================
+         *  Information
+         ==============================*/
+        Vector3 GetLocationAroundUnit(Vector3 origin, int radius)
+        {
+            var randomPoint = (Random.insideUnitCircle * radius);
+            return new Vector3(
+                origin.x + randomPoint.x,
+                origin.y,
+                origin.z + randomPoint.y
+            );
         }
     }
 }

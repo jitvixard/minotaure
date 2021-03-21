@@ -1,10 +1,13 @@
+using src.actors.controllers.impl;
 using src.ai.swarm;
 using UnityEngine;
 
 namespace src.util
 {
-    public class Environment
-    {
+ public class Environment
+ {
+
+
         /*===============================
          *  GameObject Names
          ==============================*/
@@ -26,6 +29,11 @@ namespace src.util
         public const float SPEED_PAWN_IDLE = 3.5f;
         public const float SPEED_PAWN = 4.5f;
         public const float STOPPING_DISTANCE = 0.1f;
+        
+        /*===============================
+         *  Combat
+         ==============================*/
+        public const float ATTACK_RANGE = 1f;
 
         /*===============================
          *  Layers
@@ -52,6 +60,7 @@ namespace src.util
         public const float SPAWN_DELAY_UPPER = 4f;
         public const float SPAWN_MARGIN = 10f;
         public const int SWARM_MAX_ATTACKERS = 3;
+        public const int SWARM_MAX_LOCATE_ATTEMPTS = 5;
         public const float SWARM_VISION_RANGE = 4f;
         
         /*===============================

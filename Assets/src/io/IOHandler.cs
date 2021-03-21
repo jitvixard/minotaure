@@ -27,9 +27,20 @@ namespace src.io
         SwarmService swarmService;
         
         //Buffer for selected actors
-        AbstractActorController actorBuffer;
-        PawnActorController pawnBuffer;
+        AbstractActorController selectedActor;
+        PawnActorController selectedPawn;
+        
+        /*===============================
+         *  Properties
+         ==============================*/
+        public Color SelectionColor => selectionColor;
+        public AbstractActorController SelectedActor => selectedActor;
+        public PawnActorController SelectedPawn => selectedPawn;
 
+
+        /*===============================
+         *  Unity Lifecycle
+         ==============================*/
         void Awake()
         {
             camera = Camera.main;
@@ -43,7 +54,10 @@ namespace src.io
             swarmService = Environment.SwarmService;
             swarmService.IO = this;
         }
-
+        
+        /*===============================
+         *  Handling
+         ==============================*/
         public void HandleHit(RaycastHit hit)
         {
             var selected = hit.collider.gameObject;
@@ -56,25 +70,28 @@ namespace src.io
         void HandleSelection(GameObject selected)
         {
             if (!selected.TryGetComponent<AbstractActorController>(out var controller)) return;
+            
+            //TODO check to see if building
 
             if (controller is PawnActorController)
             {
-                if (!(pawnBuffer is null)) pawnBuffer.Select(false); //deselect old
-                pawnBuffer = controller.Select(true) as PawnActorController; //select new
-                actorBuffer = pawnBuffer; //assign to actor buffer too
+                if (!(selectedPawn == null)) 
+                    selectedPawn.Select(false); //deselect old
+                selectedPawn = controller.Select(true) as PawnActorController; //select new
             }
-            else
-            {
-                if (!(actorBuffer is null)) actorBuffer.Select(false); //deselect old
-                actorBuffer = controller.Select(true); //select new
-            }
+            
+            if (!(selectedActor == null)) selectedActor.Select(false); //deselect old
+            selectedActor = controller.Select(true); //select new
         }
         
         void HandleFloor(Vector3 point)
         {
-            if (pawnBuffer) pawnBuffer.Move(point);
+            if (selectedPawn) selectedPawn.Move(point);
         }
-
+        
+        /*===============================
+         *  Helper Methods
+         ==============================*/
         public static Vector3 ScreenClickToViewportPoint(RectTransform screenTransform, Camera inputCamera)
         {
             //TODO investigate loss of fractions 
@@ -90,16 +107,6 @@ namespace src.io
                 (screenHit.x + rect.width / 2) / rect.width,
                 (screenHit.y + rect.height / 2) / rect.height,
                 0);
-        }
-
-        public PawnActorController GetCurrentPawn()
-        {
-            return pawnBuffer;
-        }
-
-        public Color GetSelectionColor()
-        {
-            return preferences.selectionColor;
         }
     }
 }

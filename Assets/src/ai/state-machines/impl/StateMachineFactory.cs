@@ -1,4 +1,5 @@
 using src.actors.model;
+using src.ai.impl;
 
 namespace src.ai
 {
@@ -11,16 +12,16 @@ namespace src.ai
             switch (actor)
             {
                 case PawnActor p:
-                    stateMachine = actor.GameObject.AddComponent<PawnStateMachine>();
+                    stateMachine = actor.gameObject.AddComponent<PawnStateMachine>();
                     break;
                 case SwarmActor s:
-                    stateMachine = actor.GameObject.AddComponent<SwarmStateMachine>();
+                    stateMachine = actor.gameObject.AddComponent<SwarmStateMachine>();
                     break;
                 default:
                     return null;
             }
 
-            stateMachine.controller = actor.Controller;
+            stateMachine.controller = actor.controller;
             return stateMachine;
         }
     }

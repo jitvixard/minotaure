@@ -1,13 +1,12 @@
-using UnityEngine;
+using src.actors.controllers.impl;
 
-namespace src.ai
+namespace src.ai.impl
 {
     public class PawnStateMachine : AbstractStateMachine
     {
-        
-
-        /*
-         * Overrides from State Machine
-         */
+        protected override void Awake()
+        {
+            controller = GetComponent<PawnActorController>();
+        }
     }
 }
