@@ -70,10 +70,12 @@ namespace src.util
         public const float SWARM_VISION_RANGE = 4f;
         
         /*===============================
-         *  ????
+         *  SMOOTHING
          ==============================*/
+        public const float CAMERA_SMOOTH_DIST = 5f;
+        public const int CAMERA_SMOOTH_TIME = 10000;
         public const int HEAT_ZONE_DELAY = 5000;
-        
+
         /*===============================
          *  Resource Paths
          ==============================*/
