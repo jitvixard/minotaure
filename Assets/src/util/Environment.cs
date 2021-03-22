@@ -72,7 +72,7 @@ namespace src.util
         /*===============================
          *  SMOOTHING
          ==============================*/
-        public const float CAMERA_SMOOTH_DIST = 10f;
+        public const float CAMERA_SMOOTH_DIST = 5f;
         public const int CAMERA_SMOOTH_TIME = 10000;
         public const int HEAT_ZONE_DELAY = 5000;
 

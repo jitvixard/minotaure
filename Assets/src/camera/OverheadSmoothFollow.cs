@@ -22,6 +22,7 @@ namespace src.camera
             playerService = Environment.PlayerService;
 
             smoothDistance = Environment.CAMERA_SMOOTH_DIST;
+            smoothTime = Environment.CAMERA_SMOOTH_TIME;
             yValue = transform.position.y;
         }
 
@@ -37,24 +38,24 @@ namespace src.camera
                 
                 if (distance > smoothDistance)
                 {
-                    if (smoothRoutine != null) return;
-                    smoothRoutine = StartCoroutine(SmoothRoutine());
+                    if (smoothRoutine is null) 
+                        smoothRoutine = StartCoroutine(SmoothRoutine());
                 }
             }
         }
 
         IEnumerator SmoothRoutine()
         {
-            var currentPosition = transform.position;
-            var playerPosition = playerService.Player.transform.position;
             var distance = 0f;
-
             var t = 0f;
-            
-            while (distance > 1f && !(playerService.Player is null))
+
+            do
             {
+                var currentPosition = transform.position;
+                var playerPosition = playerService.Player.transform.position;
+
                 t += Time.deltaTime;
-                
+
                 distance = Vector3.Distance(
                     GetNormalizedPosition(currentPosition),
                     GetNormalizedPosition(playerPosition));
@@ -63,14 +64,14 @@ namespace src.camera
                     Mathf.Lerp(currentPosition.x, playerPosition.x, t / smoothTime),
                     yValue,
                     Mathf.Lerp(currentPosition.z, playerPosition.z, t / smoothTime));
-                
+
                 yield return null;
-            }
+            } while (distance > 1f && !(playerService.Player is null));
         }
 
         Vector3 GetNormalizedPosition(Vector3 position)
         {
-            return new Vector3(position.x, 0, position.y);
+            return new Vector3(position.x, 0, position.z);
         }
     }
 }
