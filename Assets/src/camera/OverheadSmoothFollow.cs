@@ -1,6 +1,7 @@
 using System.Collections;
 using src.actors.controllers.impl;
 using src.services;
+using src.services.impl;
 using UnityEngine;
 using Environment = src.util.Environment;
 
@@ -31,7 +32,6 @@ namespace src.camera
 
         void PlayerChanged(PawnActorController pawnActorController)
         {
-            print("[OverheadSmoothFollow] Received new player");
             var shouldTrack = pawnActorController != null;
             if (!shouldTrack) return;
             if (smoothRoutine != null) StopCoroutine(smoothRoutine);
@@ -42,7 +42,6 @@ namespace src.camera
 
         IEnumerator TrackingRoutine()
         {
-            print("[OverheadSmoothFollow] Beginning Tracking Routine");
             var distance = Vector3.Distance(
                 GetNormalizedPosition(transform.position),
                 GetNormalizedPosition(playerTransform.position));
@@ -57,12 +56,10 @@ namespace src.camera
 
             trackingRoutine = null;
             smoothRoutine = StartCoroutine(SmoothRoutine());
-            print("[OverheadSmoothFollow] Ending Tracking Routine");
         }
 
         IEnumerator SmoothRoutine()
         {
-            print("[OverheadSmoothFollow] Beginning Smooth Routine");
             float distance;
             var t = 0f;
 
@@ -87,7 +84,6 @@ namespace src.camera
 
             smoothRoutine = null;
             trackingRoutine = StartCoroutine(TrackingRoutine());
-            print("[OverheadSmoothFollow] Ending Smooth Routine");
         }
 
         Vector3 GetNormalizedPosition(Vector3 position)

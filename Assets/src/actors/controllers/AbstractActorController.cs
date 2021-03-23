@@ -7,6 +7,7 @@ using src.impl;
 using src.interfaces;
 using src.model;
 using src.services;
+using src.services.impl;
 using UnityEngine;
 using UnityEngine.AI;
 using Environment = src.util.Environment;

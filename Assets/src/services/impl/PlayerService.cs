@@ -2,9 +2,9 @@ using src.actors.controllers.impl;
 using src.util;
 using UnityEngine;
 
-namespace src.services
+namespace src.services.impl
 {
-    public class PlayerService
+    public class PlayerService : IService
     {
         /*===============================
          *  Observable

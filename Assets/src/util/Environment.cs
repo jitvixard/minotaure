@@ -1,4 +1,4 @@
-using src.services;
+using src.services.impl;
 using UnityEngine;
 
 namespace src.util
@@ -9,14 +9,18 @@ namespace src.util
         *  Services
         ==============================*/
         public static readonly GameService GameService = new GameService();
+        public static readonly PawnService PawnService = new PawnService();
         public static readonly PlayerService PlayerService = new PlayerService();
         public static readonly SwarmService SwarmService = new SwarmService();
+        public static readonly WaveService WaveService = new WaveService();
 
         public static void Init()
         {
             GameService.Init(); 
+            PawnService.Init();
             PlayerService.Init();
             SwarmService.Init();
+            WaveService.Init();
         }
         
 

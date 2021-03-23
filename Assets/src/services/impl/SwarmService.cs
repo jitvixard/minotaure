@@ -9,9 +9,9 @@ using src.scripting.level;
 using src.util;
 using UnityEngine;
 
-namespace src.services
+namespace src.services.impl
 {
-    public class SwarmService
+    public class SwarmService : IService
     {
         /*===============================
         *  Fields
