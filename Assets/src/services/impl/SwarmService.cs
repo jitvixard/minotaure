@@ -14,19 +14,20 @@ namespace src.services.impl
     public class SwarmService : IService
     {
         /*===============================
+        *  Observable
+        ==============================*/
+        public delegate void MembersRemaining(int number);
+        public event MembersRemaining Remaining = delegate {  };
+        
+        
+        /*===============================
         *  Fields
         ==============================*/
         readonly HashSet<SwarmActorController> activeMembers = 
             new HashSet<SwarmActorController>();
         readonly HashSet<SwarmActorController> available = 
             new HashSet<SwarmActorController>();
-        
-        readonly HashSet<Wave> activeWaves = 
-            new HashSet<Wave>();
-        readonly Queue<Wave> waveOrder =
-            new Queue<Wave>();
-        Wave currentWave;
-        
+
         readonly List<Vector3> spawnPoints = 
             new List<Vector3>();
 
@@ -40,10 +41,9 @@ namespace src.services.impl
 
         PawnActorController player;
 
-        bool enabled;
+        Wave wave;
 
         int attackRate = 1000;
-        int waveNumber = 1;
         
         /*===============================
          *  Properties
@@ -65,6 +65,7 @@ namespace src.services.impl
          ==============================*/
         public SwarmService()
         {
+            Environment.GameService.ReadiedWave += SpawnWave;
             Environment.PlayerService.Player += controller => player = controller;
         }
         
@@ -88,6 +89,14 @@ namespace src.services.impl
         /*===============================
          *  Spawning
          ==============================*/
+        void SpawnWave(Wave wave)
+        {
+            IOHandler.Log(GetType(), 
+                "Starting wave number [" + wave.number + "]");
+            this.wave = wave;
+            if (spawnRoutine != null)  return;
+        }
+        
         void Spawn(Vector3 position)
         {
             var freshSpawn =
@@ -101,7 +110,7 @@ namespace src.services.impl
             
             if (freshSpawn.TryGetComponent<SwarmActorController>(out var sac))
             {
-                ((SwarmActor) sac.actor).wave = currentWave;
+                ((SwarmActor) sac.actor).wave = wave;
             }
             else
             {
@@ -184,13 +193,15 @@ namespace src.services.impl
         public SwarmService Add(SwarmActorController controller)
         {
             activeMembers.Add(controller); 
+            Remaining(activeMembers.Count);
             return this;
         }
         
-        public SwarmService Remove(SwarmActorController controller)
+        public void Remove(SwarmActorController controller)
         {
-            activeMembers.Remove(controller);
-            return this;
+            var success = activeMembers.Remove(controller);
+            if (!success) return;
+            Remaining(activeMembers.Count);
         }
 
         GameObject GetOtherAttackPoint()
@@ -204,9 +215,8 @@ namespace src.services.impl
          ==============================*/
         IEnumerator Spawning()
         {
-            currentWave = waveOrder.Dequeue();
             var index = 0;
-            while (index < currentWave.numberOfEntities)
+            while (index < wave.numberOfEntities)
             {
                 var spawnIndex = Random.Range(0, spawnPoints.Count - 1);
                 
