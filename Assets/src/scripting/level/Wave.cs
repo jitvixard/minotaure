@@ -2,16 +2,19 @@ namespace src.scripting.level
 {
     public class Wave
     {
-        public readonly bool attackPlayer;
+        public readonly int number;
         public readonly int numberOfEntities;
+        
+        public readonly bool attackPlayer;
 
-        public Wave() {}
         public Wave(
-            bool attackPlayer,
-            int numberOfEntities)
+            int number,
+            int numberOfEntities,
+            bool attackPlayer)
         {
-            this.attackPlayer = attackPlayer;
+            this.number = number;
             this.numberOfEntities = numberOfEntities;
+            this.attackPlayer = attackPlayer;
         }
     }
 }

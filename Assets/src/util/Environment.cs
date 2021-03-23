@@ -1,4 +1,4 @@
-using src.services;
+using src.services.impl;
 using UnityEngine;
 
 namespace src.util
@@ -9,14 +9,18 @@ namespace src.util
         *  Services
         ==============================*/
         public static readonly GameService GameService = new GameService();
+        public static readonly PawnService PawnService = new PawnService();
         public static readonly PlayerService PlayerService = new PlayerService();
         public static readonly SwarmService SwarmService = new SwarmService();
+        public static readonly WaveService WaveService = new WaveService();
 
         public static void Init()
         {
             GameService.Init(); 
+            PawnService.Init();
             PlayerService.Init();
             SwarmService.Init();
+            WaveService.Init();
         }
         
 
@@ -73,6 +77,7 @@ namespace src.util
         public const float SPAWN_DELAY_LOWER = 0.5f;
         public const float SPAWN_DELAY_UPPER = 4f;
         public const float SPAWN_MARGIN = 10f;
+        public const float SPAWN_INTERVAL = 5f;
         public const int SWARM_MAX_ATTACKERS = 3;
         public const int SWARM_MAX_LOCATE_ATTEMPTS = 5;
         public const float SWARM_VISION_RANGE = 4f;

@@ -1,8 +1,10 @@
+using System;
 using src.actors.controllers;
 using src.actors.controllers.impl;
 using src.config;
 using src.config.control;
 using src.services;
+using src.services.impl;
 using UnityEngine;
 
 namespace src.util
@@ -98,6 +100,11 @@ namespace src.util
                 (screenHit.x + rect.width / 2) / rect.width,
                 (screenHit.y + rect.height / 2) / rect.height,
                 0);
+        }
+
+        public static void Log(Type t, string message) 
+        {
+            print("[" + t.Name + "] - " + message);
         }
     }
 }
