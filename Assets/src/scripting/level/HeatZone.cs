@@ -36,7 +36,6 @@ namespace src.scripting.level
         ==============================*/
         void OnTriggerEnter(Collider other)
         {
-            print("entered:: " + other.name);
             var otherObj = other.gameObject;
             if (otherObj.TryGetComponent<SwarmActorController>(out var controller))
             {

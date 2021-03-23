@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 663963493547251077}
   - component: {fileID: 7978439995268513335}
-  - component: {fileID: 8999506829520405869}
-  m_Layer: 11
-  m_Name: overhead_ui
+  - component: {fileID: 7102357900952269863}
+  m_Layer: 5
+  m_Name: overhead-ui
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -82,18 +82,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!135 &8999506829520405869
-SphereCollider:
+--- !u!65 &7102357900952269863
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2647354143268199234}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.100000024
+  m_Size: {x: 1.28, y: 1.28, z: 0.2}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5078291089405731343
 GameObject:
@@ -189,7 +189,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5078291089405731343}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.5
   m_Height: 1.75

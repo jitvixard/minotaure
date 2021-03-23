@@ -9,8 +9,8 @@ namespace src.impl
 {
     public class SwarmStateMachine : AbstractStateMachine
     {
-        new SwarmActorController controller;
         readonly SwarmService swarmService = Environment.SwarmService;
+        SwarmActorController sac;
 
 
         /*===============================
@@ -18,7 +18,8 @@ namespace src.impl
          ==============================*/
         protected override void Awake()
         {
-            controller = GetComponent<SwarmActorController>();
+            base.Awake();
+            sac = GetComponent<SwarmActorController>();
         }
 
         /*===============================
@@ -27,7 +28,7 @@ namespace src.impl
         protected override void UpdateState()
         {
             //seek -> locate -> attack -> seek (repeat)
-            if (ShouldSeek()) Seek(swarmService.GetTarget(controller).transform); //defaults to player atm
+            if (ShouldSeek()) Seek(swarmService.GetTarget(sac).transform); //defaults to player atm
             if (ShouldLocate()) Locate();
             if (ShouldAttack()) Attack();
         }
@@ -63,7 +64,7 @@ namespace src.impl
         {
             print("Locate");
             CurrentState = State.Locate;
-            controller.Locate();
+            sac.Locate();
         }
 
 
