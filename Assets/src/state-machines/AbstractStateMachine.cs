@@ -12,7 +12,7 @@ namespace src
          ==============================*/
         [NonSerialized] public AbstractActorController controller;
         
-        State currentState = State.Idle; //Idle is entry state
+        State currentState; //Idle is entry state
         
         
         /*===============================
@@ -82,11 +82,6 @@ namespace src
         /*===============================
          *  Checks
          ==============================*/
-        protected void Update()
-        {
-            UpdateState();
-        }
-
         protected virtual void UpdateState()
         {
             if (ShouldIdle()) Idle();

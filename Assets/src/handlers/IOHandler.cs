@@ -77,7 +77,7 @@ namespace src.util
         
         void HandleFloor(Vector3 point)
         {
-            playerService.ClickedFloor(point);
+            playerService.FloorClick(point);
         }
         
         /*===============================

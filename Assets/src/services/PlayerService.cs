@@ -7,37 +7,28 @@ namespace src.services
     public class PlayerService
     {
         /*===============================
+         *  Observable
+         ==============================*/
+        public delegate void CurrentPlayer(PawnActorController p);
+        public event CurrentPlayer Player = delegate {  };
+        
+        /*===============================
          *  Fields
          ==============================*/
-
         PawnActorController player;
-        GameObject heatZone;
-
-        GameObject prototypeHeatZone;
-
-
-        /*===============================
-         *  Properties
-         ==============================*/
-        public PawnActorController Player
-        {
-            get
-            {
-                if (player) return player;
-                Debug.LogWarning("[PlayerService] Attempted Access of 'Player' whilst undefined");
-                return null;
-            }
-        }
         
-        public GameObject PrototypeHeatZone
+        GameObject heatZone;
+        GameObject prototypeHeatZone;
+        
+        
+        /*===============================
+         *  Initialization
+         ==============================*/
+        public void Init()
         {
-            get
-            {
-                if (!prototypeHeatZone) prototypeHeatZone = 
-                    Resources.Load(Environment.RESOURCE_HEAT_ZONE) 
-                        as GameObject;
-                return prototypeHeatZone;
-            }
+            prototypeHeatZone = 
+                Resources.Load(Environment.RESOURCE_HEAT_ZONE) 
+                    as GameObject; 
         }
 
 
@@ -51,17 +42,18 @@ namespace src.services
                 player.Select(false);
                 GameObject.Destroy(heatZone);
             }
-            else
-            {
-                player = controller;
-                player.Select(true);
-                heatZone = GameObject.Instantiate(
-                    PrototypeHeatZone,
-                    player.transform);
-            }
+            
+            player = controller;
+            player.Select(true);
+            heatZone = GameObject.Instantiate(
+                prototypeHeatZone,
+                player.transform);
+
+            if (player) //truthy check to be safe
+                Player(player); //emits event when a new player is selected
         }
 
-        public void ClickedFloor(Vector3 hitPoint)
+        public void FloorClick(Vector3 hitPoint)
         {
             if (player) player.Move(hitPoint);
         }

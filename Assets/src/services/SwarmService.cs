@@ -6,7 +6,6 @@ using src.actors.controllers.impl;
 using src.actors.model;
 using src.model;
 using src.scripting.level;
-using src.scripting.progression;
 using src.util;
 using UnityEngine;
 
@@ -17,10 +16,6 @@ namespace src.services
         /*===============================
         *  Fields
         ==============================*/
-        IOHandler io;
-        MonoBehaviour monoBehaviour;
-        ProgressionController progressionController;
-        
         readonly HashSet<SwarmActorController> activeMembers = 
             new HashSet<SwarmActorController>();
         readonly HashSet<SwarmActorController> available = 
@@ -43,6 +38,8 @@ namespace src.services
         GameObject swarmPrototype;
         GameObject otherAttackPoint;
 
+        PawnActorController player;
+
         bool enabled;
 
         int attackRate = 1000;
@@ -61,21 +58,24 @@ namespace src.services
                 return attackRate + variation;
             }
         }
-        public int WaveNumber => waveNumber;
 
 
         /*===============================
-         *  Spawning
+         *  Initialization
          ==============================*/
-        public void Init(ProgressionController progression)
+        public SwarmService()
         {
-            swarmPrototype = Environment.GetSwarmProtoype();
+            Environment.PlayerService.Player += controller => player = controller;
+        }
+        
+        public void Init()
+        {
+            swarmPrototype = 
+                Resources.Load(Environment.RESOURCE_SWARM_MEMBER) 
+                    as GameObject;
             
-            if (!monoBehaviour) monoBehaviour = progression;
-            
-            waveOrder.Enqueue(new Wave(true, 1));
-
-            var parentSpawner = GameObject.FindGameObjectWithTag(Environment.TAG_SPAWNER);
+            var parentSpawner = GameObject
+                .FindGameObjectWithTag(Environment.TAG_SPAWNER);
             spawnPoints.AddRange(
                 parentSpawner
                     .GetComponentsInChildren<Transform>()
@@ -88,17 +88,6 @@ namespace src.services
         /*===============================
          *  Spawning
          ==============================*/
-        public void NextWave()
-        {
-            SpawnWave();
-            waveNumber++;
-        }
-
-        void SpawnWave()
-        {
-            spawnRoutine = monoBehaviour.StartCoroutine(Spawning());
-        }
-        
         void Spawn(Vector3 position)
         {
             var freshSpawn =
@@ -179,14 +168,11 @@ namespace src.services
 
         GameObject GetSeekTarget(SwarmActorController controller)
         {
-            var actor = controller.actor;
             if (controller.actor is SwarmActor a)
             {
-                if (a.wave.attackPlayer)
-                {
-                    var player = Environment.PlayerService.Player;
+                if (a.wave.attackPlayer) 
                     if (player) return player.gameObject;
-                }
+                
             }
             return otherAttackPoint ? otherAttackPoint : GetOtherAttackPoint();
         }

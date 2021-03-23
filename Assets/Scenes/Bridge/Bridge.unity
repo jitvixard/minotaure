@@ -214,7 +214,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 32
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: d9c0e4356debd994e91fa7ca5c9c3357, type: 2}
   m_TargetDisplay: 1
@@ -358,7 +358,7 @@ GameObject:
   - component: {fileID: 433102353}
   - component: {fileID: 433102354}
   - component: {fileID: 433102355}
-  m_Layer: 11
+  m_Layer: 5
   m_Name: overhead_ui
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -681,6 +681,24 @@ MonoBehaviour:
   m_VoxelSize: 0.11666667
   m_BuildHeightMesh: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &1188247817 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3547592338870185020, guid: 7b5e220e471a5514995579eac9595720,
+    type: 3}
+  m_PrefabInstance: {fileID: 3547592338881362278}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1188247819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1188247817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b01517ccd7b6cbf40841f88e9592c38d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1521232724
 GameObject:
   m_ObjectHideFlags: 0
@@ -1274,7 +1292,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: main_camera
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3547592338870185021, guid: 7b5e220e471a5514995579eac9595720, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 7b5e220e471a5514995579eac9595720, type: 3}
 --- !u!1001 &5181124755768259595
 PrefabInstance:

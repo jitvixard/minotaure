@@ -1,4 +1,3 @@
-using src.actors.controllers.impl;
 using src.services;
 using UnityEngine;
 
@@ -9,8 +8,16 @@ namespace src.util
         /*===============================
         *  Services
         ==============================*/
+        public static readonly GameService GameService = new GameService();
         public static readonly PlayerService PlayerService = new PlayerService();
         public static readonly SwarmService SwarmService = new SwarmService();
+
+        public static void Init()
+        {
+            GameService.Init(); 
+            PlayerService.Init();
+            SwarmService.Init();
+        }
         
 
 
@@ -26,6 +33,7 @@ namespace src.util
         public static readonly string[] PoiTags = {"Pawn"};
         public const string TAG_FLOOR = "Floor";
         public const string TAG_HEAT_ZONE = "HeatZone";
+        public const string TAG_MAIN_CAMERA = "MainCamera";
         public const string TAG_PAWN = "Pawn";
         public const string TAG_SPAWNER = "Spawner";
         public const string TAG_SWARM = "SwarmActor";
