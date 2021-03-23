@@ -3,11 +3,11 @@ using src.actors.controllers;
 using src.actors.controllers.impl;
 using src.config;
 using src.config.control;
-using src.services;
 using src.services.impl;
 using UnityEngine;
+using Environment = src.util.Environment;
 
-namespace src.util
+namespace src.handlers
 {
     public class IOHandler : MonoBehaviour
     {
@@ -23,7 +23,6 @@ namespace src.util
 
 
         PlayerService playerService;
-        SwarmService swarmService;
         
         //Buffer for selected actors
         AbstractActorController selectedActor;
@@ -50,7 +49,6 @@ namespace src.util
 
             //get services
             playerService = Environment.PlayerService;
-            swarmService = Environment.SwarmService;
         }
         
         /*===============================
