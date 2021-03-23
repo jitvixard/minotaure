@@ -92,8 +92,6 @@ namespace src.services.impl
          ==============================*/
         void SpawnWave(Wave wave)
         {
-            IOHandler.Log(GetType(), 
-                "Starting wave number [" + wave.number + "]");
             this.wave = wave;
 
             Environment.GameService
@@ -217,7 +215,7 @@ namespace src.services.impl
          ==============================*/
         IEnumerator Spawning()
         {
-            IOHandler.Log(GetType(), "Spawning");
+            IOHandler.Log(GetType(), "Spawning wave::" + wave.number);
             var index = 0;
             while (index < wave.numberOfEntities)
             {

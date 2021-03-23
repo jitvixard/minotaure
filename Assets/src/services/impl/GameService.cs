@@ -55,7 +55,6 @@ namespace src.services.impl
         ==============================*/
         void QueueNextWave(Wave wave)
         {
-            IOHandler.Log(GetType(), "Queuing next wave");
             this.wave = wave;
             if (currentRoutine != null) StopCoroutine(currentRoutine);
             StartCoroutine(GraceRoutine());
@@ -67,9 +66,7 @@ namespace src.services.impl
         ==============================*/
         IEnumerator StartRoutine()
         {
-            IOHandler.Log(GetType(), "Start routine beginning");
             while (player is null) yield return null;
-            IOHandler.Log(GetType(), "Start routine ending");
             Environment.WaveService.Start();
         }
         

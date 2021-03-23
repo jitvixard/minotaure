@@ -27,7 +27,6 @@ namespace src.services.impl
 
         public void Start()
         {
-            IOHandler.Log(GetType(), "Starting first wave");
             CheckWaveState(0);
         }
         

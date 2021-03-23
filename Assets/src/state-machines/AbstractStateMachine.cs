@@ -60,7 +60,6 @@ namespace src
         
         protected void Seek(Transform transform)
         {
-            print("seek");
             currentState = State.Seek;
             controller.Seek(transform);
         }

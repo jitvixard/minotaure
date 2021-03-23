@@ -9,6 +9,7 @@ namespace src.util
         *  Services
         ==============================*/
         public static readonly GameService GameService = new GameService();
+        public static readonly LootService LootService = new LootService();
         public static readonly PawnService PawnService = new PawnService();
         public static readonly PlayerService PlayerService = new PlayerService();
         public static readonly SwarmService SwarmService = new SwarmService();
@@ -17,6 +18,7 @@ namespace src.util
         public static void Init()
         {
             GameService.Init(); 
+            LootService.Init();
             PawnService.Init();
             PlayerService.Init();
             SwarmService.Init();
