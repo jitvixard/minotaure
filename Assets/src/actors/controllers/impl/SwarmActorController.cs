@@ -1,22 +1,26 @@
 using System.Collections;
-using System.Diagnostics;
-using src.interfaces;
 using src.util;
-using UnityEngine;
 
 namespace src.actors.controllers.impl
 {
     public class SwarmActorController : AbstractActorController
-    { 
+    {
+        PawnActorController player;
+        
         /*===============================
          *  LifeCycle
          ==============================*/
+        protected override void Awake()
+        {
+            base.Awake();
+            playerService.Player += (controller => player = controller);
+        }
+
         public override void Die()
         {
             swarmService.Remove(this);
             Destroy(gameObject);
         }
-        
 
 
         /*===============================
@@ -43,8 +47,7 @@ namespace src.actors.controllers.impl
 
             if (target is null)
             {
-                var player = playerService.Player;
-                if (!(playerService.Player is null))
+                if (!(player is null))
                     target = player.gameObject;
             }
         }

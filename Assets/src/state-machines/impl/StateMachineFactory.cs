@@ -1,4 +1,5 @@
 using src.actors.model;
+using src.model;
 
 namespace src.impl
 {
@@ -19,8 +20,6 @@ namespace src.impl
                 default:
                     return null;
             }
-
-            stateMachine.controller = actor.controller;
             return stateMachine;
         }
     }

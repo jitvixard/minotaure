@@ -90,6 +90,9 @@ namespace src.actors.controllers
             //assigning services
             playerService = Environment.PlayerService;
             swarmService = Environment.SwarmService;
+            
+            //all state machines are defaulted to idle
+            stateMachine.CurrentState = State.Idle;
         }
 
         public abstract void Die();
