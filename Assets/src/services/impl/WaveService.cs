@@ -51,10 +51,7 @@ namespace src.services.impl
         ==============================*/
         Wave CreateNewWave()
         {
-            return new Wave(
-                waveNumber++,
-                waveNumber,
-                true);
+            return Wave.Blank;
         }
     }
 }

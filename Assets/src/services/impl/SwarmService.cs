@@ -201,6 +201,8 @@ namespace src.services.impl
         {
             var success = activeMembers.Remove(controller);
             if (!success) return;
+            
+            Environment.LootService.DropLoot(controller);
             Remaining(activeMembers.Count);
         }
 

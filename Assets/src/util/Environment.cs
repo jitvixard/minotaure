@@ -73,7 +73,6 @@ namespace src.util
          ==============================*/
         public const float UI_OVERHEAD_SELECTION_INTERVAL = 0.3f;
         
-        
         /*===============================
          *  Swarm - Fields
          ==============================*/
@@ -90,11 +89,16 @@ namespace src.util
         public const float SPAWN_INTERVAL_UPPER = 5f;
 
         /*===============================
-         *  SMOOTHING
+         *  Camera
          ==============================*/
         public const float CAMERA_SMOOTH_DIST = 5f;
         public const int CAMERA_SMOOTH_TIME = 10000;
-        public const int HEAT_ZONE_DELAY = 5000;
+        public const int HEAT_ZONE_DELAY = 5;
+        
+        /*===============================
+         *  Loots
+         ==============================*/
+        public const float LOOT_DROP_RATE = 0.333f;
 
         /*===============================
          *  Resource Paths
