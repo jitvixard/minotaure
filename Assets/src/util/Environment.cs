@@ -1,3 +1,4 @@
+using System;
 using src.services.impl;
 using UnityEngine;
 
@@ -5,6 +6,9 @@ namespace src.util
 {
  public static class Environment
  {
+       /************ Logging ************/
+       public static void Log(Type t, string message) => Console.Out.WriteLine(message);
+
         /*===============================
         *  Services
         ==============================*/

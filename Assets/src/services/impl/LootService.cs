@@ -37,20 +37,17 @@ namespace src.services.impl
          ==============================*/
         void ReadyLoot(Wave wave)
         {
-            IOHandler.Log(GetType(), "Readying loot");
             currentWave = wave;
             QueueLoot();
         }
 
         void UpdateLoot(int remaining)
         {
-            IOHandler.Log(GetType(), "Updating loot");
             dynamicDropRate = (float) currentWave.guaranteedDrops / remaining;
         }
 
         public void DropLoot(SwarmActorController controller)
         {
-            IOHandler.Log(GetType(), "Dropping loot");
             var dropRate = baseDropRate > dynamicDropRate
                 ? baseDropRate
                 : dynamicDropRate;
