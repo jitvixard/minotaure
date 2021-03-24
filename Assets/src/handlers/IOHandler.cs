@@ -33,7 +33,6 @@ namespace src.handlers
         public Color SelectionColor => selectionColor;
         public AbstractActorController SelectedActor => selectedActor;
 
-
         /*===============================
          *  Unity Lifecycle
          ==============================*/
@@ -97,11 +96,6 @@ namespace src.handlers
                 (screenHit.x + rect.width / 2) / rect.width,
                 (screenHit.y + rect.height / 2) / rect.height,
                 0);
-        }
-
-        public static void Log(Type t, string message) 
-        {
-            print("[" + t.Name + "] - " + message);
         }
     }
 }

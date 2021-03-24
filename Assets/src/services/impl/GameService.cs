@@ -1,10 +1,7 @@
-using System;
 using System.Collections;
 using src.actors.controllers.impl;
-using src.handlers;
 using src.scripting;
 using src.scripting.level;
-using src.util;
 using UnityEngine;
 using Environment = src.util.Environment;
 using Random = UnityEngine.Random;
@@ -77,7 +74,7 @@ namespace src.services.impl
                 Environment.SPAWN_INTERVAL_UPPER);
             var t = 0f;
             
-            IOHandler.Log(
+            Environment.Log(
                 GetType(),
                 "Grace period of " + interval + " starting.");
             
