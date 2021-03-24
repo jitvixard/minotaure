@@ -1,5 +1,3 @@
-using src.actors.controllers.impl;
-using src.handlers;
 using src.scripting.level;
 using src.util;
 
@@ -11,7 +9,6 @@ namespace src.services.impl
         public event SetNextWave NextWave = delegate {  };
         Wave currentWave;
         
-        PawnActorController player;
         int waveNumber;
         int remaining;
         
@@ -21,7 +18,6 @@ namespace src.services.impl
         ==============================*/
         public void Init()
         {
-            Environment.PlayerService.Player += controller => player = controller;
             Environment.SwarmService.Remaining += CheckWaveState;
         }
 

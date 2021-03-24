@@ -1,5 +1,4 @@
 using src.actors.controllers.impl;
-using src.handlers;
 using src.model;
 using src.scripting.level;
 using src.util;
@@ -59,19 +58,10 @@ namespace src.services.impl
         /*===============================
          *  Dropping
          ==============================*/
-        void QueueLoot()
-        {
-            card = Card.BlankCard();
-        }
+        void QueueLoot() => card = Card.BlankCard();
 
-        void DropCard()
-        {
-            DroppedCard(card);
-        }
+        void DropCard() => DroppedCard(card);
         
-        void DropScrap()
-        {
-            DroppedScrap(100);
-        }
+        void DropScrap() => DroppedScrap(100);
     }
 }
