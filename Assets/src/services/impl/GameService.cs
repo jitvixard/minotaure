@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
 using src.actors.controllers.impl;
+using src.handlers;
 using src.scripting;
 using src.scripting.level;
 using src.util;
 using UnityEngine;
 using Environment = src.util.Environment;
+using Random = UnityEngine.Random;
 
 namespace src.services.impl
 {
@@ -22,6 +24,7 @@ namespace src.services.impl
         *  Fields & Properties
         ==============================*/
         public bool IsRunning => currentRoutine != null;
+        public MonoBehaviour Mono => gameBehaviour;
         
         GameBehaviour gameBehaviour;
 
@@ -52,7 +55,6 @@ namespace src.services.impl
         ==============================*/
         void QueueNextWave(Wave wave)
         {
-            IOHandler.Log(GetType(), "Queuing next wave");
             this.wave = wave;
             if (currentRoutine != null) StopCoroutine(currentRoutine);
             StartCoroutine(GraceRoutine());
@@ -64,27 +66,27 @@ namespace src.services.impl
         ==============================*/
         IEnumerator StartRoutine()
         {
-            IOHandler.Log(GetType(), "Start routine beginning");
             while (player is null) yield return null;
-            IOHandler.Log(GetType(), "Start routine ending");
             Environment.WaveService.Start();
         }
         
         IEnumerator GraceRoutine()
         {
-            IOHandler.Log(GetType(), "Grace routine beginning");
-            
+            var interval = Random.Range(
+                Environment.SPAWN_INTERVAL_LOWER,
+                Environment.SPAWN_INTERVAL_UPPER);
             var t = 0f;
-            while (t < Environment.SPAWN_INTERVAL 
-                   && GracePeriodShouldEnd())
+            
+            IOHandler.Log(
+                GetType(),
+                "Grace period of " + interval + " starting.");
+            
+            while (t < interval && GracePeriodShouldEnd())
             {
                 t += Time.deltaTime;
                 yield return null;
             }
             
-            IOHandler.Log(GetType(), "Grace routine ending");
-
-            IOHandler.Log(GetType(), "Emitting Wave");
             ReadiedWave(wave);
         }
         

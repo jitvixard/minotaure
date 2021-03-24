@@ -36,7 +36,6 @@ namespace src.scripting.level
         ==============================*/
         void OnTriggerEnter(Collider other)
         {
-            print("entered:: " + other.name);
             var otherObj = other.gameObject;
             if (otherObj.TryGetComponent<SwarmActorController>(out var controller))
             {
@@ -64,9 +63,10 @@ namespace src.scripting.level
         ==============================*/
         IEnumerator BufferRoutine(SwarmActorController controller)
         {
-            var stopwatch = Stopwatch.StartNew();
-            while (stopwatch.ElapsedMilliseconds < Environment.HEAT_ZONE_DELAY)
+            var t = 0f;
+            while (t < Environment.HEAT_ZONE_DELAY)
             {
+                t += Time.deltaTime;
                 yield return null;
             }
         

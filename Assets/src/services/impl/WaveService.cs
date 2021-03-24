@@ -1,4 +1,5 @@
 using src.actors.controllers.impl;
+using src.handlers;
 using src.scripting.level;
 using src.util;
 
@@ -26,7 +27,6 @@ namespace src.services.impl
 
         public void Start()
         {
-            IOHandler.Log(GetType(), "Starting first wave");
             CheckWaveState(0);
         }
         
@@ -51,10 +51,7 @@ namespace src.services.impl
         ==============================*/
         Wave CreateNewWave()
         {
-            return new Wave(
-                waveNumber++,
-                waveNumber,
-                true);
+            return Wave.Blank;
         }
     }
 }

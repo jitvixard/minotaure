@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using src.actors.controllers.impl;
 using src.actors.model;
+using src.handlers;
 using src.model;
 using src.scripting.level;
 using src.util;
@@ -34,7 +35,7 @@ namespace src.services.impl
         readonly Dictionary<string, List<SwarmActorController>> targetedPoi = 
             new Dictionary<string, List<SwarmActorController>>();
 
-        Coroutine spawnRoutine;
+        readonly Coroutine[] spawnRoutine = new Coroutine[2];
         
         GameObject swarmPrototype;
         GameObject otherAttackPoint;
@@ -91,10 +92,10 @@ namespace src.services.impl
          ==============================*/
         void SpawnWave(Wave wave)
         {
-            IOHandler.Log(GetType(), 
-                "Starting wave number [" + wave.number + "]");
             this.wave = wave;
-            if (spawnRoutine != null)  return;
+
+            Environment.GameService
+                .Mono.StartCoroutine(Spawning());
         }
         
         void Spawn(Vector3 position)
@@ -104,18 +105,20 @@ namespace src.services.impl
                     swarmPrototype,
                     position,
                     new Quaternion());
-            freshSpawn.name = 
+            
+            freshSpawn.name =  //setting name for readability
                 Environment.SWARM_MEMBER 
                 + freshSpawn.GetInstanceID();
             
-            if (freshSpawn.TryGetComponent<SwarmActorController>(out var sac))
-            {
+            if (freshSpawn.TryGetComponent<SwarmActorController>(out var sac)) 
                 ((SwarmActor) sac.actor).wave = wave;
-            }
             else
             {
                 GameObject.Destroy(freshSpawn);
+                return;
             }
+
+            Add(sac);
         }
         
         /*===============================
@@ -178,11 +181,9 @@ namespace src.services.impl
         GameObject GetSeekTarget(SwarmActorController controller)
         {
             if (controller.actor is SwarmActor a)
-            {
                 if (a.wave.attackPlayer) 
                     if (player) return player.gameObject;
-                
-            }
+            
             return otherAttackPoint ? otherAttackPoint : GetOtherAttackPoint();
         }
         
@@ -190,17 +191,18 @@ namespace src.services.impl
         /*===============================
          *  Getters & Setters
          ==============================*/
-        public SwarmService Add(SwarmActorController controller)
+        public void Add(SwarmActorController controller)
         {
             activeMembers.Add(controller); 
             Remaining(activeMembers.Count);
-            return this;
         }
         
         public void Remove(SwarmActorController controller)
         {
             var success = activeMembers.Remove(controller);
             if (!success) return;
+            
+            Environment.LootService.DropLoot(controller);
             Remaining(activeMembers.Count);
         }
 
@@ -215,20 +217,22 @@ namespace src.services.impl
          ==============================*/
         IEnumerator Spawning()
         {
+            IOHandler.Log(GetType(), "Spawning wave::" + wave.number);
             var index = 0;
             while (index < wave.numberOfEntities)
             {
-                var spawnIndex = Random.Range(0, spawnPoints.Count - 1);
-                
-                var spawnDelay = Random.Range(Environment.SPAWN_DELAY_LOWER, Environment.SPAWN_DELAY_UPPER);
-                spawnDelay *= 1000; //spawn delay set to millis
-                var watch = Stopwatch.StartNew();
-                
-                while (watch.ElapsedMilliseconds < spawnDelay)
-                {
-                    yield return null; //waiting for spawn delay to pass
-                }
+                var spawnDelay = 
+                    Random.Range(
+                        Environment.SPAWN_DELAY_LOWER,
+                        Environment.SPAWN_DELAY_UPPER);
+                var t = 0f;
 
+                while (t < spawnDelay)
+                {
+                    t += Time.deltaTime;
+                    yield return null;
+                }
+                
                 var spawnPoint = spawnPoints[index];
                 spawnPoint = new Vector3(
                     Random.Range(-Environment.SPAWN_MARGIN, Environment.SPAWN_MARGIN),

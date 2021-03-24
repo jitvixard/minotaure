@@ -9,6 +9,7 @@ namespace src.util
         *  Services
         ==============================*/
         public static readonly GameService GameService = new GameService();
+        public static readonly LootService LootService = new LootService();
         public static readonly PawnService PawnService = new PawnService();
         public static readonly PlayerService PlayerService = new PlayerService();
         public static readonly SwarmService SwarmService = new SwarmService();
@@ -17,6 +18,7 @@ namespace src.util
         public static void Init()
         {
             GameService.Init(); 
+            LootService.Init();
             PawnService.Init();
             PlayerService.Init();
             SwarmService.Init();
@@ -28,8 +30,8 @@ namespace src.util
         /*===============================
         *  GameObject Names
         ==============================*/
-        public const string OVERHEAD_UI = "overhead_ui";
-        public const string SWARM_MEMBER = "swarm_member";
+        public const string OVERHEAD_UI = "overhead-ui";
+        public const string SWARM_MEMBER = "swarm-member";
 
         /*===============================
          *  Tags
@@ -72,22 +74,31 @@ namespace src.util
         public const float UI_OVERHEAD_SELECTION_INTERVAL = 0.3f;
         
         /*===============================
-         *  Swarm
+         *  Swarm - Fields
+         ==============================*/
+        public const int SWARM_MAX_ATTACKERS = 3;
+        public const int SWARM_MAX_LOCATE_ATTEMPTS = 5;
+        public const float SWARM_VISION_RANGE = 4f;
+        /*===============================
+         *  Swarm - Spawning
          ==============================*/
         public const float SPAWN_DELAY_LOWER = 0.5f;
         public const float SPAWN_DELAY_UPPER = 4f;
         public const float SPAWN_MARGIN = 10f;
-        public const float SPAWN_INTERVAL = 5f;
-        public const int SWARM_MAX_ATTACKERS = 3;
-        public const int SWARM_MAX_LOCATE_ATTEMPTS = 5;
-        public const float SWARM_VISION_RANGE = 4f;
-        
+        public const float SPAWN_INTERVAL_LOWER = 2f;
+        public const float SPAWN_INTERVAL_UPPER = 5f;
+
         /*===============================
-         *  SMOOTHING
+         *  Camera
          ==============================*/
         public const float CAMERA_SMOOTH_DIST = 5f;
         public const int CAMERA_SMOOTH_TIME = 10000;
-        public const int HEAT_ZONE_DELAY = 5000;
+        public const int HEAT_ZONE_DELAY = 5;
+        
+        /*===============================
+         *  Loots
+         ==============================*/
+        public const float LOOT_DROP_RATE = 0.333f;
 
         /*===============================
          *  Resource Paths

@@ -1,5 +1,6 @@
 using System.Collections;
 using src.util;
+using UnityEngine.PlayerLoop;
 
 namespace src.actors.controllers.impl
 {
@@ -18,6 +19,7 @@ namespace src.actors.controllers.impl
 
         public override void Die()
         {
+            print(name + " dying");
             swarmService.Remove(this);
             Destroy(gameObject);
         }

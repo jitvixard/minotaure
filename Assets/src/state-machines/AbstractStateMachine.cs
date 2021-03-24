@@ -13,6 +13,8 @@ namespace src
         [NonSerialized] public AbstractActorController controller;
         
         State currentState; //Idle is entry state
+
+        bool firstFrame = true;
         
         
         /*===============================
@@ -24,6 +26,7 @@ namespace src
             set
             {
                 currentState = value;
+                if (firstFrame) return;
                 UpdateState();
             }
         }
@@ -32,7 +35,19 @@ namespace src
         /*===============================
          *  Unity Lifecycle
          ==============================*/
-        protected abstract void Awake();
+        protected virtual void Awake()
+        {
+            controller = GetComponent<AbstractActorController>();
+        }
+
+        protected void Update()
+        {
+            if (firstFrame)
+            {
+                UpdateState();
+                firstFrame = false;
+            }
+        }
 
 
         /*===============================
@@ -45,7 +60,6 @@ namespace src
         
         protected void Seek(Transform transform)
         {
-            print("seek");
             currentState = State.Seek;
             controller.Seek(transform);
         }

@@ -98,11 +98,6 @@ namespace src.actors.controllers
 
         public abstract void Die();
 
-        void OnDestroy()
-        {
-            Die();
-        }
-
         /*===============================
          *  Interaction
          ==============================*/
