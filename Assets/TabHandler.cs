@@ -17,6 +17,8 @@ public class TabHandler : MonoBehaviour, IPointerClickHandler
     /*===============================
     *  Fields
     ==============================*/
+    [SerializeField] bool movingLeft;
+    
     /*=======Card Management======*/
     List<RectTransform> cardPositions = new List<RectTransform>();
     GameObject[] cardTiles;
@@ -34,6 +36,8 @@ public class TabHandler : MonoBehaviour, IPointerClickHandler
     ==============================*/
     void Awake()
     {
+        var tabOffset = Environment.UI_CARD_TAB_WIDTH;
+        tabOffset = movingLeft ? -tabOffset : tabOffset;
         cardPositions = GameObject
             .FindGameObjectsWithTag(Environment.TAG_CARD_PLACE_HOLDER)
             .Select(g => g.GetComponent<RectTransform>())
@@ -44,7 +48,7 @@ public class TabHandler : MonoBehaviour, IPointerClickHandler
         
         rectTransform = GetComponent<RectTransform>();
         origin = rectTransform.position;
-        displayed = new Vector3(origin.x + 190f, origin.y, origin.z);
+        displayed = new Vector3(origin.x + tabOffset, origin.y, origin.z);
     }
 
     /*===============================

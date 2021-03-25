@@ -55,6 +55,7 @@ namespace src.util
          *  UI
          ==============================*/
         public const float UI_CARD_SLIDE_OUT = 1.5f;
+        public const float UI_CARD_TAB_WIDTH = 213f;
         
         
         
