@@ -30,7 +30,7 @@ namespace src.util
         }
         
 
-
+        /************ In Editor Values ************/
         /*===============================
         *  GameObject Names
         ==============================*/
@@ -41,12 +41,31 @@ namespace src.util
          *  Tags
          ==============================*/
         public static readonly string[] PoiTags = {"Pawn"};
+        public const string TAG_CARD_PLACE_HOLDER = "CardPlaceHolder";
         public const string TAG_FLOOR = "Floor";
         public const string TAG_HEAT_ZONE = "HeatZone";
         public const string TAG_MAIN_CAMERA = "MainCamera";
         public const string TAG_PAWN = "Pawn";
         public const string TAG_SPAWNER = "Spawner";
         public const string TAG_SWARM = "SwarmActor";
+        
+        
+        
+        /*===============================
+         *  UI
+         ==============================*/
+        public const float UI_CARD_SLIDE_OUT = 1.5f;
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
         /*===============================
          *  Navigation
@@ -107,6 +126,7 @@ namespace src.util
         /*===============================
          *  Resource Paths
          ==============================*/
+        public const string RESOURCE_CARD = "UI/card";
         public const string RESOURCE_HEAT_ZONE = "Actors/heat_zone";
         public const string RESOURCE_SWARM_MEMBER = "Actors/swarm_member";
         
