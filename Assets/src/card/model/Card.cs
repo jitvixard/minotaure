@@ -38,6 +38,9 @@ namespace src.card.model
         
         CardType type;
 
+        bool guaranteedDrop;
+        int  dropWeight;
+
         public Card Build()
         {
             return new Card(
@@ -68,6 +71,18 @@ namespace src.card.model
         public CardBuilder Description(string description)
         {
             this.description = description;
+            return this;
+        }
+
+        public CardBuilder GuaranteedDrop(bool guaranteedDrop)
+        {
+            this.guaranteedDrop = guaranteedDrop;
+            return this;
+        }
+
+        public CardBuilder DropWeight(int dropWeight)
+        {
+            this.dropWeight = dropWeight;
             return this;
         }
 

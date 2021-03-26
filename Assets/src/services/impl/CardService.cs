@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using src.card.model;
 using src.level;
-using src.scripting.level;
 using src.util;
 
 namespace src.services.impl
@@ -20,7 +19,7 @@ namespace src.services.impl
         Card[] possibleCards;
         //key: int -> wave number
         //value: Wave -> possible cards to spawn 
-        Card[][] cardBatches;
+        readonly Card[][] cardBatches= CardRepository.AllBatches;
 
         /*===============================
         *  Initialization

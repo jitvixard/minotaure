@@ -5,17 +5,35 @@ namespace src.card.model
 {
     public static class CardRepository
     {
-        public static List<Card> GetAll
-            => new List<Card>
-            {
-                TabularCard
-            };
-
+        /************** Prototypes *************/
         static Card TabularCard
             => Card.Builder
                    .Title("Tabular")
                    .Description("This card is tabular")
                    .Type(CardType.Tabular)
                    .Build();
+        
+        
+        
+        /*************** Batches ***************/
+        /***************** All *****************/
+        public static Card[][] AllBatches => new[]
+        {
+            BatchOne,
+        };
+        
+        
+        
+        /**************** Waves ****************/
+        static Card[] BatchOne => new[]
+        {
+            Card.Builder
+                .Title("Eye")
+                .Description("What will you behold?")
+                .Type(CardType.Eye)
+                .GuaranteedDrop(true)
+                .DropWeight(2)
+                .Build()
+        };
     }
 }
