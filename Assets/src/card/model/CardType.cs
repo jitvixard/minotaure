@@ -2,6 +2,7 @@ namespace src.model
 {
     public enum CardType
     {
-        Blank
+        Blank,
+        Tabular
     }
 }

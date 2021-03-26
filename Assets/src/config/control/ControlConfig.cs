@@ -4,13 +4,12 @@ namespace src.config.control
 {
     public abstract class ControlConfig
     {
-        
         public abstract bool OnClick();
         public abstract bool OnHold();
         public abstract bool OnRelease();
 
-        public abstract Vector3 InputPosition(); 
-        
+        public abstract Vector3 InputPosition();
+
 
         public static ControlConfig GetControl()
         {

@@ -1,5 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
 using src.actors.controllers.impl;
-using src.model;
+using src.card.model;
 using src.scripting.level;
 using src.util;
 using UnityEngine;
@@ -8,19 +10,26 @@ namespace src.services.impl
 {
     public class LootService : IService
     {
+        /*************** Card Observable ***************/
         public delegate void SetCard(Card card);
-        public event SetCard DroppedCard = delegate {  };
+        public event SetCard DroppedCard = delegate { };
+        /*************** Scrap Observable ***************/
         public delegate void SetScrap(int scrap);
-        public event SetScrap DroppedScrap = delegate {  };
+        public event SetScrap DroppedScrap = delegate { };
         
         
-        Wave currentWave;
+        /*===============================
+        *  Fields
+        ==============================*/
+        List<Card> availableCards  = new List<Card>();
+        List<Card> guaranteedCards = new List<Card>();
+        int guaranteedDrops;
 
-        Card card;
-        int scrap;
+        readonly float baseDropRate = Environment.LOOT_DROP_RATE;
 
-        float baseDropRate = Environment.LOOT_DROP_RATE;
-        float dynamicDropRate = 0f;
+
+        float dynamicDropRate;
+        int   scrap;
 
         /*===============================
          *  Initialization
@@ -29,20 +38,20 @@ namespace src.services.impl
         {
             Environment.WaveService.NextWave += ReadyLoot;
             Environment.SwarmService.Remaining += UpdateLoot;
+            Environment.CardService.CardDrops += QueueLoot;
         }
-        
+
         /*===============================
          *  Loot Updates
          ==============================*/
         void ReadyLoot(Wave wave)
         {
-            currentWave = wave;
-            QueueLoot();
+            //TODO update scrap????
         }
 
         void UpdateLoot(int remaining)
         {
-            dynamicDropRate = (float) currentWave.guaranteedDrops / remaining;
+            dynamicDropRate = (float) guaranteedDrops / remaining;
         }
 
         public void DropLoot(SwarmActorController controller)
@@ -50,18 +59,64 @@ namespace src.services.impl
             var dropRate = baseDropRate > dynamicDropRate
                 ? baseDropRate
                 : dynamicDropRate;
-            var drop = Random.Range(0f, 1f);
-            if (drop <= dropRate) DropCard();
-            DropScrap();
+            var drop = Random.Range(0f, 1f); //drop value
+
+            if (drop <= dropRate)
+            {
+                DropCard(GetCard(dropRate)); //drops loot
+            }
+            DropScrap(GetScrap()); //drops scrap
         }
 
         /*===============================
          *  Dropping
          ==============================*/
-        void QueueLoot() => card = Card.BlankCard();
+        void QueueLoot(Card[] cards)
+        {
+            availableCards.Clear();
+            guaranteedCards.Clear();
+            guaranteedDrops = 0;
+            
+            foreach (var card in cards)
+            {
+                availableCards.Add(card);
+                
+                if (card.dropGuaranteed)
+                {
+                    guaranteedDrops++;
+                    var limit = 0;
+                    while (limit++ < card.dropWeight) guaranteedCards.Add(card);
+                }
+            }
+        }
 
-        void DropCard() => DroppedCard(card);
-        
-        void DropScrap() => DroppedScrap(100);
+        Card GetCard(float dropRate)
+        {
+            Card card = null;
+            
+            if (dropRate >= 1f)
+                card = guaranteedCards[Random.Range(0, guaranteedCards.Count - 1)];
+
+            if (card == null)
+                card = availableCards[Random.Range(0, availableCards.Count - 1)];
+            
+            availableCards = availableCards
+                              .Where(c => c != card)
+                              .ToList();
+            guaranteedCards = guaranteedCards
+                              .Where(c => c != card)
+                              .ToList();
+
+            return card;
+        }
+
+        int GetScrap()
+        {
+            return 100;
+        }
+
+        void DropCard(Card card) => DroppedCard(card);
+
+        void DropScrap(int amount) => DroppedScrap(amount);
     }
 }

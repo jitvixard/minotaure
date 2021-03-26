@@ -1,6 +1,5 @@
 using src.actors.controllers.impl;
 using src.model;
-using src.services;
 using src.services.impl;
 using src.util;
 using UnityEngine;
@@ -10,7 +9,7 @@ namespace src.impl
     public class SwarmStateMachine : AbstractStateMachine
     {
         readonly SwarmService swarmService = Environment.SwarmService;
-        SwarmActorController sac;
+        SwarmActorController  sac;
 
 
         /*===============================
@@ -32,28 +31,28 @@ namespace src.impl
             if (ShouldLocate()) Locate();
             if (ShouldAttack()) Attack();
         }
-        
+
         //default behaviour
         bool ShouldSeek()
         {
             return CurrentState == State.Idle;
         }
-        
+
         bool ShouldLocate()
         {
-            return controller.InHeatZone 
-                && CurrentState != State.Attack
-                && CurrentState != State.Locate;
+            return controller.InHeatZone
+                   && CurrentState != State.Attack
+                   && CurrentState != State.Locate;
         }
 
         protected override bool ShouldAttack()
         {
             return !(controller.Target is null)
-                && CurrentState == State.Locate
-                && Vector3.Distance(
-                    transform.position, 
-                    controller.Target.transform.position)
-                < Environment.ATTACK_RANGE;
+                   && CurrentState == State.Locate
+                   && Vector3.Distance(
+                       transform.position,
+                       controller.Target.transform.position)
+                   < Environment.ATTACK_RANGE;
         }
 
 
@@ -66,10 +65,5 @@ namespace src.impl
             CurrentState = State.Locate;
             sac.Locate();
         }
-
-
-
-
-
     }
 }

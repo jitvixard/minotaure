@@ -1,8 +1,8 @@
 using System.Collections;
 using src.actors.controllers.impl;
 using src.services.impl;
+using src.util;
 using UnityEngine;
-using Environment = src.util.Environment;
 
 namespace src.camera
 {
@@ -10,15 +10,15 @@ namespace src.camera
     public class OverheadSmoothFollow : MonoBehaviour
     {
         PlayerService playerService;
-        Transform playerTransform;
+        Transform     playerTransform;
+        float         smoothDistance;
 
         Coroutine smoothRoutine;
+        int       smoothTime;
         Coroutine trackingRoutine;
-        
+
         float yValue;
-        float smoothDistance;
-        int smoothTime;
-        
+
         void Awake()
         {
             playerService = Environment.PlayerService;
@@ -48,7 +48,7 @@ namespace src.camera
             while (distance < smoothDistance)
             {
                 distance = Vector3.Distance(
-                    GetNormalizedPosition(transform.position), 
+                    GetNormalizedPosition(transform.position),
                     GetNormalizedPosition(playerTransform.position));
                 yield return null;
             }

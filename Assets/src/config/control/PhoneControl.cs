@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace src.config.control
@@ -17,14 +18,14 @@ namespace src.config.control
 
         public override bool OnHold()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override bool OnRelease()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
-        
+
         public override Vector3 InputPosition()
         {
             var touch = Input.GetTouch(0);

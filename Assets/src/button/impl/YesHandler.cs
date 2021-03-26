@@ -1,5 +1,4 @@
 using src.scripting.ui;
-using UnityEngine.EventSystems;
 
 namespace src.button.impl
 {

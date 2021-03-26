@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using src.card.model;
 using src.model;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -51,10 +52,21 @@ public class TabHandler : MonoBehaviour, IPointerClickHandler
         displayed = new Vector3(origin.x + tabOffset, origin.y, origin.z);
     }
 
+    void Update()
+    {
+        var notNull = cards
+            .Where(c => c != null)
+            .ToList();
+
+        if (Input.GetKeyDown(KeyCode.Space))
+            if (notNull.Count < cardPositions.Count) AddCard();
+            else RemoveCard();
+    }
+
     /*===============================
     *  Card Management
     ==============================*/
-    public bool AddCard()
+    public bool AddCard(Card card)
     {
         var obj = Resources.Load(Environment.RESOURCE_CARD) as GameObject;
 
@@ -68,12 +80,13 @@ public class TabHandler : MonoBehaviour, IPointerClickHandler
         obj = Instantiate(obj, cardPositions[i]);
         obj.name = "card" + obj.GetInstanceID();
         cardTiles[i] = obj;
-        cards[i] = Card.BlankCard();
+        cards[i] = card;
         return true;
     }
 
     public bool RemoveCard()
     {
+        print("removing");
         var i = 0;
         while (i < cardPositions.Count)
             if (cards[i] != null) break;

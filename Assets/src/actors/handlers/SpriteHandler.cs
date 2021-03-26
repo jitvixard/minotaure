@@ -10,15 +10,14 @@ namespace src.actors.handlers
 {
     public class SpriteHandler
     {
-        readonly SpriteRenderer sprite;
-
         readonly AbstractActorController controller;
-        
-        Color original;
-        Color selected;
+        readonly SpriteRenderer          sprite;
+
+        readonly Color original;
+        readonly Color selected;
 
         Coroutine transitionRoutine;
-        
+
         public SpriteHandler(AbstractActorController controller)
         {
             sprite = controller.GetComponentInChildren<SpriteRenderer>();
@@ -32,7 +31,7 @@ namespace src.actors.handlers
             var targetColor = controller.IsSelected
                 ? selected
                 : original;
-            
+
             if (targetColor.Compare(sprite.color)) return;
             if (!(transitionRoutine is null)) controller.StopCoroutine(transitionRoutine);
 
@@ -42,8 +41,8 @@ namespace src.actors.handlers
         IEnumerator ChangeColor(Color targetColor)
         {
             var startColor = sprite.color;
-            var duration = controller.IsSelected 
-                ? Environment.UI_OVERHEAD_SELECTION_INTERVAL / 2 
+            var duration = controller.IsSelected
+                ? Environment.UI_OVERHEAD_SELECTION_INTERVAL / 2
                 : Environment.UI_OVERHEAD_SELECTION_INTERVAL;
             var t = 0f;
 

@@ -1,20 +1,19 @@
 using System.Collections;
 using src.util;
-using UnityEngine.PlayerLoop;
 
 namespace src.actors.controllers.impl
 {
     public class SwarmActorController : AbstractActorController
     {
         PawnActorController player;
-        
+
         /*===============================
          *  LifeCycle
          ==============================*/
         protected override void Awake()
         {
             base.Awake();
-            playerService.Player += (controller => player = controller);
+            playerService.Player += controller => player = controller;
         }
 
         public override void Die()
@@ -40,18 +39,16 @@ namespace src.actors.controllers.impl
         IEnumerator LocateRoutine()
         {
             var attempts = 0;
-            while (target is null 
+            while (target is null
                    && attempts++ < Environment.SWARM_MAX_LOCATE_ATTEMPTS)
             {
                 yield return null;
-                target = swarmService.GetTarget(this);  
+                target = swarmService.GetTarget(this);
             }
 
             if (target is null)
-            {
                 if (!(player is null))
                     target = player.gameObject;
-            }
         }
     }
 }

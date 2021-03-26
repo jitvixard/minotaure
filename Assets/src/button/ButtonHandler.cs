@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Linq;
 using src.handlers;
-using src.util;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -13,21 +12,25 @@ namespace src.button
 {
     public abstract class ButtonHandler : MonoBehaviour
     {
-        //Trigger
-        protected EventTrigger trigger;
+        public bool ready;
+
         //Colors
         Color accentColor;
-        Color hoverColor;
+
         //Border & Text
         ProceduralImage border;
-        Text text;
+        Color           hoverColor;
+
+        bool selected;
+
         //Routine
         Coroutine selectionRoutine;
+        Text      text;
 
         float transitionDuration;
 
-        public bool ready = false; 
-        bool selected = false;
+        //Trigger
+        protected EventTrigger trigger;
 
         void Awake()
         {
@@ -41,14 +44,14 @@ namespace src.button
             text.color = accentColor;
             border.color = accentColor;
             transitionDuration = preferences.transitionDuration;
-        
+
             AddPointerDown();
             AddPointerEnter();
             AddPointerExit();
         }
 
         public abstract void OnPointerDownDelegate();
-    
+
         public void OnPointerEnterDelegate()
         {
             if (!ready) return;
@@ -56,7 +59,7 @@ namespace src.button
             if (!(selectionRoutine is null)) StopCoroutine(selectionRoutine);
             selectionRoutine = StartCoroutine(SelectionRoutine());
         }
-    
+
         public void OnPointerExitDelegate()
         {
             if (!ready) return;
@@ -85,30 +88,30 @@ namespace src.button
         {
             //handles click
             var entry = new EventTrigger.Entry {eventID = EventTriggerType.PointerDown};
-            entry.callback.AddListener((data) => { OnPointerDownDelegate(); });
+            entry.callback.AddListener(data => { OnPointerDownDelegate(); });
             trigger.triggers.Add(entry);
         }
-    
+
         void AddPointerEnter()
         {
             //handle mouse over
             var entry = new EventTrigger.Entry {eventID = EventTriggerType.PointerEnter};
-            entry.callback.AddListener((data) => { OnPointerEnterDelegate(); });
+            entry.callback.AddListener(data => { OnPointerEnterDelegate(); });
             trigger.triggers.Add(entry);
         }
-    
+
         void AddPointerExit()
         {
             //handle mouse exit
             var entry = new EventTrigger.Entry {eventID = EventTriggerType.PointerExit};
-            entry.callback.AddListener((data) => { OnPointerExitDelegate(); });
+            entry.callback.AddListener(data => { OnPointerExitDelegate(); });
             trigger.triggers.Add(entry);
         }
 
         ProceduralImage GetBorder()
         {
             return GetComponentsInChildren<ProceduralImage>()
-                .FirstOrDefault(image => 
+                .FirstOrDefault(image =>
                     image.name.Equals("border"));
         }
     }

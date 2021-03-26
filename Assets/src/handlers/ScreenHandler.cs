@@ -1,5 +1,4 @@
 ﻿using src.handlers;
-using src.util;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
@@ -11,12 +10,12 @@ namespace src.screens
         //cameras
         [SerializeField] Camera castingCamera;
 
-        IOHandler io;
+        NavMeshAgent agent;
 
         //raycasting
         int filterLayer;
 
-        NavMeshAgent agent;
+        IOHandler io;
 
         RectTransform screenTransform;
 

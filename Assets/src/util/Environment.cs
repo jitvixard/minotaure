@@ -1,80 +1,54 @@
-using System;
+using System;using src.card.model;
+using src.scripting.level;
 using src.services.impl;
 using UnityEngine;
 
 namespace src.util
 {
- public static class Environment
- {
-       /************ Logging ************/
-       public static void Log(Type t, string message) => Console.Out.WriteLine(message);
-
-        /*===============================
-        *  Services
-        ==============================*/
-        public static readonly GameService GameService = new GameService();
-        public static readonly LootService LootService = new LootService();
-        public static readonly PawnService PawnService = new PawnService();
-        public static readonly PlayerService PlayerService = new PlayerService();
-        public static readonly SwarmService SwarmService = new SwarmService();
-        public static readonly WaveService WaveService = new WaveService();
-
-        public static void Init()
-        {
-            GameService.Init(); 
-            LootService.Init();
-            PawnService.Init();
-            PlayerService.Init();
-            SwarmService.Init();
-            WaveService.Init();
-        }
-        
-
+    public static class Environment
+    {
         /************ In Editor Values ************/
         /*===============================
         *  GameObject Names
         ==============================*/
-        public const string OVERHEAD_UI = "overhead-ui";
-        public const string SWARM_MEMBER = "swarm-member";
-
-        /*===============================
-         *  Tags
-         ==============================*/
-        public static readonly string[] PoiTags = {"Pawn"};
+        public const string OVERHEAD_UI           = "overhead-ui";
+        public const string SWARM_MEMBER          = "swarm-member";
         public const string TAG_CARD_PLACE_HOLDER = "CardPlaceHolder";
-        public const string TAG_FLOOR = "Floor";
-        public const string TAG_HEAT_ZONE = "HeatZone";
-        public const string TAG_MAIN_CAMERA = "MainCamera";
-        public const string TAG_PAWN = "Pawn";
-        public const string TAG_SPAWNER = "Spawner";
-        public const string TAG_SWARM = "SwarmActor";
-        
-        
-        
+        public const string TAG_FLOOR             = "Floor";
+        public const string TAG_HEAT_ZONE         = "HeatZone";
+        public const string TAG_MAIN_CAMERA       = "MainCamera";
+        public const string TAG_PAWN              = "Pawn";
+        public const string TAG_SPAWNER           = "Spawner";
+        public const string TAG_SWARM             = "SwarmActor";
+
+
         /*===============================
          *  UI
          ==============================*/
         public const float UI_CARD_SLIDE_OUT = 1.5f;
         public const float UI_CARD_TAB_WIDTH = 213f;
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
+
+        /*===============================
+         *  Resource Paths
+         ==============================*/
+        //actors
+        public const string RESOURCE_HEAT_ZONE    = "Actors/heat_zone";
+        public const string RESOURCE_SWARM_MEMBER = "Actors/swarm_member";
+        //cards
+        public const string RESOURCE_CARD        = "UI/card";
+        public const string RESOURCE_CARD_GROUPS = "Store/CardGroups";
+        //waves
+        public const string RESOURCE_WAVE_ORDER = "Store/WaveOrder";
+
 
         /*===============================
          *  Navigation
          ==============================*/
-        public const float SPEED_PAWN_IDLE = 3.5f;
-        public const float SPEED_PAWN = 4.5f;
+        public const float SPEED_PAWN_IDLE   = 3.5f;
+        public const float SPEED_PAWN        = 4.5f;
         public const float STOPPING_DISTANCE = 0.1f;
-        
+
         /*===============================
          *  Combat
          ==============================*/
@@ -90,25 +64,27 @@ namespace src.util
          ==============================*/
         public const float IDLE_WAIT_LOWER = 0.5f;
         public const float IDLE_WAIT_UPPER = 2.5f;
-        public const int IDLE_RANGE = 3;
+        public const int   IDLE_RANGE      = 3;
 
         /*===============================
          *  UI & UX
          ==============================*/
         public const float UI_OVERHEAD_SELECTION_INTERVAL = 0.3f;
-        
+
         /*===============================
          *  Swarm - Fields
          ==============================*/
-        public const int SWARM_MAX_ATTACKERS = 3;
+        public const int SWARM_MAX_ATTACKERS       = 3;
         public const int SWARM_MAX_LOCATE_ATTEMPTS = 5;
+
         public const float SWARM_VISION_RANGE = 4f;
+
         /*===============================
          *  Swarm - Spawning
          ==============================*/
-        public const float SPAWN_DELAY_LOWER = 0.5f;
-        public const float SPAWN_DELAY_UPPER = 4f;
-        public const float SPAWN_MARGIN = 10f;
+        public const float SPAWN_DELAY_LOWER    = 0.5f;
+        public const float SPAWN_DELAY_UPPER    = 4f;
+        public const float SPAWN_MARGIN         = 10f;
         public const float SPAWN_INTERVAL_LOWER = 2f;
         public const float SPAWN_INTERVAL_UPPER = 5f;
 
@@ -116,27 +92,79 @@ namespace src.util
          *  Camera
          ==============================*/
         public const float CAMERA_SMOOTH_DIST = 5f;
-        public const int CAMERA_SMOOTH_TIME = 10000;
-        public const int HEAT_ZONE_DELAY = 5;
-        
+        public const int   CAMERA_SMOOTH_TIME = 10000;
+        public const int   HEAT_ZONE_DELAY    = 5;
+
         /*===============================
          *  Loots
          ==============================*/
         public const float LOOT_DROP_RATE = 0.333f;
 
         /*===============================
-         *  Resource Paths
+        *  Services
+        ==============================*/
+        public static readonly CardService   CardService   = new CardService();
+        public static readonly GameService   GameService   = new GameService();
+        public static readonly LootService   LootService   = new LootService();
+        public static readonly PawnService   PawnService   = new PawnService();
+        public static readonly PlayerService PlayerService = new PlayerService();
+        public static readonly SwarmService  SwarmService  = new SwarmService();
+        public static readonly WaveService   WaveService   = new WaveService();
+
+
+        /*===============================
+         *  Tags
          ==============================*/
-        public const string RESOURCE_CARD = "UI/card";
-        public const string RESOURCE_HEAT_ZONE = "Actors/heat_zone";
-        public const string RESOURCE_SWARM_MEMBER = "Actors/swarm_member";
-        
+        public static readonly string[] PoiTags = {"Pawn"};
+
+        /************ Logging ************/
+        public static void Log(Type t, string message)
+        {
+            Console.Out.WriteLine(message);
+        }
+
+        public static void Init()
+        {
+            CardService.Init();
+            GameService.Init();
+            LootService.Init();
+            PawnService.Init();
+            PlayerService.Init();
+            SwarmService.Init();
+            WaveService.Init();
+        }
+
+        public static T GetListFromJson<T>() where T : class
+        {
+            var path = "";
+            
+            if (typeof(T) == typeof(CardWrapper)) path = RESOURCE_CARD_GROUPS;
+            else if (typeof(T) == typeof(Wave)) path = RESOURCE_WAVE_ORDER;
+            else
+            { 
+               Log(typeof(T), "Cannot load type.");
+               return null;
+            }
+            
+            var jsonString = Resources.Load(path) as TextAsset;
+            
+            if (jsonString == null 
+                || jsonString.text == null 
+                || jsonString.text.Length == 0)
+            {
+               Log(typeof(T),"JSON failed to load.");
+               return null;
+            }
+
+            return JsonUtility.FromJson<T>(jsonString.text);
+        }
+
         /*===============================
          *  Prototypes
          ==============================*/
         public static GameObject GetSwarmProtoype()
         {
-         return Resources.Load(RESOURCE_SWARM_MEMBER) as GameObject;
-        } 
+            return Resources.Load(RESOURCE_SWARM_MEMBER) as GameObject;
+        }
     }
 }
