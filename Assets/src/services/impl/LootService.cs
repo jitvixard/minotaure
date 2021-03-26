@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using src.actors.controllers.impl;
 using src.card.model;
+using src.level;
 using src.scripting.level;
 using src.util;
 using UnityEngine;

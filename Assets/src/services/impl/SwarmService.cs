@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using src.actors.controllers.impl;
 using src.actors.model;
+using src.level;
 using src.model;
 using src.scripting.level;
 using src.util;
@@ -219,7 +220,7 @@ namespace src.services.impl
          ==============================*/
         IEnumerator Spawning()
         {
-            Environment.Log(GetType(), "Spawning wave::" + wave.number);
+            Environment.Log(GetType(), "Spawning wave::" + wave.waveNumber);
             var index = 0;
             while (index < wave.numberOfEntities)
             {

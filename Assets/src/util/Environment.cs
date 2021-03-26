@@ -1,4 +1,5 @@
 using System;using src.card.model;
+using src.level;
 using src.scripting.level;
 using src.services.impl;
 using UnityEngine;
@@ -117,12 +118,6 @@ namespace src.util
          ==============================*/
         public static readonly string[] PoiTags = {"Pawn"};
 
-        /************ Logging ************/
-        public static void Log(Type t, string message)
-        {
-            Console.Out.WriteLine(message);
-        }
-
         public static void Init()
         {
             CardService.Init();
@@ -134,37 +129,18 @@ namespace src.util
             WaveService.Init();
         }
 
-        public static T GetListFromJson<T>() where T : class
-        {
-            var path = "";
-            
-            if (typeof(T) == typeof(CardWrapper)) path = RESOURCE_CARD_GROUPS;
-            else if (typeof(T) == typeof(Wave)) path = RESOURCE_WAVE_ORDER;
-            else
-            { 
-               Log(typeof(T), "Cannot load type.");
-               return null;
-            }
-            
-            var jsonString = Resources.Load(path) as TextAsset;
-            
-            if (jsonString == null 
-                || jsonString.text == null 
-                || jsonString.text.Length == 0)
-            {
-               Log(typeof(T),"JSON failed to load.");
-               return null;
-            }
-
-            return JsonUtility.FromJson<T>(jsonString.text);
-        }
-
         /*===============================
          *  Prototypes
          ==============================*/
         public static GameObject GetSwarmProtoype()
         {
             return Resources.Load(RESOURCE_SWARM_MEMBER) as GameObject;
+        }
+        
+        /************ Logging ************/
+        public static void Log(Type t, string message)
+        {
+         Console.Out.WriteLine(message);
         }
     }
 }

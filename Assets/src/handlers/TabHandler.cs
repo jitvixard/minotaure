@@ -3,10 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using src.card.model;
-using src.model;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.PlayerLoop;
 using Environment = src.util.Environment;
 
 public class TabHandler : MonoBehaviour, IPointerClickHandler
@@ -52,20 +50,10 @@ public class TabHandler : MonoBehaviour, IPointerClickHandler
         displayed = new Vector3(origin.x + tabOffset, origin.y, origin.z);
     }
 
-    void Update()
-    {
-        var notNull = cards
-            .Where(c => c != null)
-            .ToList();
-
-        if (Input.GetKeyDown(KeyCode.Space))
-            if (notNull.Count < cardPositions.Count) AddCard();
-            else RemoveCard();
-    }
-
     /*===============================
     *  Card Management
     ==============================*/
+    //TODO Move to Child class
     public bool AddCard(Card card)
     {
         var obj = Resources.Load(Environment.RESOURCE_CARD) as GameObject;

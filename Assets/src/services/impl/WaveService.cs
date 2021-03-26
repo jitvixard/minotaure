@@ -1,4 +1,4 @@
-using src.scripting.level;
+using src.level;
 using src.util;
 
 namespace src.services.impl
@@ -14,7 +14,7 @@ namespace src.services.impl
         /*===============================
         *  Fields
         ==============================*/
-        Wave[] preparedWaves;
+        Wave[]     preparedWaves;
         int        remaining; //remaining swarm members
         int        setWaves;
 
@@ -76,7 +76,7 @@ namespace src.services.impl
             return null;
         }
 
-        void LoadWaves() => preparedWaves 
-            = Environment.GetListFromJson<WaveWrapper>().items;
+        void LoadWaves() => preparedWaves
+            = WaveRepository.GetAll().ToArray();
     }
 }

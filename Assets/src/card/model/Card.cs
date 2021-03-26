@@ -1,19 +1,20 @@
+using System;
 using src.model;
 using UnityEngine;
 
 namespace src.card.model
 {
+    [Serializable]
     public class Card
     {
-        public readonly string description;
-
-        public readonly bool       dropGuaranteed;
-        public readonly int      dropWeight;
-        public readonly GameObject prototype;
-
         public readonly string title;
-
-        public readonly CardType type;
+        public readonly string description;
+        
+        public readonly GameObject prototype;
+        public readonly CardType   type;
+        
+        public readonly bool dropGuaranteed;
+        public readonly int  dropWeight;
 
         public Card(
             CardType type,
@@ -32,9 +33,9 @@ namespace src.card.model
 
     public class CardBuilder
     {
-        string description;
-
         string   title;
+        string   description;
+        
         CardType type;
 
         public Card Build()

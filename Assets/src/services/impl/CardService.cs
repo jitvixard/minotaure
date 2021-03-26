@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using src.card.model;
+using src.level;
 using src.scripting.level;
 using src.util;
 
@@ -28,8 +29,8 @@ namespace src.services.impl
         {
             Environment.WaveService.NextWave
                 += LoadNextCards;
-            
-            cardBatches = Environment.GetListFromJson<CardWrapper>().items;
+
+            //cardBatches = CardRepository.GetAll.ToArray();
         }
 
         /*===============================
@@ -44,9 +45,9 @@ namespace src.services.impl
         void LoadNextCards(Wave wave)
         {
             possibleCards = 
-                wave.number >= cardBatches.Length
+                wave.waveNumber >= cardBatches.Length
                     ? GenerateCards(wave)
-                    : cardBatches[wave.number];
+                    : cardBatches[wave.waveNumber];
             CardDrops(possibleCards);
         }
 
