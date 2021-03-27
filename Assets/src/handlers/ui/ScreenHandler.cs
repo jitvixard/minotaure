@@ -1,9 +1,8 @@
-﻿using src.handlers;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
 
-namespace src.screens
+namespace src.handlers.ui
 {
     public abstract class ScreenHandler : MonoBehaviour, IPointerClickHandler
     {
