@@ -56,7 +56,13 @@ public class TabHandler : MonoBehaviour, IPointerClickHandler
     //TODO Move to Child class
     public bool AddCard(Card card)
     {
-        var obj = Resources.Load(Environment.RESOURCE_CARD) as GameObject;
+        var prototype = card.prototype;
+
+        if (prototype is null)
+        {
+            Debug.LogWarning("Card '" + card.type + "' has no prototype.");
+            return false;
+        }
 
         var i = 0;
         while (i < cardPositions.Count)
@@ -65,9 +71,9 @@ public class TabHandler : MonoBehaviour, IPointerClickHandler
         
         if (i == cardPositions.Count) return false;
 
-        obj = Instantiate(obj, cardPositions[i]);
-        obj.name = "card" + obj.GetInstanceID();
-        cardTiles[i] = obj;
+        prototype = Instantiate(prototype, cardPositions[i]);
+        prototype.name = "card" + prototype.GetInstanceID();
+        cardTiles[i] = prototype;
         cards[i] = card;
         return true;
     }

@@ -1,6 +1,7 @@
 using System;
 using src.model;
 using UnityEngine;
+using Environment = src.util.Environment;
 
 namespace src.card.model
 {
@@ -90,8 +91,9 @@ namespace src.card.model
         {
             switch (type)
             {
-                case CardType.Blank:
-                    return null;
+                case CardType.Eye:
+                    return Resources.Load(Environment.RESOURCE_CARD_EYE) 
+                        as GameObject;
                 case CardType.Tabular:
                     return null;
                 default:

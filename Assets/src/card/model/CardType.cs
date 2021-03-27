@@ -1,4 +1,4 @@
-namespace src.model
+namespace src.card.model
 {
     public enum CardType
     {

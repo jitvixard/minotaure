@@ -37,7 +37,9 @@ namespace src.util
         public const string RESOURCE_HEAT_ZONE    = "Actors/heat_zone";
         public const string RESOURCE_SWARM_MEMBER = "Actors/swarm_member";
         //cards
-        public const string RESOURCE_CARD        = "UI/card";
+        public const string RESOURCE_CARD_ROOT = "UI/Cards";
+        public const string RESOURCE_CARD_EYE = "UI/Cards/card-eye";
+        
         public const string RESOURCE_CARD_GROUPS = "Store/CardGroups";
         //waves
         public const string RESOURCE_WAVE_ORDER = "Store/WaveOrder";
