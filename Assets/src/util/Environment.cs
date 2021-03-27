@@ -15,6 +15,7 @@ namespace src.util
         public const string OVERHEAD_UI           = "overhead-ui";
         public const string SWARM_MEMBER          = "swarm-member";
         public const string TAG_CARD_PLACE_HOLDER = "CardPlaceHolder";
+        public const string TAG_CARD_TAB          = "CardTab";
         public const string TAG_FLOOR             = "Floor";
         public const string TAG_HEAT_ZONE         = "HeatZone";
         public const string TAG_MAIN_CAMERA       = "MainCamera";
@@ -142,7 +143,7 @@ namespace src.util
         /************ Logging ************/
         public static void Log(Type t, string message)
         {
-         Console.Out.WriteLine(message);
+           Debug.Log("[" + t + "] " + message);
         }
     }
 }

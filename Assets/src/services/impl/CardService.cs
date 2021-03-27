@@ -9,9 +9,7 @@ namespace src.services.impl
     {
         /*************** Card Drops ***************/
         public delegate void SetCardsToDrop(Card[] cards);
-
         public event SetCardsToDrop CardDrops = delegate { };
-        
         
         readonly HashSet<Card> activeCards
             = new HashSet<Card>();
@@ -21,6 +19,8 @@ namespace src.services.impl
         //value: Wave -> possible cards to spawn 
         readonly Card[][] cardBatches= CardRepository.AllBatches;
 
+        
+        
         /*===============================
         *  Initialization
         ==============================*/
@@ -31,7 +31,9 @@ namespace src.services.impl
 
             //cardBatches = CardRepository.GetAll.ToArray();
         }
-
+        
+        
+        
         /*===============================
         *  Handling
         ==============================*/
@@ -50,6 +52,8 @@ namespace src.services.impl
             CardDrops(possibleCards);
         }
 
+        
+        
         /*===============================
         *  Utility
         ==============================*/

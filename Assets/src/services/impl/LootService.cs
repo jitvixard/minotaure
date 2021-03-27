@@ -55,22 +55,8 @@ namespace src.services.impl
             dynamicDropRate = (float) guaranteedDrops / remaining;
         }
 
-        public void DropLoot(SwarmActorController controller)
-        {
-            var dropRate = baseDropRate > dynamicDropRate
-                ? baseDropRate
-                : dynamicDropRate;
-            var drop = Random.Range(0f, 1f); //drop value
-
-            if (drop <= dropRate)
-            {
-                DropCard(GetCard(dropRate)); //drops loot
-            }
-            DropScrap(GetScrap()); //drops scrap
-        }
-
         /*===============================
-         *  Dropping
+         *  Preparation
          ==============================*/
         void QueueLoot(Card[] cards)
         {
@@ -91,6 +77,25 @@ namespace src.services.impl
             }
         }
 
+        
+        
+        /*===============================
+         *  Dropping
+         ==============================*/
+        public void DropLoot(SwarmActorController controller)
+        {
+            var dropRate = baseDropRate > dynamicDropRate
+                ? baseDropRate
+                : dynamicDropRate;
+            var drop = Random.Range(0f, 1f); //drop value
+
+            if (drop <= dropRate)
+            {
+                DropCard(GetCard(dropRate)); //drops loot
+            }
+            DropScrap(GetScrap()); //drops scrap
+        }
+        
         Card GetCard(float dropRate)
         {
             Card card = null;

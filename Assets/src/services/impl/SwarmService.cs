@@ -236,7 +236,7 @@ namespace src.services.impl
                     yield return null;
                 }
 
-                var spawnPoint = spawnPoints[index];
+                var spawnPoint = spawnPoints[index % spawnPoints.Count];
                 spawnPoint = new Vector3(
                     Random.Range(-Environment.SPAWN_MARGIN, Environment.SPAWN_MARGIN),
                     spawnPoint.y,

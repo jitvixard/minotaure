@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using src.actors.controllers.impl;
 using src.card.model;
+using src.handlers.ui;
 using src.util;
 using UnityEngine;
 
@@ -16,16 +17,19 @@ namespace src.services.impl
         public event CurrentPlayer Player      = delegate { };
         public event UpdateLoot    LootChanged = delegate { };
 
-        //Loot
-        readonly List<Card> cards = new List<Card>();
 
-        GameObject heatZone;
-
+        
         /*===============================
          *  Fields
          ==============================*/
+        readonly List<Card> cards = new List<Card>();
+        
         PawnActorController player;
+        CardTabHandler      cardHandler;
+        
+        GameObject          heatZone;
         GameObject          prototypeHeatZone;
+        
         int                 scrap;
 
 
@@ -41,6 +45,9 @@ namespace src.services.impl
             //subscriptions
             Environment.LootService.DroppedCard += AddCard;
             Environment.LootService.DroppedScrap += AddScrap;
+
+            cardHandler = GameObject.FindWithTag(Environment.TAG_CARD_TAB)
+                .GetComponent<CardTabHandler>();
         }
 
         
@@ -76,6 +83,7 @@ namespace src.services.impl
         void AddCard(Card card)
         {
             cards.Add(card);
+            cardHandler.AddCard(card);
             LootChanged(cards, scrap);
         }
 

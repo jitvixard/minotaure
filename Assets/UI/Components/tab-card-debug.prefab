@@ -101,7 +101,7 @@ GameObject:
   - component: {fileID: 9144800201678021095}
   - component: {fileID: 9144800201678021092}
   - component: {fileID: 9144800201678021093}
-  - component: {fileID: 9144800201678021094}
+  - component: {fileID: 8756290113916322884}
   m_Layer: 5
   m_Name: tab-card-debug
   m_TagString: Untagged
@@ -167,7 +167,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &9144800201678021094
+--- !u!114 &8756290113916322884
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -176,7 +176,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 9144800201678021088}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 384891e2efb405e429681e76b7663d3b, type: 3}
+  m_Script: {fileID: 11500000, guid: 76fe15e5a085487e9ae788c1a27fd1bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   movingLeft: 1

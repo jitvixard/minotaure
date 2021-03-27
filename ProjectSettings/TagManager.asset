@@ -15,6 +15,7 @@ TagManager:
   - Spawner
   - SwarmActor
   - CardPlaceHolder
+  - CardTab
   layers:
   - Default
   - TransparentFX

@@ -56,6 +56,8 @@ namespace src.handlers.ui
 
             prototype = Instantiate(prototype, cardPositions[i]);
             prototype.name = "card" + prototype.GetInstanceID();
+            prototype.transform.localPosition = Vector3.zero;
+
             cardTiles[i] = prototype;
             cards[i] = card;
             return true;
