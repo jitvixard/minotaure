@@ -78,10 +78,9 @@ namespace src.handlers
          ==============================*/
         public static Vector3 ScreenClickToViewportPoint(RectTransform screenTransform, Camera inputCamera)
         {
-            //TODO investigate loss of fractions 
             var anchoredPos = screenTransform.anchoredPosition;
-            var xOffset = -(inputCamera.pixelWidth / 2 + anchoredPos.x);
-            var yOffset = -(inputCamera.pixelHeight / 2 + anchoredPos.y);
+            var xOffset = -(inputCamera.pixelWidth / 2f + anchoredPos.x);
+            var yOffset = -(inputCamera.pixelHeight / 2f + anchoredPos.y);
             var xScreenHit = Input.mousePosition.x + xOffset;
             var yScreenHit = Input.mousePosition.y + yOffset;
 
