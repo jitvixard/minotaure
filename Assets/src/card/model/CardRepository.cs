@@ -22,7 +22,7 @@ namespace src.card.model
         
         
         /**************** Waves ****************/
-        static Card[] BatchOne => new[]
+        public static Card[] BatchOne => new[]
         {
             Card.Builder
                 .Title("Eye")

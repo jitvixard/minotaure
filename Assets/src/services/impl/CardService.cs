@@ -55,7 +55,8 @@ namespace src.services.impl
         ==============================*/
         Card[] GenerateCards(Wave wave)
         {
-            return new Card[0];
+            //TODO generate cards post scripted levels
+            return CardRepository.BatchOne;
         }
     }
 }
