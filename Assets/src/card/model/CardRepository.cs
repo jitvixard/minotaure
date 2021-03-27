@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using src.model;
-
 namespace src.card.model
 {
     public static class CardRepository

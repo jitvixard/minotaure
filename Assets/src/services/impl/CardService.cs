@@ -55,7 +55,7 @@ namespace src.services.impl
         ==============================*/
         Card[] GenerateCards(Wave wave)
         {
-            return null;
+            return new Card[0];
         }
     }
 }

@@ -12,8 +12,9 @@ namespace src.services.impl
          *  Observable
          ==============================*/
         public delegate void CurrentPlayer(PawnActorController p);
-
         public delegate void UpdateLoot(List<Card> card, int scrap);
+        public event CurrentPlayer Player      = delegate { };
+        public event UpdateLoot    LootChanged = delegate { };
 
         //Loot
         readonly List<Card> cards = new List<Card>();
@@ -42,15 +43,15 @@ namespace src.services.impl
             Environment.LootService.DroppedScrap += AddScrap;
         }
 
-        public event CurrentPlayer Player      = delegate { };
-        public event UpdateLoot    LootChanged = delegate { };
-
+        
 
         /*===============================
          *  Handling
          ==============================*/
         public void Possess(PawnActorController controller)
         {
+            if (controller == player) return; //self ref (stop)
+            
             if (player)
             {
                 player.Select(false);

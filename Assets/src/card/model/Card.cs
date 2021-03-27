@@ -1,5 +1,4 @@
 using System;
-using src.model;
 using UnityEngine;
 using Environment = src.util.Environment;
 
@@ -21,12 +20,16 @@ namespace src.card.model
             CardType type,
             GameObject prototype,
             string title,
-            string description)
+            string description,
+            bool dropGuaranteed,
+            int dropWeight)
         {
             this.type = type;
             this.prototype = prototype;
             this.title = title;
             this.description = description;
+            this.dropGuaranteed = dropGuaranteed;
+            this.dropWeight = dropWeight;
         }
 
         public static CardBuilder Builder => new CardBuilder();
@@ -39,7 +42,7 @@ namespace src.card.model
         
         CardType type;
 
-        bool guaranteedDrop;
+        bool dropGuaranteed;
         int  dropWeight;
 
         public Card Build()
@@ -48,7 +51,9 @@ namespace src.card.model
                 type,
                 GetPrototype(),
                 title,
-                description);
+                description,
+                dropGuaranteed,
+                dropWeight);
         }
 
         public Card BuildFrom(Card card)
@@ -77,7 +82,7 @@ namespace src.card.model
 
         public CardBuilder GuaranteedDrop(bool guaranteedDrop)
         {
-            this.guaranteedDrop = guaranteedDrop;
+            this.dropGuaranteed = guaranteedDrop;
             return this;
         }
 

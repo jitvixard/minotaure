@@ -65,10 +65,7 @@ namespace src.handlers
             if (!selected.TryGetComponent<AbstractActorController>(out var controller)) return;
 
             if (controller is PawnActorController pac) playerService.Possess(pac);
-            else if (controller is SwarmActorController sac) sac.Die();
-
-            if (!(SelectedActor == null)) SelectedActor.Select(false); //deselect old
-            SelectedActor = controller.Select(true);                   //select new
+            else if (controller is SwarmActorController sac) sac.Die(); //select new
         }
 
         void HandleFloor(Vector3 point)

@@ -70,7 +70,7 @@ namespace src.actors.controllers
         {
             get
             {
-                if (target == null) return false;
+                if (target is null) return false;
                 return Vector3.Distance(
                            target.transform.position,
                            transform.position)
@@ -91,6 +91,7 @@ namespace src.actors.controllers
             actor = ActorFactory.Create(this);
             stateMachine = StateMachineFactory.Create(actor);
             sprite = new SpriteHandler(this);
+            
             //assigning services
             playerService = Environment.PlayerService;
             swarmService = Environment.SwarmService;
@@ -143,7 +144,7 @@ namespace src.actors.controllers
          ==============================*/
         public AbstractActorController Select(bool selected)
         {
-            this.IsSelected = selected;
+            IsSelected = selected;
             if (selected) stateMachine.Stop();
             else stateMachine.Resume();
             sprite.Refresh();
@@ -185,7 +186,6 @@ namespace src.actors.controllers
                 || stateMachine.CurrentState == State.Attack)
                 stateMachine.CurrentState = State.Idle;
         }
-
         //TODO Handle Destruction of Target (?)
 
         /*===============================

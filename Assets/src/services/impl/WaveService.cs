@@ -73,7 +73,10 @@ namespace src.services.impl
 
         Wave GenerateWave()
         {
-            return null;
+            return new Wave(
+                waveNumber,
+                waveNumber,
+                true);
         }
 
         void LoadWaves() => preparedWaves
