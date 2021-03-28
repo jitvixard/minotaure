@@ -1,4 +1,5 @@
 using System;
+using src.card.behaviours;
 using UnityEngine;
 using Environment = src.util.Environment;
 
@@ -15,6 +16,8 @@ namespace src.card.model
         
         public readonly bool dropGuaranteed;
         public readonly int  dropWeight;
+
+        public CardBehaviour behaviour;
 
         public Card(
             CardType type,
@@ -99,8 +102,9 @@ namespace src.card.model
                 case CardType.Eye:
                     return Resources.Load(Environment.RESOURCE_CARD_EYE) 
                         as GameObject;
-                case CardType.Tabular:
-                    return null;
+                case CardType.Beacon:
+                    return Resources.Load(Environment.RESOURCE_CARD_BEACON) 
+                        as GameObject;
                 default:
                     return null;
             }

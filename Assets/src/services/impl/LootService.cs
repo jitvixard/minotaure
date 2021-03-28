@@ -91,20 +91,27 @@ namespace src.services.impl
 
             if (drop <= dropRate)
             {
-                DropCard(GetCard(dropRate)); //drops loot
+                var card = GetCard(dropRate);
+                if (card != null) DroppedCard(card); //drops loot
             }
-            DropScrap(GetScrap()); //drops scrap
+            
+            DroppedScrap(GetScrap()); //drops scrap
         }
         
         Card GetCard(float dropRate)
         {
             Card card = null;
             
-            if (dropRate >= 1f)
+            if (dropRate >= 1f && guaranteedCards.Count > 0)
                 card = guaranteedCards[Random.Range(0, guaranteedCards.Count - 1)];
 
-            if (card == null)
+            if (card == null && availableCards.Count > 0)
                 card = availableCards[Random.Range(0, availableCards.Count - 1)];
+
+            if (card == null)
+            {
+                return null;
+            }
             
             availableCards = availableCards
                               .Where(c => c != card)
@@ -120,8 +127,6 @@ namespace src.services.impl
         {
             return 100;
         }
-
-        void DropCard(Card card) => DroppedCard(card);
 
         void DropScrap(int amount) => DroppedScrap(amount);
     }

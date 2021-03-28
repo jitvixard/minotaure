@@ -2,7 +2,7 @@ namespace src.card.model
 {
     public enum CardType
     {
-        Blank,
+        Beacon,
         Eye,
         Tabular
     }

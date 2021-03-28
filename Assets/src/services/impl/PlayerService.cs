@@ -23,9 +23,10 @@ namespace src.services.impl
          *  Fields
          ==============================*/
         readonly List<Card> cards = new List<Card>();
+
+        CardService cardService;
         
         PawnActorController player;
-        CardTabHandler      cardHandler;
         
         GameObject          heatZone;
         GameObject          prototypeHeatZone;
@@ -46,8 +47,7 @@ namespace src.services.impl
             Environment.LootService.DroppedCard += AddCard;
             Environment.LootService.DroppedScrap += AddScrap;
 
-            cardHandler = GameObject.FindWithTag(Environment.TAG_CARD_TAB)
-                .GetComponent<CardTabHandler>();
+            cardService = Environment.CardService;
         }
 
         
@@ -83,7 +83,7 @@ namespace src.services.impl
         void AddCard(Card card)
         {
             cards.Add(card);
-            cardHandler.AddCard(card);
+            cardService.AddCard(card);
             LootChanged(cards, scrap);
         }
 

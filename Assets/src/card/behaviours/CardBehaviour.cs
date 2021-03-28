@@ -1,22 +1,32 @@
+using System;
 using System.Collections;
+using src.card.model;
+using src.services.impl;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using Environment = src.util.Environment;
 
 namespace src.card.behaviours
 {
-    public abstract class CardBehaviour : MonoBehaviour
+    public abstract class CardBehaviour : MonoBehaviour, IPointerClickHandler
     {
-        Coroutine   routine;
+        public Card Card
+        {
+            set
+            {
+                if (card is null)
+                {
+                    value.behaviour = this;
+                    card           = value;
+                }
+            }
+        }
         public bool IsRunning => routine != null;
 
-        void OnDisable()
-        {
-            Stop();
-        }
+        CardService cardService;
 
-        void OnDestroy()
-        {
-            Stop();
-        }
+        Card        card;
+        Coroutine   routine;
 
         /**************** Card Behaviour ****************/
         protected abstract IEnumerator BehaviourRoutine();
@@ -25,6 +35,11 @@ namespace src.card.behaviours
         /*===============================
         *  Lifecycle
         ==============================*/
+        protected  virtual void Awake()
+        {
+            cardService = Environment.CardService;
+        }
+
         public bool Play()
         {
             routine = StartCoroutine(BehaviourRoutine());
@@ -40,6 +55,25 @@ namespace src.card.behaviours
             }
 
             return false;
+        }
+        
+        void OnDisable()
+        {
+            Stop();
+        }
+
+        void OnDestroy()
+        {
+            Stop();
+        }
+        
+        /*===============================
+        *  Handler
+        ==============================*/
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            print("click");
+            cardService.Focus(card);
         }
     }
 }

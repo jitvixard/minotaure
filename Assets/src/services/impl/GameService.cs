@@ -1,5 +1,6 @@
 using System.Collections;
 using src.actors.controllers.impl;
+using src.card.behaviours;
 using src.level;
 using src.scripting;
 using src.scripting.level;
@@ -14,6 +15,7 @@ namespace src.services.impl
         *  Observables
         ==============================*/
         public delegate void WaveToStart(Wave wave);
+        public event WaveToStart ReadiedWave = delegate { };
 
         Coroutine currentRoutine;
 
@@ -46,11 +48,14 @@ namespace src.services.impl
             currentRoutine = gameBehaviour.StartCoroutine(StartRoutine());
         }
 
-        public event WaveToStart ReadiedWave = delegate { };
-
         /*===============================
         *  Handling
         ==============================*/
+        public bool AddBehaviour(CardBehaviour cardBehaviour)
+        {
+            return true;
+        }
+        
         void QueueNextWave(Wave wave)
         {
             this.wave = wave;

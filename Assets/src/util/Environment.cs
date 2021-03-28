@@ -12,8 +12,13 @@ namespace src.util
         /*===============================
         *  GameObject Names
         ==============================*/
-        public const string OVERHEAD_UI           = "overhead-ui";
-        public const string SWARM_MEMBER          = "swarm-member";
+        public const string OVERHEAD_UI  = "overhead-ui";
+        public const string SWARM_MEMBER = "swarm-member";
+        public const string UI_CARD_TEXT = "card-text";
+        
+        /*===============================
+        *  GameObject Tags
+        ==============================*/
         public const string TAG_CARD_PLACE_HOLDER = "CardPlaceHolder";
         public const string TAG_CARD_TAB          = "CardTab";
         public const string TAG_FLOOR             = "Floor";
@@ -39,7 +44,8 @@ namespace src.util
         public const string RESOURCE_SWARM_MEMBER = "Actors/swarm_member";
         //cards
         public const string RESOURCE_CARD_ROOT = "UI/Cards";
-        public const string RESOURCE_CARD_EYE = "UI/Cards/card-eye";
+        public const string RESOURCE_CARD_BEACON  = "UI/Cards/card-beacon";
+        public const string RESOURCE_CARD_EYE  = "UI/Cards/card-eye";
         
         public const string RESOURCE_CARD_GROUPS = "Store/CardGroups";
         //waves

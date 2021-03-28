@@ -12,12 +12,15 @@ namespace src.handlers.ui
         ==============================*/
         [SerializeField] bool movingLeft;
 
+        /*=============Tab=============*/
+        protected GameObject   tab;
+        protected RectTransform rectTransform;
+
         /*=========Transition=========*/
-        Coroutine     transitionRoutine;
-        RectTransform rectTransform;
-        Vector3       origin;
-        Vector3       displayed;
-        bool          isOut;
+        Coroutine transitionRoutine;
+        Vector3   origin;
+        Vector3   displayed;
+        bool      isOut;
     
         /*===============================
         *  Lifecycle
@@ -26,10 +29,11 @@ namespace src.handlers.ui
         {
             var tabOffset = Environment.UI_CARD_TAB_WIDTH;
             tabOffset = movingLeft ? -tabOffset : tabOffset;
-
-            rectTransform = GetComponent<RectTransform>();
-            origin = rectTransform.position;
-            displayed = new Vector3(origin.x + tabOffset, origin.y, origin.z);
+            
+            tab           = transform.parent.gameObject;
+            rectTransform = tab.GetComponent<RectTransform>();
+            origin        = rectTransform.position;
+            displayed     = new Vector3(origin.x + tabOffset, origin.y, origin.z);
         }
 
         /*===============================
