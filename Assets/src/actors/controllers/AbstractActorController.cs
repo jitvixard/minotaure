@@ -74,7 +74,7 @@ namespace src.actors.controllers
                 return Vector3.Distance(
                            target.transform.position,
                            transform.position)
-                       <= Environment.ATTACK_RANGE;
+                       <= Environment.COMBAT_ATTACK_RANGE;
             }
         }
 

@@ -52,7 +52,7 @@ namespace src.impl
                    && Vector3.Distance(
                        transform.position,
                        controller.Target.transform.position)
-                   < Environment.ATTACK_RANGE;
+                   < Environment.COMBAT_ATTACK_RANGE;
         }
 
 

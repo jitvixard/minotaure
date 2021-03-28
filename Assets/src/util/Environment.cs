@@ -12,10 +12,15 @@ namespace src.util
         ==============================*/
         public const string OVERHEAD_UI    = "overhead-ui";
         public const string SWARM_MEMBER   = "swarm-member";
+        //pawn
+        public const string PAWN_LOAD_INDICATOR = "loading-indicator";
+        //ui
         public const string UI_CARD_TEXT   = "card-text";
         public const string UI_CARD_BUTTON = "button-box";
         public const string UI_CARD_BUTTON_TEXT = "button-text";
         public const string UI_CARD_JOINER = "joiner";
+        
+        
         
         /*===============================
         *  GameObject Tags
@@ -29,15 +34,27 @@ namespace src.util
         public const string TAG_PAWN              = "Pawn";
         public const string TAG_SPAWNER           = "Spawner";
         public const string TAG_SWARM             = "SwarmActor";
+        //collection
+        public static string[] PointsOfInterest = 
+        {
+         TAG_PAWN
+        };
 
-
+        
+        
         /*===============================
-         *  UI
+         *  UI & UX
          ==============================*/
+        //button
+        public const float UI_BUTTON_FADE    = 0.75f;
+        //card
         public const float UI_CARD_SLIDE_OUT = 1.5f;
         public const float UI_CARD_TAB_WIDTH = 213f;
+        //overhead
+        public const float UI_OVERHEAD_SELECTION_INTERVAL = 0.3f;
 
 
+        
         /*===============================
          *  Resource Paths
          ==============================*/
@@ -60,15 +77,15 @@ namespace src.util
         public const float SPEED_PAWN        = 4.5f;
         public const float STOPPING_DISTANCE = 0.1f;
 
+        
+        
         /*===============================
          *  Combat
          ==============================*/
-        public const float ATTACK_RANGE = 1f;
+        public const float COMBAT_ATTACK_RANGE = 1f;
+        public const float COMBAT_LOAD_TIME    = 2f;
 
-        /*===============================
-         *  Layers
-         ==============================*/
-        public const int LAYER_FLOOR = 9;
+
 
         /*===============================
          *  State Machine Information
@@ -77,20 +94,17 @@ namespace src.util
         public const float IDLE_WAIT_UPPER = 2.5f;
         public const int   IDLE_RANGE      = 3;
 
-        /*===============================
-         *  UI & UX
-         ==============================*/
-        public const float UI_BUTTON_FADE                 = 0.75f;
-        public const float UI_OVERHEAD_SELECTION_INTERVAL = 0.3f;
-
+        
+        
         /*===============================
          *  Swarm - Fields
          ==============================*/
-        public const int SWARM_MAX_ATTACKERS       = 3;
-        public const int SWARM_MAX_LOCATE_ATTEMPTS = 5;
+        public const int   SWARM_MAX_ATTACKERS       = 3;
+        public const int   SWARM_MAX_LOCATE_ATTEMPTS = 5;
+        public const float SWARM_VISION_RANGE        = 4f;
 
-        public const float SWARM_VISION_RANGE = 4f;
-
+        
+        
         /*===============================
          *  Swarm - Spawning
          ==============================*/
@@ -99,6 +113,8 @@ namespace src.util
         public const float SPAWN_MARGIN         = 10f;
         public const float SPAWN_INTERVAL_LOWER = 2f;
         public const float SPAWN_INTERVAL_UPPER = 5f;
+        
+        
 
         /*===============================
          *  Camera
@@ -106,11 +122,15 @@ namespace src.util
         public const float CAMERA_SMOOTH_DIST = 5f;
         public const int   CAMERA_SMOOTH_TIME = 10000;
         public const int   HEAT_ZONE_DELAY    = 5;
+        
+        
 
         /*===============================
          *  Loots
          ==============================*/
         public const float LOOT_DROP_RATE = 0.333f;
+        
+        
 
         /*===============================
         *  Services
@@ -122,13 +142,9 @@ namespace src.util
         public static readonly PlayerService PlayerService = new PlayerService();
         public static readonly SwarmService  SwarmService  = new SwarmService();
         public static readonly WaveService   WaveService   = new WaveService();
-
-
-        /*===============================
-         *  Tags
-         ==============================*/
-        public static readonly string[] PoiTags = {"Pawn"};
-
+        
+        
+        
         public static void Init()
         {
             CardService.Init();
@@ -140,14 +156,6 @@ namespace src.util
             WaveService.Init();
         }
 
-        /*===============================
-         *  Prototypes
-         ==============================*/
-        public static GameObject GetSwarmProtoype()
-        {
-            return Resources.Load(RESOURCE_SWARM_MEMBER) as GameObject;
-        }
-        
         /************ Logging ************/
         public static void Log(Type t, string message)
         {

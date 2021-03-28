@@ -47,7 +47,7 @@ namespace src.scripting.level
                 controller.InHeatZone = true;
                 membersInHeatZone.Add(controller);
             }
-            else if (Environment.PoiTags.Contains(otherObj.tag))
+            else if (Environment.PointsOfInterest.Contains(otherObj.tag))
             {
                 pointsOfInterest.Add(otherObj);
             }

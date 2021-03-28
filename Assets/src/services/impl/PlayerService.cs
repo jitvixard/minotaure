@@ -23,6 +23,8 @@ namespace src.services.impl
          ==============================*/
         readonly List<Card> cards = new List<Card>();
 
+        public float loadTime;
+
         CardService cardService;
         
         PawnActorController player;
@@ -30,7 +32,7 @@ namespace src.services.impl
         GameObject          heatZone;
         GameObject          prototypeHeatZone;
         
-        int                 scrap;
+        int   scrap;
 
 
         /*===============================
@@ -38,6 +40,8 @@ namespace src.services.impl
          ==============================*/
         public void Init()
         {
+            loadTime = Environment.COMBAT_LOAD_TIME;
+            
             prototypeHeatZone =
                 Resources.Load(Environment.RESOURCE_HEAT_ZONE)
                     as GameObject;
