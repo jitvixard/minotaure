@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
+using Environment = src.util.Environment;
 
 namespace src.handlers.ui
 {
@@ -30,8 +32,20 @@ namespace src.handlers.ui
         {
             var point = IOHandler.ScreenClickToViewportPoint(screenTransform, Camera.main);
             var viewRay = castingCamera.ViewportPointToRay(point);
-            //TODO add raycast filter
-            if (Physics.Raycast(viewRay, out var hit)) io.HandleHit(hit);
+            if (Physics.Raycast(viewRay, out var hit)) 
+                switch (eventData.button)
+                {
+                    case PointerEventData.InputButton.Left:
+                        io.HandleHit(hit);
+                        break;
+                    case PointerEventData.InputButton.Right:
+                        io.HandleAction(hit);
+                        break;
+                    case PointerEventData.InputButton.Middle:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
         }
 
         protected abstract void HandleHit(RaycastHit hit);

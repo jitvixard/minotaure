@@ -26,6 +26,8 @@ namespace src.services.impl
 
         CardTabHandler cardTabHandler;
 
+        public bool IsCardSelected => selectedCard != null;
+
 
         /*===============================
         *  Initialization

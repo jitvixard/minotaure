@@ -6,6 +6,7 @@ namespace src.actors.model
     {
         public PawnActor(AbstractActorController controller) : base(controller)
         {
+            health = 2;
         }
     }
 }

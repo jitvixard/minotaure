@@ -21,6 +21,12 @@ namespace src.services.impl
         /*===============================
          *  Fields
          ==============================*/
+        public float ProjectileSpeed => shotSpeed;
+        
+        
+        /*===============================
+         *  Fields
+         ==============================*/
         readonly List<Card> cards = new List<Card>();
 
         public float loadTime;
@@ -34,7 +40,10 @@ namespace src.services.impl
         
         int   scrap;
 
+        float shotSpeed = Environment.COMBAT_PROJECTILE_SPEED;
 
+
+        
         /*===============================
          *  Initialization
          ==============================*/
@@ -76,6 +85,12 @@ namespace src.services.impl
 
             if (player)         //truthy check to be safe
                 Player(player); //emits event when a new player is selected
+        }
+
+        public void Action(RaycastHit hit)
+        {
+            if (cardService.IsCardSelected) cardService.ActivateCard(hit);
+            else if (player) player.Fire(hit);
         }
 
         public void FloorClick(RaycastHit hit)

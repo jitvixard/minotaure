@@ -13,7 +13,8 @@ namespace src.util
         public const string OVERHEAD_UI    = "overhead-ui";
         public const string SWARM_MEMBER   = "swarm-member";
         //pawn
-        public const string PAWN_LOAD_INDICATOR = "loading-indicator";
+        public const string PAWN_HEALTH_INDICATOR = "health-indicator";
+        public const string PAWN_LOAD_INDICATOR   = "loading-indicator";
         //ui
         public const string UI_CARD_TEXT   = "card-text";
         public const string UI_CARD_BUTTON = "button-box";
@@ -51,6 +52,7 @@ namespace src.util
         public const float UI_CARD_SLIDE_OUT = 1.5f;
         public const float UI_CARD_TAB_WIDTH = 213f;
         //overhead
+        public const float UI_OVERHEAD_HEAL_TIME          = 0.3f;
         public const float UI_OVERHEAD_SELECTION_INTERVAL = 0.3f;
 
 
@@ -68,6 +70,8 @@ namespace src.util
         //cursors
         public const string RESOURCE_CURSOR_BEACON = "UI/Cursors/cursor-beacon";
         public const string RESOURCE_CURSOR_EYE = "UI/Cursors/cursor-eye";
+        //shot
+        public const string RESOURCE_SHOT = "FX/shot";
 
 
         /*===============================
@@ -85,7 +89,8 @@ namespace src.util
         public const float COMBAT_ATTACK_RANGE = 1f;
         public const float COMBAT_LOAD_TIME    = 2f;
         //projectile
-        public const float COMBAT_PROJECTILE_SPEED = 5f;
+        public const float COMBAT_PROJECTILE_SPEED = 10f;
+        public const float COMBAT_PROJECTILE_LIFE  = 7.5f;
 
 
 

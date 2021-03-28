@@ -24,8 +24,6 @@ namespace src.handlers
         CardService   cardService;
         PlayerService playerService;
 
-        bool cardSelected;
-
         /*===============================
          *  Properties
          ==============================*/
@@ -64,6 +62,8 @@ namespace src.handlers
             //TODO Handle PickUp Case
         }
 
+        public void HandleAction(RaycastHit hit) => playerService.Action(hit);
+
         void HandleSelection(GameObject selected)
         {
             if (!selected.TryGetComponent<AbstractActorController>(out var controller)) return;
@@ -74,26 +74,12 @@ namespace src.handlers
 
         void HandleFloor(RaycastHit hit)
         {
-            if (cardSelected)
-            {
-                cardService.ActivateCard(hit);
-                return;
-            }
-            
             playerService.FloorClick(hit);
         }
 
         void QueueCard(Card card)
         {
             ApplyCursor(card);
-
-            if (card == null)
-            {
-                cardSelected = false;
-                return;
-            }
-
-            cardSelected = true;
         }
 
         void ApplyCursor(Card card)
