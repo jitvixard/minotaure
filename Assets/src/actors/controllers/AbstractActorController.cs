@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Diagnostics;
-using src.actors.handlers;
+using src.actors.handlers.sprite;
 using src.actors.model;
 using src.impl;
 using src.interfaces;
@@ -90,8 +90,7 @@ namespace src.actors.controllers
             agent = GetComponent<NavMeshAgent>();
             actor = ActorFactory.Create(this);
             stateMachine = StateMachineFactory.Create(actor);
-            sprite = new SpriteHandler(this);
-            
+
             //assigning services
             playerService = Environment.PlayerService;
             swarmService = Environment.SwarmService;

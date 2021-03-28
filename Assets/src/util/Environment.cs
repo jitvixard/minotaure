@@ -35,7 +35,7 @@ namespace src.util
         public const string TAG_SPAWNER           = "Spawner";
         public const string TAG_SWARM             = "SwarmActor";
         //collection
-        public static string[] PointsOfInterest = 
+        public static string[] pointsOfInterest = 
         {
          TAG_PAWN
         };
@@ -84,6 +84,8 @@ namespace src.util
          ==============================*/
         public const float COMBAT_ATTACK_RANGE = 1f;
         public const float COMBAT_LOAD_TIME    = 2f;
+        //projectile
+        public const float COMBAT_PROJECTILE_SPEED = 5f;
 
 
 

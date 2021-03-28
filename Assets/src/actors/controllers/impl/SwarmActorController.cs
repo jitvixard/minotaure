@@ -1,4 +1,5 @@
 using System.Collections;
+using src.actors.handlers.sprite;
 using src.util;
 
 namespace src.actors.controllers.impl
@@ -14,6 +15,8 @@ namespace src.actors.controllers.impl
         {
             base.Awake();
             playerService.Player += controller => player = controller;
+            
+            sprite =  new SpriteHandler(this);
         }
 
         public override void Die()

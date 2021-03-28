@@ -150,7 +150,7 @@ namespace src.services.impl
                          .Select(c => c.gameObject)
                          .Where(g =>
                          {
-                             if (!Environment.PointsOfInterest.Contains(g.tag))
+                             if (!Environment.pointsOfInterest.Contains(g.tag))
                                  return false;
                              if (targetedPoi.TryGetValue(g.name, out var attackers))
                                  if (attackers.Count >= Environment.SWARM_MAX_ATTACKERS)
