@@ -15,7 +15,8 @@ namespace src.util
         public const string OVERHEAD_UI    = "overhead-ui";
         public const string SWARM_MEMBER   = "swarm-member";
         public const string UI_CARD_TEXT   = "card-text";
-        public const string UI_CARD_BUTTON   = "button-box";
+        public const string UI_CARD_BUTTON = "button-box";
+        public const string UI_CARD_BUTTON_TEXT = "button-text";
         public const string UI_CARD_JOINER = "joiner";
         
         /*===============================

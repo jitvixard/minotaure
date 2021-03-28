@@ -20,6 +20,7 @@ namespace src.card.behaviours
                     card           = value;
                 }
             }
+            get => card;
         }
         public bool IsRunning => routine != null;
 

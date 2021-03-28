@@ -1,13 +1,10 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using src.card.behaviours;
 using src.card.model;
-using src.services.impl;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI.ProceduralImage;
 using Environment = src.util.Environment;
 
@@ -26,6 +23,7 @@ namespace src.handlers.ui
         
         /*===========Display==========*/
         TextMeshProUGUI cardText;
+        TextMeshProUGUI buttonText;
         ProceduralImage joiner;
         ProceduralImage button;
         
@@ -56,14 +54,11 @@ namespace src.handlers.ui
                 .First(p => p.name == Environment.UI_CARD_JOINER);
             button = parent.GetComponentsInChildren<ProceduralImage>()
                 .First(p => p.name == Environment.UI_CARD_BUTTON);
+            buttonText = parent.GetComponentsInChildren<TextMeshProUGUI>()
+                .First(p => p.name == Environment.UI_CARD_BUTTON_TEXT);
         }
-        
-        
-        
-        /*===============================
-        *  Lifecycle
-        ==============================*/
 
+        
 
         /*===============================
         *  UI
@@ -110,12 +105,18 @@ namespace src.handlers.ui
             do
             {
                 t += Time.deltaTime / waitTime;
+                
                 var tempColor = button.color;
                 tempColor.a = Mathf.Lerp(alphaOrigin, goal, t);
 
-                button.color = tempColor;
+                var tempTextColor = buttonText.color;
+                tempTextColor.a = Mathf.Lerp(alphaOrigin, goal, t);
+
+                buttonText.color = tempTextColor;
+                button.color     = tempColor;
                 yield return null;
-            } while (button.color.a != goal);
+            } while (button.color.a != goal 
+            && buttonText.color.a != goal);
         }
 
 
