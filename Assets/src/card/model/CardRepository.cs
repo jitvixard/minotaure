@@ -6,8 +6,8 @@ namespace src.card.model
         static Card BeaconCard(bool guarantee, int weight)
             => Card.Builder
                 .Title("Be a true nuisance.")
-                .Description("Something deep on you smooth brain is stirred." +
-                             "A compulsion to chase it in the snow.")
+                .Description("Something deep in your smooth brain is stirred by the chimes." +
+                             "Attraction and deception, this could be used.")
                 .Type(CardType.Beacon)
                 .GuaranteedDrop(guarantee)
                 .DropWeight(weight)
@@ -16,7 +16,7 @@ namespace src.card.model
         static Card EyeCard(bool guarantee, int weight)
             => Card.Builder
                 .Title("Take a peek.")
-                .Description("A lens here and wire there. " +
+                .Description("A lens here and wire there." +
                              "What will you be able to behold?")
                 .Type(CardType.Eye)
                 .GuaranteedDrop(guarantee)
