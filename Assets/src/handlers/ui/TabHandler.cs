@@ -17,10 +17,10 @@ namespace src.handlers.ui
         protected RectTransform rectTransform;
 
         /*=========Transition=========*/
-        Coroutine transitionRoutine;
-        Vector3   origin;
-        Vector3   displayed;
-        bool      isOut;
+        protected Coroutine transitionRoutine;
+        protected Vector3   origin;
+        protected Vector3   displayed;
+        protected bool      isOut;
     
         /*===============================
         *  Lifecycle
@@ -39,13 +39,13 @@ namespace src.handlers.ui
         /*===============================
         *  Transition
         ==============================*/
-        public void OnPointerClick(PointerEventData eventData)
+        public virtual void OnPointerClick(PointerEventData eventData)
         {
             if (transitionRoutine != null) StopCoroutine(transitionRoutine);
             transitionRoutine = StartCoroutine(TransitionRoutine());
         }
 
-        IEnumerator TransitionRoutine()
+        protected virtual IEnumerator TransitionRoutine()
         {
             var start = rectTransform.position;
             var target = isOut ? origin : displayed;

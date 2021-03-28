@@ -12,9 +12,11 @@ namespace src.util
         /*===============================
         *  GameObject Names
         ==============================*/
-        public const string OVERHEAD_UI  = "overhead-ui";
-        public const string SWARM_MEMBER = "swarm-member";
-        public const string UI_CARD_TEXT = "card-text";
+        public const string OVERHEAD_UI    = "overhead-ui";
+        public const string SWARM_MEMBER   = "swarm-member";
+        public const string UI_CARD_TEXT   = "card-text";
+        public const string UI_CARD_BUTTON   = "button-box";
+        public const string UI_CARD_JOINER = "joiner";
         
         /*===============================
         *  GameObject Tags
@@ -79,6 +81,7 @@ namespace src.util
         /*===============================
          *  UI & UX
          ==============================*/
+        public const float UI_BUTTON_FADE                 = 0.15f;
         public const float UI_OVERHEAD_SELECTION_INTERVAL = 0.3f;
 
         /*===============================
