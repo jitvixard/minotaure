@@ -1,6 +1,4 @@
-using System;using src.card.model;
-using src.level;
-using src.scripting.level;
+using System;
 using src.services.impl;
 using UnityEngine;
 
@@ -24,6 +22,7 @@ namespace src.util
         ==============================*/
         public const string TAG_CARD_PLACE_HOLDER = "CardPlaceHolder";
         public const string TAG_CARD_TAB          = "CardTab";
+        public const string TAG_CURSOR_BASE       = "CursorBase";
         public const string TAG_FLOOR             = "Floor";
         public const string TAG_HEAT_ZONE         = "HeatZone";
         public const string TAG_MAIN_CAMERA       = "MainCamera";
@@ -49,10 +48,9 @@ namespace src.util
         public const string RESOURCE_CARD_ROOT = "UI/Cards";
         public const string RESOURCE_CARD_BEACON  = "UI/Cards/card-beacon";
         public const string RESOURCE_CARD_EYE  = "UI/Cards/card-eye";
-        
-        public const string RESOURCE_CARD_GROUPS = "Store/CardGroups";
-        //waves
-        public const string RESOURCE_WAVE_ORDER = "Store/WaveOrder";
+        //cursors
+        public const string RESOURCE_CURSOR_BEACON = "UI/Cursors/cursor-beacon";
+        public const string RESOURCE_CURSOR_EYE = "UI/Cursors/cursor-eye";
 
 
         /*===============================
@@ -82,7 +80,7 @@ namespace src.util
         /*===============================
          *  UI & UX
          ==============================*/
-        public const float UI_BUTTON_FADE                 = 0.15f;
+        public const float UI_BUTTON_FADE                 = 0.75f;
         public const float UI_OVERHEAD_SELECTION_INTERVAL = 0.3f;
 
         /*===============================

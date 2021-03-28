@@ -1,7 +1,7 @@
 using src.actors.controllers;
 using src.actors.controllers.impl;
+using src.card.model;
 using src.config;
-using src.config.control;
 using src.services.impl;
 using src.util;
 using UnityEngine;
@@ -10,20 +10,21 @@ namespace src.handlers
 {
     public class IOHandler : MonoBehaviour
     {
-        [Header("Player Preferences:   UI")] [SerializeField]
-        Color accentColor;
+        [Header("Player Preferences:   UI")] 
+        [SerializeField] Color accentColor;
 
         [SerializeField] Color  selectionColor;
         [SerializeField] float  transitionTime;
-        new              Camera camera;
-        ControlConfig           control; //config relating to control input
-
-
-        PlayerService playerService;
-
+        
         public Preferences preferences;
 
-        //Buffer for selected actors
+        GameObject cursorBase;
+        GameObject cursor;
+
+        CardService   cardService;
+        PlayerService playerService;
+
+        bool cardSelected;
 
         /*===============================
          *  Properties
@@ -36,16 +37,19 @@ namespace src.handlers
          ==============================*/
         void Awake()
         {
-            camera = Camera.main;
-            control = ControlConfig.GetControl();
+            //get services
+            cardService   = Environment.CardService;
+            playerService = Environment.PlayerService;
+
+            cursorBase = GameObject.FindGameObjectWithTag(Environment.TAG_CURSOR_BASE);
 
             preferences = new Preferences(
                 accentColor,
                 selectionColor,
                 transitionTime);
 
-            //get services
-            playerService = Environment.PlayerService;
+            //subscriptions
+            Environment.CardService.CardSelected += QueueCard;
         }
 
         /*===============================
@@ -55,7 +59,7 @@ namespace src.handlers
         {
             var selected = hit.collider.gameObject;
             if (selected.name.Equals(Environment.OVERHEAD_UI)) HandleSelection(selected.transform.parent.gameObject);
-            if (selected.CompareTag(Environment.TAG_FLOOR)) HandleFloor(hit.point);
+            if (selected.CompareTag(Environment.TAG_FLOOR)) HandleFloor(hit);
             //TODO Handle Attack Case
             //TODO Handle PickUp Case
         }
@@ -68,9 +72,42 @@ namespace src.handlers
             else if (controller is SwarmActorController sac) sac.Die(); //select new
         }
 
-        void HandleFloor(Vector3 point)
+        void HandleFloor(RaycastHit hit)
         {
-            playerService.FloorClick(point);
+            if (cardSelected)
+            {
+                cardService.ActivateCard(hit);
+                return;
+            }
+            
+            playerService.FloorClick(hit);
+        }
+
+        void QueueCard(Card card)
+        {
+            ApplyCursor(card);
+
+            if (card == null)
+            {
+                cardSelected = false;
+                return;
+            }
+
+            cardSelected = true;
+        }
+
+        void ApplyCursor(Card card)
+        {
+            if (card == null)
+            {
+                Cursor.visible = true;
+                Destroy(cursor);
+                return;
+            }
+
+            Cursor.visible            = false;
+            cursor                    = Instantiate(card.cursor, cursorBase.transform);
+            cursor.transform.position = Input.mousePosition;
         }
 
         /*===============================

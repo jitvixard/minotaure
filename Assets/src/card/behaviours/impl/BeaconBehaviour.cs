@@ -1,12 +1,14 @@
 using System.Collections;
+using UnityEngine;
 
 namespace src.card.behaviours.impl
 {
-	public class EyeBehaviour : CardBehaviour
+	public class BeaconBehaviour : CardBehaviour
 	{
 		protected override IEnumerator BehaviourRoutine()
 		{
-			throw new System.NotImplementedException();
+			yield return null;
+			print("fired card");
 		}
 	}
 }

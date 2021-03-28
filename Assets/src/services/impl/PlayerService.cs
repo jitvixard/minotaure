@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using src.actors.controllers.impl;
 using src.card.model;
-using src.handlers.ui;
 using src.util;
 using UnityEngine;
 
@@ -43,11 +42,11 @@ namespace src.services.impl
                 Resources.Load(Environment.RESOURCE_HEAT_ZONE)
                     as GameObject;
 
-            //subscriptions
-            Environment.LootService.DroppedCard += AddCard;
-            Environment.LootService.DroppedScrap += AddScrap;
-
             cardService = Environment.CardService;
+            
+            //subscriptions
+            Environment.LootService.DroppedCard  += AddCard;
+            Environment.LootService.DroppedScrap += AddScrap;
         }
 
         
@@ -75,9 +74,9 @@ namespace src.services.impl
                 Player(player); //emits event when a new player is selected
         }
 
-        public void FloorClick(Vector3 hitPoint)
+        public void FloorClick(RaycastHit hit)
         {
-            if (player) player.Move(hitPoint);
+            if (player) player.Move(hit.point);
         }
 
         void AddCard(Card card)

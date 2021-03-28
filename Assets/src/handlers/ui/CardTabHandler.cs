@@ -26,6 +26,10 @@ namespace src.handlers.ui
         TextMeshProUGUI buttonText;
         ProceduralImage joiner;
         ProceduralImage button;
+
+        MonoBehaviour[] loadInOrder;
+        MonoBehaviour[] loadOutOrder;
+        
         
         
         
@@ -56,6 +60,9 @@ namespace src.handlers.ui
                 .First(p => p.name == Environment.UI_CARD_BUTTON);
             buttonText = parent.GetComponentsInChildren<TextMeshProUGUI>()
                 .First(p => p.name == Environment.UI_CARD_BUTTON_TEXT);
+
+            loadInOrder  = new MonoBehaviour[] {joiner, button, buttonText};
+            loadOutOrder = new MonoBehaviour[] {buttonText, button, joiner};
         }
 
         
@@ -65,6 +72,7 @@ namespace src.handlers.ui
         ==============================*/
         protected override IEnumerator TransitionRoutine()
         {
+            //moving the tab in/out
             var start = rectTransform.position;
             var target = isOut ? origin : displayed;
             var duration = Environment.UI_CARD_SLIDE_OUT;
@@ -81,42 +89,41 @@ namespace src.handlers.ui
                 t += Time.deltaTime;
                 yield return null;
             }
-
-
+            
             rectTransform.position = target;
             
+            //fading the components in/out
             var alphaOrigin = joiner.color.a;
-            var goal = alphaOrigin >= 0.99f ? 0f : 1f;
+            var goal = alphaOrigin >= 0.99f 
+                ? 0f 
+                : 1f;
             var waitTime = Environment.UI_BUTTON_FADE;
 
-            t = 0f;
+            var items = alphaOrigin >= 0.99f 
+                ? loadOutOrder 
+                : loadInOrder;
 
-            do
+            foreach (var item in items)
             {
-                t += Time.deltaTime / waitTime;
-                var tempColor = joiner.color;
-                tempColor.a = Mathf.Lerp(alphaOrigin, goal, t);
-
-                joiner.color = tempColor;
-                yield return null;
-            } while (joiner.color.a != goal);
-
-            t = 0f;
-            do
-            {
-                t += Time.deltaTime / waitTime;
+                var text = item as TextMeshProUGUI;
+                var img = item as ProceduralImage;
                 
-                var tempColor = button.color;
-                tempColor.a = Mathf.Lerp(alphaOrigin, goal, t);
+                var tempColor = text is null
+                    ? img.color
+                    : text.color;
 
-                var tempTextColor = buttonText.color;
-                tempTextColor.a = Mathf.Lerp(alphaOrigin, goal, t);
+                t = 0f;
+                while (tempColor.a != goal)
+                {
+                    t += Time.deltaTime / waitTime;
+                    tempColor.a = Mathf.Lerp(alphaOrigin, goal, t);
 
-                buttonText.color = tempTextColor;
-                button.color     = tempColor;
-                yield return null;
-            } while (button.color.a != goal 
-            && buttonText.color.a != goal);
+                    if (text) text.color    = tempColor;
+                    else if (img) img.color = tempColor;
+
+                    yield return null;
+                }
+            }
         }
 
 
@@ -126,7 +133,9 @@ namespace src.handlers.ui
         ==============================*/
         void Focus(Card card)
         {
-            cardText.text = card.description;
+            cardText.text = card != null
+                ? card.description
+                : "";
         }
         
         public bool AddCard(Card card)
@@ -159,21 +168,25 @@ namespace src.handlers.ui
             return true;
         }
 
-        public bool RemoveCard()
+        public bool RemoveCard(Card card)
         {
-            print("removing");
-            var i = 0;
-            while (i < cardPositions.Count)
-                if (cards[i] != null) break;
-                else i++;
-        
-            if (i == cardPositions.Count) return false;
+            var index = 0;
+            foreach (var c in cards)
+            {
+                if (c == card)
+                {
+                    var tile = cardTiles[index];
+                    cardTiles[index] = null; 
+                    cards[index]     = null;
+                    
+                    Destroy(tile);
+                    return true;
+                }
 
-            var tile = cardTiles[i];
-            cardTiles[i] = null;
-            cards[i] = null;
-            Destroy(tile);
-            return true;
+                index++;
+            }
+
+            return false;
         }
         
     }

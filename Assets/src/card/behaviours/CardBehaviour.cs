@@ -24,10 +24,12 @@ namespace src.card.behaviours
         }
         public bool IsRunning => routine != null;
 
-        CardService cardService;
+        protected CardService cardService;
 
-        Card        card;
-        Coroutine   routine;
+        protected Card      card;
+        protected Coroutine routine;
+
+        protected RaycastHit hit;
 
         /**************** Card Behaviour ****************/
         protected abstract IEnumerator BehaviourRoutine();
@@ -41,9 +43,10 @@ namespace src.card.behaviours
             cardService = Environment.CardService;
         }
 
-        public bool Play()
+        public bool Play(RaycastHit hit)
         {
-            routine = StartCoroutine(BehaviourRoutine());
+            this.hit = hit;
+            routine  = StartCoroutine(BehaviourRoutine());
             return IsRunning;
         }
 

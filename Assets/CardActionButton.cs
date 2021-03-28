@@ -28,16 +28,14 @@ public class CardActionButton : MonoBehaviour, IPointerClickHandler
     ==============================*/
     public void LoadCard(Card card)
     {
-        var cardBehaviour = card.behaviour;
-        
-        if (cardBehaviour is null)
+        if (card?.behaviour is null)
         {
             Clear();
             return;
         }
 
-        bufferedCard = cardBehaviour;
-        text.text    = cardBehaviour.Card.title;
+        bufferedCard = card.behaviour;
+        text.text    = card.title;
     }
     
     public void OnPointerClick(PointerEventData eventData)
