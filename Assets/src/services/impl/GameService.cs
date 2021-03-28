@@ -1,10 +1,11 @@
 using System.Collections;
 using src.actors.controllers.impl;
+using src.card.behaviours;
+using src.level;
 using src.scripting;
 using src.scripting.level;
+using src.util;
 using UnityEngine;
-using Environment = src.util.Environment;
-using Random = UnityEngine.Random;
 
 namespace src.services.impl
 {
@@ -14,24 +15,24 @@ namespace src.services.impl
         *  Observables
         ==============================*/
         public delegate void WaveToStart(Wave wave);
-        public event WaveToStart ReadiedWave = delegate {  };
-        
-        
-        /*===============================
-        *  Fields & Properties
-        ==============================*/
-        public bool IsRunning => currentRoutine != null;
-        public MonoBehaviour Mono => gameBehaviour;
-        
+        public event WaveToStart ReadiedWave = delegate { };
+
+        Coroutine currentRoutine;
+
         GameBehaviour gameBehaviour;
 
         PawnActorController player;
 
-        Coroutine currentRoutine;
-
         Wave wave;
-        
-        
+
+
+        /*===============================
+        *  Fields & Properties
+        ==============================*/
+        public bool          IsRunning => currentRoutine != null;
+        public MonoBehaviour Mono      => gameBehaviour;
+
+
         /*===============================
         *  Initialization
         ==============================*/
@@ -39,25 +40,30 @@ namespace src.services.impl
         {
             Environment.PlayerService.Player += controller => player = controller;
             Environment.WaveService.NextWave += QueueNextWave;
-            
+
             gameBehaviour = GameObject
-                .FindGameObjectWithTag(Environment.TAG_MAIN_CAMERA)
-                .GetComponent<GameBehaviour>();
-            
+                            .FindGameObjectWithTag(Environment.TAG_MAIN_CAMERA)
+                            .GetComponent<GameBehaviour>();
+
             currentRoutine = gameBehaviour.StartCoroutine(StartRoutine());
         }
 
         /*===============================
         *  Handling
         ==============================*/
+        public bool AddBehaviour(CardBehaviour cardBehaviour)
+        {
+            return true;
+        }
+        
         void QueueNextWave(Wave wave)
         {
             this.wave = wave;
             if (currentRoutine != null) StopCoroutine(currentRoutine);
             StartCoroutine(GraceRoutine());
         }
-        
-        
+
+
         /*===============================
         *  Routines
         ==============================*/
@@ -66,28 +72,28 @@ namespace src.services.impl
             while (player is null) yield return null;
             Environment.WaveService.Start();
         }
-        
+
         IEnumerator GraceRoutine()
         {
             var interval = Random.Range(
                 Environment.SPAWN_INTERVAL_LOWER,
                 Environment.SPAWN_INTERVAL_UPPER);
             var t = 0f;
-            
+
             Environment.Log(
                 GetType(),
                 "Grace period of " + interval + " starting.");
-            
+
             while (t < interval && GracePeriodShouldEnd())
             {
                 t += Time.deltaTime;
                 yield return null;
             }
-            
+
             ReadiedWave(wave);
         }
-        
-        
+
+
         /*===============================
         *  Utility
         ==============================*/
@@ -95,7 +101,7 @@ namespace src.services.impl
         {
             return true;
         }
-        
+
         /*===============================
         *  Wrappers
         ==============================*/
@@ -103,7 +109,7 @@ namespace src.services.impl
         {
             return gameBehaviour.StartCoroutine(routine);
         }
-        
+
         void StopCoroutine(Coroutine routine)
         {
             gameBehaviour.StopCoroutine(routine);

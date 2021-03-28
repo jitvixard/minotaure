@@ -1,37 +1,35 @@
-using System;
 using src.actors.controllers;
 using src.actors.controllers.impl;
 using src.config;
 using src.config.control;
 using src.services.impl;
+using src.util;
 using UnityEngine;
-using Environment = src.util.Environment;
 
 namespace src.handlers
 {
     public class IOHandler : MonoBehaviour
     {
-        new Camera camera;
-        ControlConfig control; //config relating to control input
+        [Header("Player Preferences:   UI")] [SerializeField]
+        Color accentColor;
 
-        public Preferences preferences;
-
-        [Header("Player Preferences:   UI")] 
-        [SerializeField] Color accentColor;
-        [SerializeField] Color selectionColor;
-        [SerializeField] float transitionTime;
+        [SerializeField] Color  selectionColor;
+        [SerializeField] float  transitionTime;
+        new              Camera camera;
+        ControlConfig           control; //config relating to control input
 
 
         PlayerService playerService;
-        
+
+        public Preferences preferences;
+
         //Buffer for selected actors
-        AbstractActorController selectedActor;
-        
+
         /*===============================
          *  Properties
          ==============================*/
-        public Color SelectionColor => selectionColor;
-        public AbstractActorController SelectedActor => selectedActor;
+        public Color                   SelectionColor => selectionColor;
+        public AbstractActorController SelectedActor  { get; set; }
 
         /*===============================
          *  Unity Lifecycle
@@ -43,13 +41,13 @@ namespace src.handlers
 
             preferences = new Preferences(
                 accentColor,
-                selectionColor, 
+                selectionColor,
                 transitionTime);
 
             //get services
             playerService = Environment.PlayerService;
         }
-        
+
         /*===============================
          *  Handling
          ==============================*/
@@ -61,35 +59,31 @@ namespace src.handlers
             //TODO Handle Attack Case
             //TODO Handle PickUp Case
         }
-        
+
         void HandleSelection(GameObject selected)
         {
             if (!selected.TryGetComponent<AbstractActorController>(out var controller)) return;
 
             if (controller is PawnActorController pac) playerService.Possess(pac);
-            else if (controller is SwarmActorController sac) sac.Die();
-            
-            if (!(selectedActor == null)) selectedActor.Select(false); //deselect old
-            selectedActor = controller.Select(true); //select new
+            else if (controller is SwarmActorController sac) sac.Die(); //select new
         }
-        
+
         void HandleFloor(Vector3 point)
         {
             playerService.FloorClick(point);
         }
-        
+
         /*===============================
          *  Helper Methods
          ==============================*/
         public static Vector3 ScreenClickToViewportPoint(RectTransform screenTransform, Camera inputCamera)
         {
-            //TODO investigate loss of fractions 
             var anchoredPos = screenTransform.anchoredPosition;
-            var xOffset = -(inputCamera.pixelWidth / 2 + anchoredPos.x);
-            var yOffset = -(inputCamera.pixelHeight / 2 + anchoredPos.y);
+            var xOffset = -(inputCamera.pixelWidth / 2f + anchoredPos.x);
+            var yOffset = -(inputCamera.pixelHeight / 2f + anchoredPos.y);
             var xScreenHit = Input.mousePosition.x + xOffset;
             var yScreenHit = Input.mousePosition.y + yOffset;
-            
+
             var screenHit = new Vector3(xScreenHit, yScreenHit, 0f);
             var rect = screenTransform.rect;
             return new Vector3(

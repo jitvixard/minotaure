@@ -11,12 +11,12 @@ namespace src
          *  Fields
          ==============================*/
         [NonSerialized] public AbstractActorController controller;
-        
+
         State currentState; //Idle is entry state
 
         bool firstFrame = true;
-        
-        
+
+
         /*===============================
          *  Properties
          ==============================*/
@@ -31,7 +31,7 @@ namespace src
             }
         }
 
-        
+
         /*===============================
          *  Unity Lifecycle
          ==============================*/
@@ -57,7 +57,7 @@ namespace src
         {
             controller.Idle();
         }
-        
+
         protected void Seek(Transform transform)
         {
             currentState = State.Seek;
@@ -76,7 +76,7 @@ namespace src
             print("regroup");
             currentState = State.Regroup;
         }
-        
+
 
         /*===============================
          *  Control Functions
@@ -85,14 +85,14 @@ namespace src
         {
             enabled = true;
         }
-        
+
         public void Stop()
         {
             currentState = State.Stopped;
             enabled = false;
         }
-        
-        
+
+
         /*===============================
          *  Checks
          ==============================*/
@@ -102,19 +102,19 @@ namespace src
             if (ShouldAttack()) Attack();
             if (ShouldRegroup()) Regroup();
         }
-        
+
         protected virtual bool ShouldAttack()
         {
             return currentState == State.Idle
                    && !(controller.Target is null)
                    && controller.InRange;
         }
-        
+
         protected bool ShouldIdle()
         {
             return currentState == State.Idle;
         }
-        
+
         protected bool ShouldRegroup()
         {
             //return !controller.InHeatZone;

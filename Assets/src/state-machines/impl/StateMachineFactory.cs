@@ -1,5 +1,4 @@
 using src.actors.model;
-using src.model;
 
 namespace src.impl
 {
@@ -8,7 +7,7 @@ namespace src.impl
         public static AbstractStateMachine Create(AbstractActor actor)
         {
             AbstractStateMachine stateMachine;
-            
+
             switch (actor)
             {
                 case PawnActor p:
@@ -20,6 +19,7 @@ namespace src.impl
                 default:
                     return null;
             }
+
             return stateMachine;
         }
     }

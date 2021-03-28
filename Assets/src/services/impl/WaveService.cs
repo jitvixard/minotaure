@@ -1,36 +1,49 @@
-using src.actors.controllers.impl;
-using src.handlers;
-using src.scripting.level;
+using src.level;
 using src.util;
 
 namespace src.services.impl
 {
     public class WaveService : IService
     {
+        /*************** Wave Observable ***************/
         public delegate void SetNextWave(Wave wave);
-        public event SetNextWave NextWave = delegate {  };
+        public event SetNextWave NextWave = delegate { };
+
         Wave currentWave;
-        
-        PawnActorController player;
-        int waveNumber;
-        int remaining;
-        
-        
+
+        /*===============================
+        *  Fields
+        ==============================*/
+        Wave[]     preparedWaves;
+        int        remaining; //remaining swarm members
+        int        setWaves;
+
+
+        /*===============================
+        *  Properties
+        ==============================*/
+        public int WaveNumber => waveNumber;
+        public int WavesBeat  => wavesBeat;
+
+        int waveNumber = -1;
+        int wavesBeat  = -1;
+
+
         /*===============================
         *  Initialization
         ==============================*/
         public void Init()
         {
-            Environment.PlayerService.Player += controller => player = controller;
             Environment.SwarmService.Remaining += CheckWaveState;
+            LoadWaves();
         }
 
         public void Start()
         {
             CheckWaveState(0);
         }
-        
-        
+
+
         /*===============================
         *  Handling
         ==============================*/
@@ -41,17 +54,32 @@ namespace src.services.impl
 
         void WaveCompleted()
         {
-            currentWave = CreateNewWave();
+            waveNumber++;
+            wavesBeat++;
+            currentWave = GetNextWave();
             NextWave(currentWave);
         }
 
-        
+
         /*===============================
         *  Utility
         ==============================*/
-        Wave CreateNewWave()
+        Wave GetNextWave()
         {
-            return Wave.Blank;
+            return waveNumber < preparedWaves.Length 
+                ? preparedWaves[waveNumber] 
+                : GenerateWave();
         }
+
+        Wave GenerateWave()
+        {
+            return new Wave(
+                waveNumber,
+                waveNumber,
+                true);
+        }
+
+        void LoadWaves() => preparedWaves
+            = WaveRepository.GetAll().ToArray();
     }
 }

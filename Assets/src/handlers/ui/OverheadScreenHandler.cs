@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace src.screens
+namespace src.handlers.ui
 {
     public class OverheadScreenHandler : ScreenHandler
     {

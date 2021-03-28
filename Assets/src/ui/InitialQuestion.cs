@@ -9,19 +9,18 @@ namespace src.scripting.ui
 {
     public class InitialQuestion : MonoBehaviour
     {
-        List<ButtonHandler> buttons = new List<ButtonHandler>();
-        List<TW_Regular> writers = new List<TW_Regular>();
-        List<Object> elements = new List<Object>();
-    
-        Coroutine typeRoutine;
+        [SerializeField] GameObject question;
+        [SerializeField] Text       text;
 
-        [SerializeField] GameObject question; 
-        [SerializeField] Text text;
+        [SerializeField] float               appearanceDelay = 1f;
+        [SerializeField] float               fadeOutTime     = 1f;
+        readonly         List<ButtonHandler> buttons         = new List<ButtonHandler>();
+        readonly         List<Object>        elements        = new List<Object>();
 
-        [SerializeField] float appearanceDelay = 1f;
-        [SerializeField] float fadeOutTime = 1f;
-    
         string originalText;
+
+        Coroutine                 typeRoutine;
+        readonly List<TW_Regular> writers = new List<TW_Regular>();
 
         void Awake()
         {
@@ -49,10 +48,7 @@ namespace src.scripting.ui
         IEnumerator TypeRoutine()
         {
             yield return null;
-            while (!text.text.Equals(originalText))
-            {
-                yield return null;
-            }
+            while (!text.text.Equals(originalText)) yield return null;
 
             var t = 0f;
             while (t < appearanceDelay)
@@ -68,12 +64,11 @@ namespace src.scripting.ui
         IEnumerator FadeRoutine()
         {
             var alpha = 1f;
-        
+
             while (alpha > 0f)
             {
                 alpha -= Time.deltaTime / fadeOutTime;
                 foreach (var element in elements)
-                {
                     switch (element)
                     {
                         case Text t:
@@ -83,10 +78,10 @@ namespace src.scripting.ui
                             i.color = new Color(i.color.r, i.color.g, i.color.b, alpha);
                             break;
                     }
-                }
+
                 yield return null;
             }
-        
+
             Destroy(gameObject);
         }
     }

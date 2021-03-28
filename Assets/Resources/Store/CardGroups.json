@@ -1,0 +1,16 @@
+{
+  "items" : [
+    
+    [
+      {
+        "title" : "Tabular",
+        "description" : "This Card is tabular",
+        "type" : 1,
+        "dropGuaranteed" : "true",
+        "dropWeight" : 1
+      }
+    ],
+    
+    []
+  ]
+}
