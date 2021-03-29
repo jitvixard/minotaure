@@ -13,20 +13,22 @@ namespace src.util
         public const string OVERHEAD_UI    = "overhead-ui";
         public const string SWARM_MEMBER   = "swarm-member";
         //pawn
-        public const string PAWN_HEALTH_INDICATOR = "health-indicator";
         public const string PAWN_LOAD_INDICATOR   = "loading-indicator";
         public const string PAWN_POSSESSION_INDICATOR   = "possession-indicator";
         //ui
-        public const string UI_CARD_TEXT   = "card-text";
-        public const string UI_CARD_BUTTON = "button-box";
+        public const string UI_CARD_TEXT        = "card-text";
+        public const string UI_CARD_BUTTON      = "button-box";
         public const string UI_CARD_BUTTON_TEXT = "button-text";
-        public const string UI_CARD_JOINER = "joiner";
+        public const string UI_CARD_JOINER      = "joiner";
+        public const string UI_KNOT             = "knot";
+        public const string UI_HEALTH_INDICATOR = "health-indicator";
         
         
         
         /*===============================
         *  GameObject Tags
         ==============================*/
+        public const string TAG_BUILDER = "Builder";
         public const string TAG_CARD_PLACE_HOLDER = "CardPlaceHolder";
         public const string TAG_CARD_TAB          = "CardTab";
         public const string TAG_CURSOR_BASE       = "CursorBase";
@@ -56,8 +58,9 @@ namespace src.util
         public const float UI_OVERHEAD_HEAL_TIME          = 0.3f;
         public const float UI_OVERHEAD_SELECTION_INTERVAL = 0.3f;
         //FX
-        public const float FX_BLAST_FORCE   = 10f;
-        public const float FX_SPLATTER_TIME = 5f;
+        public const float FX_BLAST_FORCE     = 10f;
+        public const float FX_CAMERA_ROTATION = 30f;
+        public const float FX_SPLATTER_TIME   = 5f;
 
 
 
@@ -65,6 +68,7 @@ namespace src.util
          *  Resource Paths
          ==============================*/
         //actors
+        public const string RESOURCE_BUILDER      = "Actors/builder";
         public const string RESOURCE_HEAT_ZONE    = "Actors/heat_zone";
         public const string RESOURCE_SWARM_MEMBER = "Actors/swarm_member";
         //cards
@@ -75,8 +79,11 @@ namespace src.util
         public const string RESOURCE_CURSOR_BEACON = "UI/Cursors/cursor-beacon";
         public const string RESOURCE_CURSOR_EYE = "UI/Cursors/cursor-eye";
         //shot
-        public const string RESOURCE_SHOT = "FX/shot";
-        public const string RESOURCE_SPLATTER = "FX/splatter";
+        public const string RESOURCE_EXPLOSION = "FX/explosion";
+        public const string RESOURCE_SHOT      = "FX/shot";
+        public const string RESOURCE_SPLATTER  = "FX/splatter";
+        //building
+        public const string RESOURCE_BUILDING = "Building/tower";
 
 
         /*===============================
@@ -86,6 +93,17 @@ namespace src.util
         public const float SPEED_PAWN        = 4.5f;
         public const float STOPPING_DISTANCE = 0.1f;
 
+        
+        
+        /*===============================
+         *  Builder
+         ==============================*/
+        public const int   BUILD_COST              = 450;
+        public const float BUILDER_FLOAT_DISTANCE  = 18f;
+        public const float BUILDER_FLOAT_TIME      = 2.5f;
+        public const float BUILDER_UNLOAD_DISTANCE = 9f;
+        public const float BUILDER_UNLOAD_TIME     = 1f;
+        
         
         
         /*===============================
@@ -151,13 +169,14 @@ namespace src.util
         /*===============================
         *  Services
         ==============================*/
-        public static readonly CardService   CardService   = new CardService();
-        public static readonly GameService   GameService   = new GameService();
-        public static readonly LootService   LootService   = new LootService();
-        public static readonly PawnService   PawnService   = new PawnService();
-        public static readonly PlayerService PlayerService = new PlayerService();
-        public static readonly SwarmService  SwarmService  = new SwarmService();
-        public static readonly WaveService   WaveService   = new WaveService();
+        public static readonly BuilderService BuilderService = new BuilderService();
+        public static readonly CardService    CardService    = new CardService();
+        public static readonly GameService    GameService    = new GameService();
+        public static readonly LootService    LootService    = new LootService();
+        public static readonly PawnService    PawnService    = new PawnService();
+        public static readonly PlayerService  PlayerService  = new PlayerService();
+        public static readonly SwarmService   SwarmService   = new SwarmService();
+        public static readonly WaveService    WaveService    = new WaveService();
         
         
         

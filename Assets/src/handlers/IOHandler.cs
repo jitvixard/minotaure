@@ -69,7 +69,6 @@ namespace src.handlers
             if (!selected.TryGetComponent<AbstractActorController>(out var controller)) return;
 
             if (controller is PawnActorController pac) playerService.Possess(pac);
-            else if (controller is SwarmActorController sac) sac.Die(); //select new
         }
 
         void HandleFloor(RaycastHit hit)

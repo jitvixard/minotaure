@@ -44,6 +44,8 @@ namespace src.actors.controllers
 
         //tracking
         protected GameObject target;
+        
+        protected GameObject prototypeExplosion;
 
 
         /*===============================
@@ -99,6 +101,10 @@ namespace src.actors.controllers
 
             //all state machines are defaulted to idle
             stateMachine.CurrentState = State.Idle;
+            
+            //set prototypes
+            prototypeExplosion = Resources.Load(Environment.RESOURCE_EXPLOSION)
+                as GameObject;
         }
 
         /*===============================
@@ -106,6 +112,8 @@ namespace src.actors.controllers
          ==============================*/
         //TODO Add Damage Animations
         public abstract void Die();
+
+        public abstract void Damage(AbstractActorController actorController);
 
         public int Health()
         {

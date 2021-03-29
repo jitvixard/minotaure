@@ -67,6 +67,7 @@ namespace src.services.impl
 
             CardSelected(null);
             RemoveCard(selectedCard);
+            selectedCard = null;
         }
         
         public void AddCard(Card card)

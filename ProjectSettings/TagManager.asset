@@ -17,6 +17,8 @@ TagManager:
   - CardPlaceHolder
   - CardTab
   - CursorBase
+  - Builder
+  - Beacon
   layers:
   - Default
   - TransparentFX
@@ -31,8 +33,8 @@ TagManager:
   - Overhead
   - Pawns
   - GraphicalFloor
-  - 
-  - 
+  - GraphicalReal
+  - PostProcessing
   - 
   - 
   - 

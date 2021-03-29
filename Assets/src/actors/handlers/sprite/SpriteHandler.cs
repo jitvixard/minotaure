@@ -102,7 +102,7 @@ namespace src.actors.handlers.sprite
                 yield return null;
             }
             
-            if (controller is SwarmActorController sac) target.TakeDamage(sac);
+            if (controller is SwarmActorController sac) target.Damage(sac);
             
             origin         =  gameObject.transform.localPosition;
             targetDistance =  0;

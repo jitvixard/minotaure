@@ -21,8 +21,9 @@ namespace src.services.impl
         /*===============================
          *  Fields
          ==============================*/
-        public PawnActorController PlayerPawn   => player;
+        public PawnActorController PlayerPawn      => player;
         public float               ProjectileSpeed => shotSpeed;
+        public int                 Scrap           => scrap;
         
         
         /*===============================
@@ -33,7 +34,8 @@ namespace src.services.impl
         public float loadTime;
 
         CardService cardService;
-        
+
+        BuilderController   builder;
         PawnActorController player;
         
         GameObject          heatZone;
@@ -59,6 +61,8 @@ namespace src.services.impl
             cardService = Environment.CardService;
             
             //subscriptions
+            Environment.BuilderService.Builder += BuilderAppeared;
+            
             Environment.LootService.DroppedCard  += AddCard;
             Environment.LootService.DroppedScrap += AddScrap;
         }
@@ -119,6 +123,12 @@ namespace src.services.impl
         {
             this.scrap += scrap;
             LootChanged(cards, this.scrap);
+        }
+
+        void BuilderAppeared(BuilderController builder)
+        {
+            this.builder =  builder;
+            scrap        -= Environment.BUILD_COST;
         }
     }
 }

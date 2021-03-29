@@ -19,6 +19,8 @@ namespace src.camera
 
         float yValue;
 
+        
+        
         /*===============================
          *  LifeCycle
          ==============================*/
@@ -42,6 +44,11 @@ namespace src.camera
             trackingRoutine = StartCoroutine(TrackingRoutine());
         }
 
+        
+        
+        /*===============================
+         *  Routines
+         ==============================*/
         IEnumerator TrackingRoutine()
         {
             var distance = Vector3.Distance(
@@ -87,7 +94,12 @@ namespace src.camera
             smoothRoutine = null;
             trackingRoutine = StartCoroutine(TrackingRoutine());
         }
-
+        
+        
+        
+        /*===============================
+         *  Utility
+         ==============================*/
         Vector3 GetNormalizedPosition(Vector3 position)
         {
             return new Vector3(position.x, yValue, position.z);

@@ -10,6 +10,9 @@ namespace src.impl
 
             switch (actor)
             {
+                case BuilderActor b:
+                    stateMachine = actor.gameObject.AddComponent<BuilderStateMachine>();
+                    break;
                 case PawnActor p:
                     stateMachine = actor.gameObject.AddComponent<PawnStateMachine>();
                     break;

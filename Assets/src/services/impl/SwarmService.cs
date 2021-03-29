@@ -40,6 +40,7 @@ namespace src.services.impl
         GameObject   otherAttackPoint;
 
         PawnActorController player;
+        BuilderController   builder;
 
         GameObject swarmPrototype;
 
@@ -51,24 +52,15 @@ namespace src.services.impl
          ==============================*/
         public SwarmService()
         {
+            Environment.BuilderService.Builder  += controller => builder = controller;
             Environment.GameService.ReadiedWave += SpawnWave;
-            Environment.PlayerService.Player += controller => player = controller;
+            Environment.PlayerService.Player    += controller => player = controller;
         }
 
         /*===============================
          *  Properties
          ==============================*/
         public HeatZone HeatZone { get; set; }
-
-        public int AttackRate
-        {
-            get
-            {
-                var variation = attackRate / 100;
-                variation *= 5;
-                return attackRate + variation;
-            }
-        }
 
         public void Init()
         {

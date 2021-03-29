@@ -49,6 +49,7 @@ namespace src.actors.controllers.impl
 
         public override void Die()
         {
+            Destroy(stateMachine);
             Destroy(splatter);
             Destroy(gameObject);
         }
@@ -87,20 +88,15 @@ namespace src.actors.controllers.impl
         /*===============================
          *  Incoming Event
          ==============================*/
-        public void TakeDamage(SwarmActorController sac)
+        public override void Damage(AbstractActorController actorController)
         {
             actor.health -= 1;
             pawnSprite.UpdateHealth();
-            StartCoroutine(BleedRoutine(sac));
+            StartCoroutine(
+                BleedRoutine(actorController as SwarmActorController));
         }
 
-        public void Heal()
-        {
-            actor.health += 1;
-            pawnSprite.UpdateHealth();
-        }
 
-        
         
         /*===============================
          *  Routine
@@ -139,8 +135,6 @@ namespace src.actors.controllers.impl
                 t += Time.deltaTime;
                 yield return null;
             }
-            
-            Destroy(splatter);
         }
     }
 }

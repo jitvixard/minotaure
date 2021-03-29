@@ -29,7 +29,7 @@ namespace src.actors.handlers.sprite
 			var images = controller.GetComponentsInChildren<ProceduralImage>();
 			foreach (var proceduralImage in images)
 			{
-				if (proceduralImage.name.Equals(Environment.PAWN_HEALTH_INDICATOR))
+				if (proceduralImage.name.Equals(Environment.UI_HEALTH_INDICATOR))
 					healthIndicator = proceduralImage;
 				else if (proceduralImage.name.Equals(Environment.PAWN_LOAD_INDICATOR))
 					loadingIndicator = proceduralImage;

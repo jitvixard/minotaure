@@ -6,7 +6,7 @@ namespace src.card.behaviours.impl
 	{
 		protected override IEnumerator BehaviourRoutine()
 		{
-			throw new System.NotImplementedException();
+			yield break;
 		}
 	}
 }

@@ -21,12 +21,22 @@ namespace src.actors.controllers.impl
 
         public override void Die()
         {
-            print(name + " dying");
+            Instantiate(prototypeExplosion, transform.position, new Quaternion());
+            
+            Destroy(stateMachine);
             swarmService.Remove(this);
             Destroy(gameObject);
         }
+        
+        
+        
+        /*===============================
+         *  Handling
+         ==============================*/
+        public override void Damage(AbstractActorController actorController) { }
 
 
+        
         /*===============================
          *  Actions
          ==============================*/
