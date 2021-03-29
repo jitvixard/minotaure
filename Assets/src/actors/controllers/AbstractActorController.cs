@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Diagnostics;
+using src.actors.controllers.impl;
 using src.actors.handlers.sprite;
 using src.actors.model;
 using src.impl;
@@ -59,8 +60,9 @@ namespace src.actors.controllers
             get => inHeatZone;
             set
             {
-                HasLeftHeatZone();
+                if (!value) HasLeftHeatZone();
                 inHeatZone = value;
+                stateMachine.CheckState();
             }
         }
 
@@ -103,40 +105,12 @@ namespace src.actors.controllers
          *  Destroyable Interface
          ==============================*/
         //TODO Add Damage Animations
-        public IDestroyable Damage(int damage)
-        {
-            var health = actor.health;
-            health -= damage;
-            actor.health = health;
-            if (health <= 0)
-            {
-                StopAllCoroutines();
-                StartCoroutine(DestroyRoutine());
-                return null;
-            }
-
-            return this;
-        }
-
-        public IDestroyable Heal(int damage)
-        {
-            actor.health += damage;
-            return this;
-        }
-
-        public IDestroyable Destroyable()
-        {
-            return this;
-        }
-
-        public IEnumerator DestroyRoutine()
-        {
-            if (stateMachine) stateMachine.StopAllCoroutines();
-            yield return null;
-            Destroy(this);
-        }
-
         public abstract void Die();
+
+        public int Health()
+        {
+            return actor.health;
+        }
 
         /*===============================
          *  Interaction
@@ -162,12 +136,6 @@ namespace src.actors.controllers
         {
             if (!(currentRoutine is null)) StopCoroutine(currentRoutine);
             currentRoutine = StartCoroutine(SeekRoutine(target));
-        }
-
-        public void Attack()
-        {
-            if (!(currentRoutine is null)) StopCoroutine(currentRoutine);
-            currentRoutine = StartCoroutine(AttackRoutine());
         }
 
         public void Idle()
@@ -228,44 +196,16 @@ namespace src.actors.controllers
             actor.moving = true;
             agent.SetDestination(target.position);
 
-            while (Vector3.Distance(target.position, transform.position) > Environment.STOPPING_DISTANCE)
+            while (Vector3.Distance(target.position, transform.position) > Environment.SWARM_ATTACKING_RANGE)
+            {
+                agent.SetDestination(target.position);
                 yield return null;
-
-            agent.SetDestination(transform.position);
-            actor.moving = false;
-            currentRoutine = null;
-        }
-
-        protected IEnumerator AttackRoutine()
-        {
-            var watch = Stopwatch.StartNew();
-            var targetController = target.GetComponent<AbstractActorController>();
-            var targetTransform = target.transform;
-
-            var destroyable = targetController.Destroyable();
-            if (destroyable is null)
-            {
-                currentRoutine = null;
-                stateMachine.CurrentState = State.Idle;
-                yield break;
-            }
-
-            while (destroyable != null && targetController.actor.health > 0)
-            {
-                while (watch.ElapsedMilliseconds < actor.attackRate)
-                {
-                    agent.SetDestination(targetTransform.position);
-                    yield return null;
-                }
-
-                destroyable = destroyable.Damage(actor.damage);
-                if (targetController.actor.health <= 0) break;
             }
 
             agent.SetDestination(transform.position);
-            Target = null;
-            currentRoutine = null;
-            stateMachine.CurrentState = State.Idle;
+            actor.moving              = false;
+            currentRoutine            = null;
+            stateMachine.CurrentState = State.Locate;
         }
 
 

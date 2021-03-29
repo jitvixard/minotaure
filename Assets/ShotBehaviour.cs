@@ -71,7 +71,7 @@ public class ShotBehaviour : MonoBehaviour
         var origin = transform.position;
         target.y = origin.y;
 
-        var direction = target - origin;
+        var direction = (target - origin).normalized;
         transform.rotation = Quaternion.LookRotation(direction);
         
         launched = true;

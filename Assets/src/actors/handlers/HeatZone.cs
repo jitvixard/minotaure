@@ -15,8 +15,8 @@ namespace src.scripting.level
 
 
         /*===============================
-    *  Unity Lifecycle
-    ==============================*/
+        *  Unity Lifecycle
+        ==============================*/
         void Awake()
         {
             Environment.SwarmService.HeatZone = this;
@@ -41,11 +41,12 @@ namespace src.scripting.level
                 {
                     StopCoroutine(bufferRoutines[controller.name]);
                     bufferRoutines.Remove(controller.name);
-                    return;
                 }
-
-                controller.InHeatZone = true;
-                membersInHeatZone.Add(controller);
+                else if (!controller.InHeatZone)
+                {
+                    controller.InHeatZone = true;
+                    membersInHeatZone.Add(controller);
+                }
             }
             else if (Environment.pointsOfInterest.Contains(otherObj.tag))
             {
@@ -72,6 +73,7 @@ namespace src.scripting.level
                 yield return null;
             }
 
+            print(controller.name + " has left the heat zone");
             controller.InHeatZone = false;
             membersInHeatZone.Remove(controller);
         }

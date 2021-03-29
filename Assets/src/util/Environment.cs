@@ -54,9 +54,12 @@ namespace src.util
         //overhead
         public const float UI_OVERHEAD_HEAL_TIME          = 0.3f;
         public const float UI_OVERHEAD_SELECTION_INTERVAL = 0.3f;
+        //FX
+        public const float FX_BLAST_FORCE   = 10f;
+        public const float FX_SPLATTER_TIME = 5f;
 
 
-        
+
         /*===============================
          *  Resource Paths
          ==============================*/
@@ -72,6 +75,7 @@ namespace src.util
         public const string RESOURCE_CURSOR_EYE = "UI/Cursors/cursor-eye";
         //shot
         public const string RESOURCE_SHOT = "FX/shot";
+        public const string RESOURCE_SPLATTER = "FX/splatter";
 
 
         /*===============================
@@ -109,6 +113,10 @@ namespace src.util
         public const int   SWARM_MAX_ATTACKERS       = 3;
         public const int   SWARM_MAX_LOCATE_ATTEMPTS = 5;
         public const float SWARM_VISION_RANGE        = 4f;
+        public const float SWARM_ATTACK_DELAY        = 1f;
+        public const float SWARM_ATTACK_SPEED        = 0.5f;
+        public const float SWARM_ATTACK_JAB_DISTANCE = 1f;
+        public const float SWARM_ATTACKING_RANGE     = 2f;
 
         
         

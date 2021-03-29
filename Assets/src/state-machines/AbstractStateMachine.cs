@@ -1,7 +1,8 @@
-﻿using System;
-using src.actors.controllers;
+﻿using src.actors.controllers;
 using src.model;
+using src.services.impl;
 using UnityEngine;
+using Environment = src.util.Environment;
 
 namespace src
 {
@@ -10,7 +11,8 @@ namespace src
         /*===============================
          *  Fields
          ==============================*/
-        [NonSerialized] public AbstractActorController controller;
+        protected AbstractActorController controller;
+        protected PlayerService           playerService;
 
         State currentState; //Idle is entry state
 
@@ -25,9 +27,10 @@ namespace src
             get => currentState;
             set
             {
+                if (currentState == value) return;
                 currentState = value;
                 if (firstFrame) return;
-                UpdateState();
+                CheckState();
             }
         }
 
@@ -37,14 +40,15 @@ namespace src
          ==============================*/
         protected virtual void Awake()
         {
-            controller = GetComponent<AbstractActorController>();
+            controller    = GetComponent<AbstractActorController>();
+            playerService = Environment.PlayerService;
         }
 
         protected void Update()
         {
             if (firstFrame)
             {
-                UpdateState();
+                CheckState();
                 firstFrame = false;
             }
         }
@@ -56,25 +60,6 @@ namespace src
         protected void Idle()
         {
             controller.Idle();
-        }
-
-        protected void Seek(Transform transform)
-        {
-            currentState = State.Seek;
-            controller.Seek(transform);
-        }
-
-        protected void Attack()
-        {
-            print("attack");
-            currentState = State.Attack;
-            controller.Attack();
-        }
-
-        protected void Regroup()
-        {
-            print("regroup");
-            currentState = State.Regroup;
         }
 
 
@@ -96,29 +81,14 @@ namespace src
         /*===============================
          *  Checks
          ==============================*/
-        protected virtual void UpdateState()
+        public virtual void CheckState()
         {
             if (ShouldIdle()) Idle();
-            if (ShouldAttack()) Attack();
-            if (ShouldRegroup()) Regroup();
         }
 
-        protected virtual bool ShouldAttack()
-        {
-            return currentState == State.Idle
-                   && !(controller.Target is null)
-                   && controller.InRange;
-        }
-
-        protected bool ShouldIdle()
+        bool ShouldIdle()
         {
             return currentState == State.Idle;
-        }
-
-        protected bool ShouldRegroup()
-        {
-            //return !controller.InHeatZone;
-            return false;
         }
     }
 }

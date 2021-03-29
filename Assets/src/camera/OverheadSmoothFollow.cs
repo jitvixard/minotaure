@@ -19,6 +19,9 @@ namespace src.camera
 
         float yValue;
 
+        /*===============================
+         *  LifeCycle
+         ==============================*/
         void Awake()
         {
             playerService = Environment.PlayerService;
@@ -79,7 +82,7 @@ namespace src.camera
                     Mathf.Lerp(currentPosition.z, playerPosition.z, t / smoothTime));
 
                 yield return null;
-            } while (distance > 1f);
+            } while (distance > 1f && !(playerTransform is null));
 
             smoothRoutine = null;
             trackingRoutine = StartCoroutine(TrackingRoutine());

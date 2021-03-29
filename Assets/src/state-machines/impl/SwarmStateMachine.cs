@@ -1,6 +1,5 @@
 using src.actors.controllers.impl;
 using src.model;
-using src.services.impl;
 using src.util;
 using UnityEngine;
 
@@ -8,7 +7,6 @@ namespace src.impl
 {
     public class SwarmStateMachine : AbstractStateMachine
     {
-        readonly SwarmService swarmService = Environment.SwarmService;
         SwarmActorController  sac;
 
 
@@ -24,10 +22,10 @@ namespace src.impl
         /*===============================
          *  Checks
          ==============================*/
-        protected override void UpdateState()
+        public override void CheckState()
         {
             //seek -> locate -> attack -> seek (repeat)
-            if (ShouldSeek()) Seek(swarmService.GetTarget(sac).transform); //defaults to player atm
+            if (ShouldSeek()) Seek(); //defaults to player atm
             if (ShouldLocate()) Locate();
             if (ShouldAttack()) Attack();
         }
@@ -41,24 +39,32 @@ namespace src.impl
         bool ShouldLocate()
         {
             return controller.InHeatZone
-                   && CurrentState != State.Attack
-                   && CurrentState != State.Locate;
+                   && CurrentState == State.Seek;
         }
 
-        protected override bool ShouldAttack()
+        bool ShouldAttack()
         {
             return !(controller.Target is null)
-                   && CurrentState == State.Locate
-                   && Vector3.Distance(
-                       transform.position,
-                       controller.Target.transform.position)
-                   < Environment.COMBAT_ATTACK_RANGE;
+                   && CurrentState == State.Attack;
         }
 
 
         /*===============================
          *  States
          ==============================*/
+        void Attack()
+        {
+            print("attack");
+            CurrentState = State.Attack;
+            sac.Attack();
+        }
+        
+        void Seek()
+        {
+            CurrentState = State.Seek;
+            controller.Seek(playerService.PlayerPawn.transform);
+        }
+        
         void Locate()
         {
             print("Locate");

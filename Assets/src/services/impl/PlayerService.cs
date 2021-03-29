@@ -21,7 +21,8 @@ namespace src.services.impl
         /*===============================
          *  Fields
          ==============================*/
-        public float ProjectileSpeed => shotSpeed;
+        public PawnActorController PlayerPawn   => player;
+        public float               ProjectileSpeed => shotSpeed;
         
         
         /*===============================
@@ -83,8 +84,12 @@ namespace src.services.impl
                 prototypeHeatZone,
                 player.transform);
 
+            heatZone.name = "heat-zone" + heatZone.GetInstanceID();
+
             if (player)         //truthy check to be safe
                 Player(player); //emits event when a new player is selected
+
+            player.agent.isStopped = true;
         }
 
         public void Action(RaycastHit hit)
@@ -96,6 +101,11 @@ namespace src.services.impl
         public void FloorClick(RaycastHit hit)
         {
             if (player) player.Move(hit.point);
+        }
+
+        public void OnPlayerDeath(PawnActorController pac)
+        {
+            if (player == pac) Player(null);
         }
 
         void AddCard(Card card)

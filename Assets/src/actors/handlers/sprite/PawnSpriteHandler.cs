@@ -17,6 +17,7 @@ namespace src.actors.handlers.sprite
 
 		protected Coroutine healRoutine;
 		protected Coroutine loadRoutine;
+		protected Coroutine rotationRoutine;
 
 		int health;
 		
@@ -36,8 +37,8 @@ namespace src.actors.handlers.sprite
 			
 			loadingIndicator.fillAmount = 0f;
 			
+			rotationRoutine = controller.StartCoroutine(LockUIRotation());
 			
-
 			health = controller.actor.health;
 		}
 
@@ -109,6 +110,16 @@ namespace src.actors.handlers.sprite
 			}
 			
 			if (controller.actor.health <= 0) controller.Die();
+		}
+		
+		IEnumerator LockUIRotation()
+		{
+			while (true)
+			{
+				var offset = parent.rotation.y - rotationalOrigin;
+				gameObject.transform.rotation = Quaternion.Euler(90, 45 - offset, 0);
+				yield return null;
+			}
 		}
 	}
 }

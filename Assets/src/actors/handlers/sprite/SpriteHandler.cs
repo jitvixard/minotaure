@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Linq;
 using src.actors.controllers;
+using src.actors.controllers.impl;
 using src.handlers;
 using src.util;
 using TMPro;
@@ -24,7 +25,7 @@ namespace src.actors.handlers.sprite
         protected readonly Color selected;
 
         protected Coroutine transitionRoutine;
-        protected Coroutine rotationRoutine;
+        protected Coroutine slashRoutine;
 
         public SpriteHandler(AbstractActorController controller)
         {
@@ -39,8 +40,6 @@ namespace src.actors.handlers.sprite
             gameObject = controller.GetComponentsInChildren<Transform>()
                 .First(t => t.name == Environment.OVERHEAD_UI)
                 .gameObject;
-
-            rotationRoutine = controller.StartCoroutine(LockUIRotation());
         }
 
         public void Refresh()
@@ -53,6 +52,12 @@ namespace src.actors.handlers.sprite
             if (!(transitionRoutine is null)) controller.StopCoroutine(transitionRoutine);
 
             transitionRoutine = controller.StartCoroutine(ChangeColor(targetColor));
+        }
+
+        public void Slash(PawnActorController target)
+        {
+            if (slashRoutine != null) controller.StopCoroutine(slashRoutine);
+            slashRoutine = controller.StartCoroutine(SlashRoutine(target));
         }
 
         IEnumerator ChangeColor(Color targetColor)
@@ -71,14 +76,45 @@ namespace src.actors.handlers.sprite
             }
         }
 
-        IEnumerator LockUIRotation()
+        IEnumerator SlashRoutine(PawnActorController target)
         {
-            while (true)
+            var origin = gameObject.transform.localPosition;
+            var targetDistance = origin.z + Environment.SWARM_ATTACK_JAB_DISTANCE;
+            var duration = Environment.SWARM_ATTACK_SPEED;
+
+            var t = 0f;
+            while (t < duration)
             {
-                var offset = parent.rotation.y - rotationalOrigin;
-                gameObject.transform.rotation = Quaternion.Euler(90, 45 - offset, 0);
+                var tempVector = new Vector3(
+                    origin.x,
+                    origin.y,
+                    Mathf.Lerp(origin.z, targetDistance, t / duration));
+                gameObject.transform.localPosition =  tempVector;
+                
+                t += Time.deltaTime;
                 yield return null;
             }
+            
+            if (controller is SwarmActorController sac) target.TakeDamage(sac);
+            
+            origin         =  gameObject.transform.localPosition;
+            targetDistance =  0;
+            duration       /= 3;
+
+            t = 0f;
+            while (t < duration)
+            {
+                var tempVector = new Vector3(
+                    origin.x,
+                    origin.y,
+                    Mathf.Lerp(origin.z, targetDistance, t / duration));
+                gameObject.transform.localPosition = tempVector;
+                
+                t += Time.deltaTime;
+                yield return null;
+            }
+            
+            
         }
     }
 }
