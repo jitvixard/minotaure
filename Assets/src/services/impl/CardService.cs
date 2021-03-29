@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using src.card.model;
+using src.handlers;
 using src.handlers.ui;
 using src.level;
 using src.util;
@@ -26,6 +27,8 @@ namespace src.services.impl
 
         CardTabHandler cardTabHandler;
 
+        IOHandler io;
+
         public bool IsCardSelected => selectedCard != null;
 
 
@@ -39,6 +42,8 @@ namespace src.services.impl
 
             cardTabHandler = GameObject.FindWithTag(Environment.TAG_CARD_TAB)
                 .GetComponent<CardTabHandler>();
+
+            io = Camera.main.GetComponent<IOHandler>();
         }
         
         
@@ -67,6 +72,7 @@ namespace src.services.impl
 
             CardSelected(null);
             RemoveCard(selectedCard);
+            Object.Destroy(selectedCard.behaviour.gameObject);
             selectedCard = null;
         }
         
@@ -90,6 +96,11 @@ namespace src.services.impl
                     ? GenerateCards(wave)
                     : cardBatches[wave.waveNumber];
             CardDrops(possibleCards);
+        }
+
+        public GameObject DetachCursor()
+        {
+            return io.DetachCursor();
         }
 
         

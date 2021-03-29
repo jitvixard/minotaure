@@ -25,7 +25,8 @@ namespace src.scripting.level
         void OnDestroy()
         {
             StopAllCoroutines();
-            foreach (var controller in membersInHeatZone) controller.InHeatZone = false;
+            foreach (var controller in membersInHeatZone.Where(controller => controller))
+                controller.InHeatZone = false;
             Environment.SwarmService.HeatZone = null;
         }
 

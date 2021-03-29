@@ -49,6 +49,7 @@ namespace src.actors.controllers.impl
 
         public override void Die()
         {
+            playerService.OnPlayerDeath(this);
             Destroy(stateMachine);
             Destroy(splatter);
             Destroy(gameObject);

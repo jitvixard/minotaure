@@ -8,9 +8,12 @@ namespace src.model
         Move,
         Regroup,
         Stopped,
+        Completed,
 
         //Swarm Enums ==============
         Seek,
         Locate
+        
+        //Swarm Enums ==============
     }
 }

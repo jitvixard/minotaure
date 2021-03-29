@@ -1,33 +1,32 @@
-using src.services.impl;
-
 namespace src.level
 {
     public class Wave
     {
         public static WaveBuilder Builder(int waveNumber) => new WaveBuilder(waveNumber);
-        
-        public readonly bool attackPlayer;
 
         public readonly int waveNumber;
         public readonly int numberOfEntities;
 
+        public readonly float playerTargetWeight;
+
         public Wave(
             int waveNumber,
             int numberOfEntities,
-            bool attackPlayer)
+            float playerTargetWeight)
         {
             this.waveNumber = waveNumber;
             this.numberOfEntities = numberOfEntities;
-            this.attackPlayer = attackPlayer;
+            this.playerTargetWeight = playerTargetWeight;
         }
     }
     
     public class WaveBuilder
     {
-        int waveNumber = 0;
+        readonly int waveNumber;
         int numberOfEntities;
 
-        bool attackPlayer = true;
+        bool  attackPlayer = true;
+        float playerTargetWeight;
 
         public WaveBuilder(int waveNumber)
         {
@@ -46,10 +45,18 @@ namespace src.level
             return this;
         }
 
+        public WaveBuilder PlayerTargetWeight(float playerTargetWeight)
+        {
+            this.playerTargetWeight = playerTargetWeight;
+            return this;
+        } 
+
         public Wave Build()
         {
             if (numberOfEntities == 0) numberOfEntities = waveNumber + 1;
-            return new Wave(waveNumber, numberOfEntities, attackPlayer);
+            if (attackPlayer) playerTargetWeight = 1f;
+            
+            return new Wave(waveNumber, numberOfEntities, playerTargetWeight);
         }
     }
 }

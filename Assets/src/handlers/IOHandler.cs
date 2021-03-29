@@ -81,12 +81,19 @@ namespace src.handlers
             ApplyCursor(card);
         }
 
+        public GameObject DetachCursor()
+        {
+            var cursorReturn = cursor;
+            cursor = null;
+            return cursorReturn;
+        }
+        
         void ApplyCursor(Card card)
         {
             if (card == null)
             {
                 Cursor.visible = true;
-                Destroy(cursor);
+                if (cursor != null) Destroy(cursor);
                 return;
             }
 

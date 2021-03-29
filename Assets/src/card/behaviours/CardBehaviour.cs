@@ -32,7 +32,7 @@ namespace src.card.behaviours
         protected RaycastHit hit;
 
         /**************** Card Behaviour ****************/
-        protected abstract IEnumerator BehaviourRoutine();
+        protected abstract IEnumerator BehaviourRoutine(RaycastHit hit);
 
 
         /*===============================
@@ -46,7 +46,7 @@ namespace src.card.behaviours
         public bool Play(RaycastHit hit)
         {
             this.hit = hit;
-            routine  = StartCoroutine(BehaviourRoutine());
+            routine  = StartCoroutine(BehaviourRoutine(hit));
             return IsRunning;
         }
 

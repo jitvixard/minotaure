@@ -14,15 +14,17 @@ using Environment = src.util.Environment;
 
 public class BuilderController : AbstractActorController
 {
-    public delegate void BuildingComplete(GameObject building);
+    public delegate void BuildingComplete(BuilderController controller, GameObject building);
     public event BuildingComplete Built = delegate {  };
-    
+
     Image[]           knots;
     ProceduralImage[] healthDots;
 
-    BeaconBehaviour beacon;
+    GameObject beacon;
 
     GameObject prototypeTower;
+
+    bool completed;
     
 
     /*===============================
@@ -48,7 +50,7 @@ public class BuilderController : AbstractActorController
             .Where(img => img.name.Contains(Environment.UI_KNOT))
             .ToArray();
 
-        beacon = Environment.BuilderService.Beacon;
+        beacon = Environment.BuilderService.NextBeacon;
 
         StartCoroutine(InitialRoutine());
     }
@@ -143,7 +145,7 @@ public class BuilderController : AbstractActorController
 
     IEnumerator MoveRoutine()
     {
-        var targetPosition = Environment.BuilderService.Beacon.transform.position;
+        var targetPosition = beacon.transform.position;
         agent.isStopped = false;
         agent.SetDestination(targetPosition);
 
@@ -170,8 +172,12 @@ public class BuilderController : AbstractActorController
                 yield return null;
             }
 
-            var knot = knots[i++];
-            Destroy(knot);
+            if (knots.Length == healthDots.Length)
+            {
+                Destroy(healthDots[i]);
+            }
+
+            Destroy(knots[i++]);
         }
 
         Destroy(beacon.gameObject);
@@ -181,7 +187,12 @@ public class BuilderController : AbstractActorController
             beacon.transform.position,
             new Quaternion());
 
-        Built(building);
+        Built(this, building);
+
+        yield return null;
+
+        completed = true;
+        Die();
     }
     
 }

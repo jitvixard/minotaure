@@ -83,6 +83,7 @@ namespace src.util
         public const string RESOURCE_SHOT      = "FX/shot";
         public const string RESOURCE_SPLATTER  = "FX/splatter";
         //building
+        public const string RESOURCE_BEACON   = "Building/beacon";
         public const string RESOURCE_BUILDING = "Building/tower";
 
 

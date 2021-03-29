@@ -22,22 +22,14 @@ namespace src.services.impl
         /*===============================
         *  Fields
         ==============================*/
-        readonly HashSet<SwarmActorController> activeMembers =
-            new HashSet<SwarmActorController>();
-
-        readonly HashSet<SwarmActorController> available =
-            new HashSet<SwarmActorController>();
-
         readonly List<Vector3> spawnPoints =
             new List<Vector3>();
 
-        readonly Coroutine[] spawnRoutine = new Coroutine[2];
-
-        readonly Dictionary<string, List<SwarmActorController>> targetedPoi =
-            new Dictionary<string, List<SwarmActorController>>();
-
-        readonly int attackRate = 1000;
-        GameObject   otherAttackPoint;
+        readonly HashSet<SwarmActorController> attackingPlayer 
+            = new HashSet<SwarmActorController>();
+        readonly HashSet<SwarmActorController> attackingInfrastructure 
+            = new HashSet<SwarmActorController>();
+        
 
         PawnActorController player;
         BuilderController   builder;
