@@ -4,10 +4,8 @@ using src.actors.controllers;
 using src.actors.controllers.impl;
 using src.handlers;
 using src.util;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI.ProceduralImage;
-using static UnityEngine.Color;
 
 namespace src.actors.handlers.sprite
 {
@@ -27,6 +25,8 @@ namespace src.actors.handlers.sprite
         protected Coroutine transitionRoutine;
         protected Coroutine slashRoutine;
 
+        protected ProceduralImage[] possessionIndicators;
+
         public SpriteHandler(AbstractActorController controller)
         {
             sprite   = controller.GetComponentInChildren<SpriteRenderer>();
@@ -40,18 +40,16 @@ namespace src.actors.handlers.sprite
             gameObject = controller.GetComponentsInChildren<Transform>()
                 .First(t => t.name == Environment.OVERHEAD_UI)
                 .gameObject;
+
+            possessionIndicators = gameObject.GetComponentsInChildren<ProceduralImage>()
+                .Where(img => img.name.Contains(Environment.PAWN_POSSESSION_INDICATOR))
+                .ToArray();
         }
 
-        public void Refresh()
+        public void Possess()
         {
-            var targetColor = controller.IsSelected
-                ? selected
-                : original;
-
-            if (targetColor.Compare(sprite.color)) return;
             if (!(transitionRoutine is null)) controller.StopCoroutine(transitionRoutine);
-
-            transitionRoutine = controller.StartCoroutine(ChangeColor(targetColor));
+            transitionRoutine = controller.StartCoroutine(PossessionRoutine());
         }
 
         public void Slash(PawnActorController target)
@@ -60,18 +58,27 @@ namespace src.actors.handlers.sprite
             slashRoutine = controller.StartCoroutine(SlashRoutine(target));
         }
 
-        IEnumerator ChangeColor(Color targetColor)
+        IEnumerator PossessionRoutine()
         {
-            var startColor = sprite.color;
+            var targetA = controller.IsSelected
+                ? 1f
+                : 0f;
+            
+            var startA = possessionIndicators[0].color.a;
             var duration = controller.IsSelected
                 ? Environment.UI_OVERHEAD_SELECTION_INTERVAL / 2
                 : Environment.UI_OVERHEAD_SELECTION_INTERVAL;
             var t = 0f;
 
-            while (!sprite.color.Compare(targetColor))
+            while (t < duration)
             {
-                t += Time.deltaTime / duration;
-                sprite.color = Lerp(startColor, targetColor, t);
+                var tempColor = possessionIndicators[0].color;
+                tempColor.a = Mathf.Lerp(startA, targetA, t / duration);
+
+                foreach (var img in possessionIndicators)
+                    img.color = tempColor;
+                
+                t += Time.deltaTime;
                 yield return null;
             }
         }

@@ -120,7 +120,7 @@ namespace src.actors.controllers
             IsSelected = selected;
             if (selected) stateMachine.Stop();
             else stateMachine.Resume();
-            sprite.Refresh();
+            sprite.Possess();
             return this;
         }
 

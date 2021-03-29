@@ -15,6 +15,7 @@ namespace src.util
         //pawn
         public const string PAWN_HEALTH_INDICATOR = "health-indicator";
         public const string PAWN_LOAD_INDICATOR   = "loading-indicator";
+        public const string PAWN_POSSESSION_INDICATOR   = "possession-indicator";
         //ui
         public const string UI_CARD_TEXT   = "card-text";
         public const string UI_CARD_BUTTON = "button-box";
