@@ -14,7 +14,7 @@ namespace src.camera
         float         smoothDistance;
 
         Coroutine smoothRoutine;
-        int       smoothTime;
+        float     smoothTime;
         Coroutine trackingRoutine;
 
         float yValue;

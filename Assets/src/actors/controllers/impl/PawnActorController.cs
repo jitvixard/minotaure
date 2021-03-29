@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using src.actors.handlers.sprite;
 using UnityEngine;
@@ -12,6 +11,8 @@ namespace src.actors.controllers.impl
         
         GameObject prototypeShot;
         GameObject prototypeSplatter;
+
+        GameObject splatter;
 
         Rigidbody rb;
 
@@ -48,6 +49,7 @@ namespace src.actors.controllers.impl
 
         public override void Die()
         {
+            Destroy(splatter);
             Destroy(gameObject);
         }
 
@@ -112,7 +114,7 @@ namespace src.actors.controllers.impl
             var direction = target - origin;
             direction = direction.normalized;
 
-            var splatter = Instantiate(
+            splatter = Instantiate(
                 prototypeSplatter,
                 transform.position, 
                 Quaternion.LookRotation(direction));
