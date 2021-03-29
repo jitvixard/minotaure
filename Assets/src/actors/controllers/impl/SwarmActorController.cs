@@ -71,7 +71,9 @@ namespace src.actors.controllers.impl
                 
                 while (agent.remainingDistance > Environment.SWARM_ATTACKING_RANGE)
                 {
-                    agent.SetDestination(target.transform.position);
+                    var pos = target.transform.position;
+                    agent.SetDestination(pos);
+                    transform.LookAt(pos);
                     yield return null;
                 }
 

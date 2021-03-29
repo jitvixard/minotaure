@@ -179,12 +179,13 @@ namespace src.actors.controllers
             }
         }
 
-        protected IEnumerator MoveRoutine(Vector3 target)
+        protected IEnumerator MoveRoutine(Vector3 targetPosition)
         {
-            actor.moving = true;
-            agent.SetDestination(target);
+            actor.moving    = true;
+            agent.isStopped = false;
+            agent.SetDestination(targetPosition);
 
-            while (Vector3.Distance(target, transform.position) > Environment.STOPPING_DISTANCE) yield return null;
+            while (Vector3.Distance(targetPosition, transform.position) > Environment.STOPPING_DISTANCE) yield return null;
 
             agent.SetDestination(transform.position);
             actor.moving = false;
