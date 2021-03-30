@@ -6,7 +6,7 @@ public class BeaconController : BuildingController
 {
     GameObject cameraRig;
     GameObject explosive;
-    
+
     /*===============================
     *  IDestroyable
     ==============================*/

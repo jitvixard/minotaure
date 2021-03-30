@@ -1,8 +1,5 @@
-using System.Collections.Generic;
 using System.Linq;
-using src.actors.controllers;
 using src.actors.controllers.impl;
-using src.card.model;
 using src.util;
 using UnityEngine;
 
@@ -14,35 +11,27 @@ namespace src.services.impl
          *  Observable
          ==============================*/
         public delegate void CurrentPlayer(PawnActorController p);
-        public delegate void UpdateLoot(List<Card> card, int scrap);
         public event CurrentPlayer Player      = delegate { };
-        public event UpdateLoot    LootChanged = delegate { };
+
 
 
         
         /*===============================
          *  Fields
          ==============================*/
-        public PawnActorController PlayerPawn      => player;
-        public float               ProjectileSpeed => shotSpeed;
-        public int                 Scrap           => scrap;
-        
-        
+        public float ProjectileSpeed => shotSpeed;
+
+
         /*===============================
          *  Fields
          ==============================*/
-        readonly List<Card> cards = new List<Card>();
-
         public float loadTime;
 
         CardService cardService;
 
-        GameObject playerPrototype;
-
-        BuilderController   builder;
+        GameObject          playerPrototype;
+        
         PawnActorController player;
-
-        int   scrap;
 
         float shotSpeed = Environment.COMBAT_PROJECTILE_SPEED;
 
@@ -55,11 +44,7 @@ namespace src.services.impl
         {
             loadTime    = Environment.COMBAT_LOAD_TIME;
             cardService = Environment.CardService;
-            
-            //subscriptions
-            Environment.BuilderService.Builder  += BuilderAppeared;
-            Environment.LootService.DroppedCard += AddCard;
-            
+
             playerPrototype = Resources.Load(Environment.RESOURCE_PAWN)
                 as GameObject;
         }
@@ -120,25 +105,6 @@ namespace src.services.impl
             }
             
             Respawn(closest.gameObject);
-        }
-
-        void AddCard(Card card)
-        {
-            cards.Add(card);
-            cardService.AddCard(card);
-            LootChanged(cards, scrap);
-        }
-
-        void AddScrap(int scrap)
-        {
-            this.scrap += scrap;
-            LootChanged(cards, this.scrap);
-        }
-
-        void BuilderAppeared(BuilderController builder)
-        {
-            this.builder =  builder;
-            scrap        -= Environment.BUILD_COST;
         }
 
         void Respawn(GameObject spawnPoint)

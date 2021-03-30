@@ -45,9 +45,6 @@ namespace src.handlers
                 accentColor,
                 selectionColor,
                 transitionTime);
-
-            //subscriptions
-            Environment.CardService.CardSelected += QueueCard;
         }
 
         /*===============================
@@ -73,11 +70,6 @@ namespace src.handlers
         void HandleFloor(RaycastHit hit)
         {
             playerService.FloorClick(hit);
-        }
-
-        void QueueCard(Card card)
-        {
-            ApplyCursor(card);
         }
 
         public GameObject DetachCursor()

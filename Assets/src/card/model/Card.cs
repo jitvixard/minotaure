@@ -23,7 +23,6 @@ namespace src.card.model
         public Card(
             CardType type,
             GameObject prototype,
-            GameObject cursor,
             string title,
             string description,
             bool dropGuaranteed,
@@ -31,7 +30,6 @@ namespace src.card.model
         {
             this.type           = type;
             this.prototype      = prototype;
-            this.cursor         = cursor;
             this.title          = title;
             this.description    = description;
             this.dropGuaranteed = dropGuaranteed;
@@ -56,7 +54,6 @@ namespace src.card.model
             return new Card(
                 type,
                 GetPrototype(),
-                GetCursor(),
                 title,
                 description,
                 dropGuaranteed,
@@ -108,21 +105,6 @@ namespace src.card.model
                         as GameObject;
                 case CardType.Beacon:
                     return Resources.Load(Environment.RESOURCE_CARD_BEACON) 
-                        as GameObject;
-                default:
-                    return null;
-            }
-        }
-        
-        GameObject GetCursor()
-        {
-            switch (type)
-            {
-                case CardType.Eye:
-                    return Resources.Load(Environment.RESOURCE_CURSOR_EYE) 
-                        as GameObject;
-                case CardType.Beacon:
-                    return Resources.Load(Environment.RESOURCE_CURSOR_BEACON) 
                         as GameObject;
                 default:
                     return null;

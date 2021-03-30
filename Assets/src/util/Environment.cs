@@ -14,7 +14,12 @@ namespace src.util
         //pawn
         public const string PAWN_LOAD_INDICATOR   = "loading-indicator";
         public const string PAWN_POSSESSION_INDICATOR   = "possession-indicator";
-        //ui
+        //ui (desk)
+        public const string UI_CARDS_DESK    = "phones-desk";
+        public const string UI_BUTTONS_RIGHT = "right-hand-phones";
+        public const string UI_POINT_NAMES   = "phone-point";
+        
+        
         public const string UI_CARD_TEXT        = "card-text";
         public const string UI_CARD_BUTTON      = "button-box";
         public const string UI_CARD_BUTTON_TEXT = "button-text";
@@ -79,14 +84,12 @@ namespace src.util
         //cards
         public const string RESOURCE_CARD_BEACON  = "UI/Cards/card-beacon";
         public const string RESOURCE_CARD_EYE  = "UI/Cards/card-eye";
-        //cursors
-        public const string RESOURCE_CURSOR_BEACON = "UI/Cursors/cursor-beacon";
-        public const string RESOURCE_CURSOR_EYE = "UI/Cursors/cursor-eye";
         //shot
-        public const string RESOURCE_EXPLOSION = "FX/explosion";
+        public const string RESOURCE_EXPLOSION          = "FX/explosion";
         public const string RESOURCE_EXPLOSION_BUILDING = "FX/explosion-building";
-        public const string RESOURCE_SHOT      = "FX/shot";
-        public const string RESOURCE_SPLATTER  = "FX/splatter";
+        public const string RESOURCE_SELECTION_LIGHT    = "FX/selection-light";
+        public const string RESOURCE_SHOT               = "FX/shot";
+        public const string RESOURCE_SPLATTER           = "FX/splatter";
         //building
         public const string RESOURCE_BEACON   = "Building/beacon";
         public const string RESOURCE_BUILDING = "Building/tower";
@@ -155,6 +158,11 @@ namespace src.util
          ==============================*/
         public const float BASE_SEED_SPAWN = 0.4f;
         
+        
+        /*===============================
+         *  Beacon
+         ==============================*/
+        public const int MAX_BEACONS = 2;
         
         
         /*===============================

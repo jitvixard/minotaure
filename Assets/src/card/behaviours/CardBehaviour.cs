@@ -1,14 +1,12 @@
-using System;
 using System.Collections;
 using src.card.model;
 using src.services.impl;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using Environment = src.util.Environment;
 
 namespace src.card.behaviours
 {
-    public abstract class CardBehaviour : MonoBehaviour, IPointerClickHandler
+    public abstract class CardBehaviour : MonoBehaviour
     {
         public Card Card
         {
@@ -69,15 +67,6 @@ namespace src.card.behaviours
         void OnDestroy()
         {
             Stop();
-        }
-        
-        /*===============================
-        *  Handler
-        ==============================*/
-        public void OnPointerClick(PointerEventData eventData)
-        {
-            print("click");
-            cardService.Focus(card);
         }
     }
 }

@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using src.card.model;
-using src.handlers;
-using src.handlers.ui;
 using src.level;
 using src.util;
 using UnityEngine;
@@ -16,20 +14,24 @@ namespace src.services.impl
 
         public delegate void SelectCard(Card card);
         public event SelectCard CardSelected = delegate {  };
-
+        
+        
+        
         readonly HashSet<Card> activeCards
             = new HashSet<Card>();
         readonly Card[][] cardBatches 
             = CardRepository.AllBatches;
+
+        
+        
+        CardHandler cardHandler;
         
         Card[] possibleCards;
         Card   selectedCard;
 
-        CardTabHandler cardTabHandler;
-
-        IOHandler io;
-
         public bool IsCardSelected => selectedCard != null;
+
+        public bool CardSpaceAvailable => activeCards.Count < cardHandler.MaxCards();
 
 
         /*===============================
@@ -37,13 +39,11 @@ namespace src.services.impl
         ==============================*/
         public void Init()
         {
-            Environment.WaveService.NextWave
-                += LoadNextCards;
-
-            cardTabHandler = GameObject.FindWithTag(Environment.TAG_CARD_TAB)
-                .GetComponent<CardTabHandler>();
-
-            io = Camera.main.GetComponent<IOHandler>();
+            Environment.WaveService.NextWave    += LoadNextCards;
+            Environment.LootService.DroppedCard += AddCard;
+            
+            cardHandler = GameObject.Find(Environment.UI_CARDS_DESK)
+                .GetComponent<CardHandler>();
         }
         
         
@@ -53,11 +53,11 @@ namespace src.services.impl
         ==============================*/
         public void Focus(Card card)
         {
-            if (!activeCards.Contains(card))
+            /*if (!activeCards.Contains(card))
             {
                 Debug.Log("Cannot focus card: " + card.behaviour.name);
                 return;
-            }
+            }*/
 
             selectedCard = card;
             CardSelected(card);
@@ -65,7 +65,12 @@ namespace src.services.impl
 
         public void ActivateCard(RaycastHit hit)
         {
-            if (selectedCard.behaviour.Play(hit))
+            if (hit.collider.gameObject.CompareTag(Environment.TAG_TOWER))
+            {
+                Environment.BuilderService.QueueBuilder();
+                
+            }
+            else if (selectedCard.behaviour.Play(hit))
             {
                 activeCards.Remove(selectedCard);
             }
@@ -75,18 +80,20 @@ namespace src.services.impl
             Object.Destroy(selectedCard.behaviour.gameObject);
             selectedCard = null;
         }
-        
-        public void AddCard(Card card)
+
+        void AddCard(Card card)
         {
             Environment.Log(GetType(), "adding card");
-            if (cardTabHandler.AddCard(card)) 
-                activeCards.Add(card);
+            if (activeCards.Add(card))
+            {
+                cardHandler.Add(card);
+            }
         }
 
         void RemoveCard(Card card)
         {
             activeCards.Remove(card);
-            cardTabHandler.RemoveCard(card);
+            cardHandler.Remove(card);
         }
         
         void LoadNextCards(Wave wave)
@@ -98,13 +105,8 @@ namespace src.services.impl
             CardDrops(possibleCards);
         }
 
-        public GameObject DetachCursor()
-        {
-            return io.DetachCursor();
-        }
 
-        
-        
+
         /*===============================
         *  Utility
         ==============================*/

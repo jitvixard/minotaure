@@ -9,22 +9,14 @@ namespace src.handlers.ui
     public abstract class ScreenHandler : MonoBehaviour, IPointerClickHandler
     {
         //cameras
-        [SerializeField] Camera castingCamera;
-
-        NavMeshAgent agent;
-
-        //raycasting
-        int filterLayer;
-
-        IOHandler io;
-
-        RectTransform screenTransform;
+        [SerializeField] protected Camera castingCamera;
+        
+        protected IOHandler     io;
+        protected RectTransform screenTransform;
 
         void Awake()
         {
-            io = Camera.main.GetComponent<IOHandler>();
-            filterLayer = castingCamera.gameObject.layer;
-
+            io              = Camera.main.GetComponent<IOHandler>();
             screenTransform = GetComponent<RectTransform>();
         }
 
@@ -33,24 +25,9 @@ namespace src.handlers.ui
             var point = IOHandler.ScreenClickToViewportPoint(screenTransform, Camera.main);
             var viewRay = castingCamera.ViewportPointToRay(point);
             
-            
-            
-            if (Physics.Raycast(viewRay, out var hit)) 
-                switch (eventData.button)
-                {
-                    case PointerEventData.InputButton.Left:
-                        io.HandleHit(hit);
-                        break;
-                    case PointerEventData.InputButton.Right:
-                        io.HandleAction(hit);
-                        break;
-                    case PointerEventData.InputButton.Middle:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+            HandleRay(viewRay, eventData);
         }
 
-        protected abstract void HandleHit(RaycastHit hit);
+        protected abstract void HandleRay(Ray viewRay, PointerEventData eventData);
     }
 }

@@ -3,7 +3,7 @@ namespace src.card.model
     public static class CardRepository
     {
         /************** Prototypes *************/
-        static Card BeaconCard(bool guarantee, int weight)
+        public static Card BeaconCard(bool guarantee, int weight)
             => Card.Builder
                 .Title("Be a true nuisance.")
                 .Description("Something deep in your smooth brain is stirred by the chimes." +
@@ -13,7 +13,7 @@ namespace src.card.model
                 .DropWeight(weight)
                 .Build();
         
-        static Card EyeCard(bool guarantee, int weight)
+        public static Card EyeCard(bool guarantee, int weight)
             => Card.Builder
                 .Title("Take a peek.")
                 .Description("A lens here and wire there." +

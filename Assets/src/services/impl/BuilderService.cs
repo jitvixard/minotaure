@@ -36,6 +36,8 @@ namespace src.services.impl
 		GameObject                           builderOrigin;
 		Tuple<BuilderController, GameObject> builderAndBeacon;
 
+		bool builderQueued = false;
+
 
 		public IDestroyable[] Destructibles => destructables.ToArray();
 
@@ -55,8 +57,17 @@ namespace src.services.impl
 		/*===============================
          *  Handling
          ==============================*/
+		public void QueueBuilder() => builderQueued = true;
+		
 		public void PlaceBeacon(RaycastHit hit)
 		{
+			if (beaconsToBuild.Count >= Environment.MAX_BEACONS)
+			{
+				QueueBuilder();
+				return;
+			}
+			
+			
 			var prototypeBeacon = Resources.Load(Environment.RESOURCE_BEACON)
 				as GameObject;
 			
@@ -96,7 +107,7 @@ namespace src.services.impl
 		void WaveChange(Wave wave)
 		{
 			if (beaconsToBuild.Count < 1) return;
-			if (!(playerService.Scrap > Environment.BUILD_COST)) return;
+			if (!builderQueued) return;
 			if (!(builder is null)) return;
 
 			var beacon = beaconsToBuild.First();

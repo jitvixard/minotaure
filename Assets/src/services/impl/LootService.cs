@@ -79,6 +79,8 @@ namespace src.services.impl
          ==============================*/
         public void DropLoot(SwarmActorController controller)
         {
+            if (!Environment.CardService.CardSpaceAvailable) return;
+
             var dropRate = baseDropRate > dynamicDropRate
                 ? baseDropRate
                 : dynamicDropRate;

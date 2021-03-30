@@ -58,7 +58,7 @@ namespace src.scripting.ui
             }
 
             foreach (var tw in writers) tw.StartTypewriter();
-            foreach (var button in buttons) button.ready = true;
+            //foreach (var button in buttons) button.ready = true;
         }
 
         IEnumerator FadeRoutine()
