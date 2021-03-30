@@ -14,7 +14,7 @@ namespace src.level
             => Wave.Builder(0)
                    .NumberOfEntities(1)
                    .Batches(1)
-                   .AttackPlayer(true)
+                   .PlayerTargetWeight(0f)
                    .Build();
         static Wave WaveTwo 
             => Wave.Builder(1)

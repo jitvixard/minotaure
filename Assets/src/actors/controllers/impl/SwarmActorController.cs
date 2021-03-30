@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using src.actors.handlers.sprite;
 using src.buildings.controllers;
@@ -191,6 +192,17 @@ namespace src.actors.controllers.impl
                         yield break;
                     }
                     yield return null;
+
+                    try
+                    { 
+                        var x = destroyable != null
+                            && InRangeToAttack(transform.position, targetTransform.position);
+                    }
+                    catch (MissingReferenceException e)
+                    {
+                        Console.WriteLine(e);
+                        throw;
+                    }
                 } while (destroyable != null
                 && InRangeToAttack(transform.position, targetTransform.position));
 
