@@ -32,6 +32,9 @@ namespace src.handlers.ui
         {
             var point = IOHandler.ScreenClickToViewportPoint(screenTransform, Camera.main);
             var viewRay = castingCamera.ViewportPointToRay(point);
+            
+            
+            
             if (Physics.Raycast(viewRay, out var hit)) 
                 switch (eventData.button)
                 {
