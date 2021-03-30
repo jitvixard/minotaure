@@ -67,7 +67,6 @@ namespace src.handlers
         void HandleSelection(GameObject selected)
         {
             if (!selected.TryGetComponent<AbstractActorController>(out var controller)) return;
-
             if (controller is PawnActorController pac) playerService.Possess(pac);
         }
 

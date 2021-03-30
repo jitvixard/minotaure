@@ -3,7 +3,6 @@ using src.actors.controllers.impl;
 using src.card.behaviours;
 using src.level;
 using src.scripting;
-using src.scripting.level;
 using src.util;
 using UnityEngine;
 

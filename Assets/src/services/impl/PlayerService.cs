@@ -38,10 +38,7 @@ namespace src.services.impl
 
         BuilderController   builder;
         PawnActorController player;
-        
-        GameObject          heatZone;
-        GameObject          prototypeHeatZone;
-        
+
         int   scrap;
 
         float shotSpeed = Environment.COMBAT_PROJECTILE_SPEED;
@@ -53,19 +50,12 @@ namespace src.services.impl
          ==============================*/
         public void Init()
         {
-            loadTime = Environment.COMBAT_LOAD_TIME;
-            
-            prototypeHeatZone =
-                Resources.Load(Environment.RESOURCE_HEAT_ZONE)
-                    as GameObject;
-
+            loadTime    = Environment.COMBAT_LOAD_TIME;
             cardService = Environment.CardService;
             
             //subscriptions
-            Environment.BuilderService.Builder += BuilderAppeared;
-            
-            Environment.LootService.DroppedCard  += AddCard;
-            Environment.LootService.DroppedScrap += AddScrap;
+            Environment.BuilderService.Builder  += BuilderAppeared;
+            Environment.LootService.DroppedCard += AddCard;
         }
 
         
@@ -80,16 +70,10 @@ namespace src.services.impl
             if (player)
             {
                 player.Select(false);
-                Object.Destroy(heatZone);
             }
 
             player = controller;
             player.Select(true);
-            heatZone = Object.Instantiate(
-                prototypeHeatZone,
-                player.transform);
-
-            heatZone.name = "heat-zone" + heatZone.GetInstanceID();
 
             if (player)         //truthy check to be safe
                 Player(player); //emits event when a new player is selected

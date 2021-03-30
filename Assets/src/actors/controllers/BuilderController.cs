@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Linq;
 using src.actors.model;
+using src.services.impl;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -12,11 +13,10 @@ namespace src.actors.controllers
 {
     public class BuilderController : AbstractActorController
     {
-        public delegate void BuildingComplete(BuilderController controller, GameObject building);
-        public event BuildingComplete Built = delegate {  };
-
         Image[]           knots;
         ProceduralImage[] healthDots;
+
+        BuilderService builderService;
 
         GameObject beacon;
 
@@ -31,8 +31,9 @@ namespace src.actors.controllers
         protected override void Awake()
         {
             //assigning services
-            playerService = Environment.PlayerService;
-            swarmService  = Environment.SwarmService;
+            builderService = Environment.BuilderService;
+            playerService  = Environment.PlayerService;
+            swarmService   = Environment.SwarmService;
 
             //set prototypes
             prototypeExplosion = Resources.Load(Environment.RESOURCE_EXPLOSION)
@@ -48,7 +49,7 @@ namespace src.actors.controllers
                 .Where(img => img.name.Contains(Environment.UI_KNOT))
                 .ToArray();
 
-            beacon = Environment.BuilderService.NextBeacon;
+            beacon = builderService.GetNextBeacon();
 
             StartCoroutine(InitialRoutine());
         }
@@ -87,7 +88,7 @@ namespace src.actors.controllers
             return 1f;
         }
 
-        public void PlaceOnMesh()
+        void PlaceOnMesh()
         {
             agent         = GetComponent<NavMeshAgent>();
             agent.enabled = true;
@@ -127,11 +128,11 @@ namespace src.actors.controllers
             var currentPosition = transform.position;
 
             var t = 0f;
-            var interval = Environment.BUILDER_FLOAT_TIME;
+            const float interval = Environment.BUILDER_FLOAT_TIME;
         
             while (Vector3.Distance(endPosition, currentPosition) > 0.1f)
             {
-                var newPostion = new Vector3(
+                var postion = new Vector3(
                     Mathf.Lerp(currentPosition.x, endPosition.x, t / interval),
                     Mathf.Lerp(currentPosition.y, endPosition.y, t / interval),
                     Mathf.Lerp(currentPosition.z, endPosition.z, t / interval)
@@ -139,8 +140,8 @@ namespace src.actors.controllers
 
                 t += Time.deltaTime;
 
-                transform.position = newPostion;
-                currentPosition    = newPostion;
+                transform.position = postion;
+                currentPosition    = postion;
                 yield return null;
             }
         
@@ -191,7 +192,7 @@ namespace src.actors.controllers
                 beacon.transform.position,
                 new Quaternion());
 
-            Built(this, building);
+            Environment.BuilderService.PlaceBuilding(building);
 
             yield return null;
 

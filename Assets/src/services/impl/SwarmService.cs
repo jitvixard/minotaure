@@ -69,19 +69,18 @@ namespace src.services.impl
             Environment.Log(GetType(), "Spawning wave::" + wave.waveNumber);
 
             var index = 0;
-            var infrastructureTarget 
-                = Environment.BuilderService.GetInfrastructureTarget();
             while (index < wave.batches)
             {
                 var toAttackPlayer = ShouldAttackPlayer();
-                var spawnPoint = GetSpawnPoint(
-                    toAttackPlayer
-                        ? player.transform.position
-                        : infrastructureTarget.transform.position, 
-                    toAttackPlayer);
-                var target = toAttackPlayer
+                
+                var target = 
+                    toAttackPlayer || !Environment.BuilderService.CanGetInfrastructureTarget()
                     ? player.gameObject
-                    : infrastructureTarget;
+                    : Environment.BuilderService.GetInfrastructureTarget();
+                
+                var spawnPoint = GetSpawnPoint(
+                    target.transform.position, 
+                    toAttackPlayer);
 
                 Environment.GameService.Mono.StartCoroutine(
                     SpawnRoutine(spawnPoint, target.transform, toAttackPlayer));
@@ -171,6 +170,8 @@ namespace src.services.impl
                     swarmPrototype, 
                     spawnPosition, 
                     new Quaternion());
+
+                spawn.name = "swarm-member" + spawn.GetInstanceID();
 
                 if (spawn) store.Add(spawn);
                 yield return null;

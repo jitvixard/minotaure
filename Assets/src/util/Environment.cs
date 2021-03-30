@@ -11,7 +11,6 @@ namespace src.util
         *  GameObject Names
         ==============================*/
         public const string OVERHEAD_UI    = "overhead-ui";
-        public const string SWARM_MEMBER   = "swarm-member";
         //pawn
         public const string PAWN_LOAD_INDICATOR   = "loading-indicator";
         public const string PAWN_POSSESSION_INDICATOR   = "possession-indicator";
@@ -73,10 +72,8 @@ namespace src.util
          ==============================*/
         //actors
         public const string RESOURCE_BUILDER      = "Actors/builder";
-        public const string RESOURCE_HEAT_ZONE    = "Actors/heat_zone";
-        public const string RESOURCE_SWARM_MEMBER = "Actors/swarm_member";
+        public const string RESOURCE_SWARM_MEMBER = "Actors/swarm-actor";
         //cards
-        public const string RESOURCE_CARD_ROOT = "UI/Cards";
         public const string RESOURCE_CARD_BEACON  = "UI/Cards/card-beacon";
         public const string RESOURCE_CARD_EYE  = "UI/Cards/card-eye";
         //cursors
@@ -84,6 +81,7 @@ namespace src.util
         public const string RESOURCE_CURSOR_EYE = "UI/Cursors/cursor-eye";
         //shot
         public const string RESOURCE_EXPLOSION = "FX/explosion";
+        public const string RESOURCE_EXPLOSION_BUILDING = "FX/explosion-building";
         public const string RESOURCE_SHOT      = "FX/shot";
         public const string RESOURCE_SPLATTER  = "FX/splatter";
         //building
@@ -94,10 +92,15 @@ namespace src.util
         /*===============================
          *  Navigation
          ==============================*/
-        public const float SPEED_PAWN_IDLE   = 3.5f;
-        public const float SPEED_PAWN        = 4.5f;
         public const float STOPPING_DISTANCE = 0.1f;
 
+        
+        
+        /*===============================
+         *  Beacon
+         ==============================*/
+        public const int BEACON_HEALTH = 20;
+        
         
         
         /*===============================
@@ -123,21 +126,8 @@ namespace src.util
 
 
         /*===============================
-         *  State Machine Information
-         ==============================*/
-        public const float IDLE_WAIT_LOWER = 0.5f;
-        public const float IDLE_WAIT_UPPER = 2.5f;
-        public const int   IDLE_RANGE      = 3;
-
-        
-        
-        /*===============================
          *  Swarm - Fields
          ==============================*/
-        public const int   SWARM_MAX_ATTACKERS       = 3;
-        public const int   SWARM_MAX_LOCATE_ATTEMPTS = 5;
-        public const float SWARM_VISION_RANGE        = 4f;
-        public const float SWARM_ATTACK_DELAY        = 1f;
         public const float SWARM_ATTACK_SPEED        = 0.5f;
         public const float SWARM_ATTACK_JAB_DISTANCE = 1f;
         public const float SWARM_ATTACKING_RANGE     = 2f;
@@ -156,10 +146,7 @@ namespace src.util
         public const float SWARM_SPAWN_RADIUS = 15f;
         
         
-        
-        public const float SPAWN_DELAY_LOWER    = 0.5f;
-        public const float SPAWN_DELAY_UPPER    = 4f;
-        public const float SPAWN_MARGIN         = 10f;
+     
         public const float SPAWN_INTERVAL_LOWER = 2f;
         public const float SPAWN_INTERVAL_UPPER = 5f;
         
@@ -170,7 +157,6 @@ namespace src.util
          ==============================*/
         public const float CAMERA_SMOOTH_DIST = 5f;
         public const float   CAMERA_SMOOTH_TIME = 100f;
-        public const int   HEAT_ZONE_DELAY    = 5;
         
         
 

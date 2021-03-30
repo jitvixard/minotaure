@@ -141,6 +141,7 @@ namespace src.actors.controllers.impl
 
         IEnumerator MoveRoutine(Vector3 destination)
         {
+            agent.isStopped = false;
             agent.SetDestination(destination);
             while (agent.remainingDistance == 0)
             {
@@ -154,6 +155,7 @@ namespace src.actors.controllers.impl
             }
 
             agent.SetDestination(transform.position);
+            agent.isStopped = true;
         }
     }
 }

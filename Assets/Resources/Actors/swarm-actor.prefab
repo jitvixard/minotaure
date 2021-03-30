@@ -109,7 +109,7 @@ GameObject:
   - component: {fileID: 5078291089405731346}
   - component: {fileID: -3107499355033239955}
   m_Layer: 0
-  m_Name: swarm_member
+  m_Name: swarm-actor
   m_TagString: SwarmActor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -75,8 +75,9 @@ namespace src.services.impl
         {
             return new Wave(
                 waveNumber,
-                waveNumber,
-                true);
+                3,
+                5,
+                0.7f);
         }
 
         void LoadWaves() => preparedWaves

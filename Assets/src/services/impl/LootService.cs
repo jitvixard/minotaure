@@ -3,7 +3,6 @@ using System.Linq;
 using src.actors.controllers.impl;
 using src.card.model;
 using src.level;
-using src.scripting.level;
 using src.util;
 using UnityEngine;
 
@@ -14,9 +13,6 @@ namespace src.services.impl
         /*************** Card Observable ***************/
         public delegate void SetCard(Card card);
         public event SetCard DroppedCard = delegate { };
-        /*************** Scrap Observable ***************/
-        public delegate void SetScrap(int scrap);
-        public event SetScrap DroppedScrap = delegate { };
         
         
         /*===============================
@@ -30,7 +26,6 @@ namespace src.services.impl
 
 
         float dynamicDropRate;
-        int   scrap;
 
         /*===============================
          *  Initialization
@@ -94,8 +89,6 @@ namespace src.services.impl
                 var card = GetCard(dropRate);
                 if (card != null) DroppedCard(card); //drops loot
             }
-            
-            DroppedScrap(GetScrap()); //drops scrap
         }
         
         Card GetCard(float dropRate)
@@ -122,12 +115,5 @@ namespace src.services.impl
 
             return card;
         }
-
-        int GetScrap()
-        {
-            return 100;
-        }
-
-        void DropScrap(int amount) => DroppedScrap(amount);
     }
 }

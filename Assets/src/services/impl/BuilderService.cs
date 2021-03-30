@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using src.actors.controllers;
-using src.card.behaviours.impl;
 using src.level;
 using UnityEngine;
 using Environment = src.util.Environment;
@@ -20,6 +19,8 @@ namespace src.services.impl
 
 		readonly HashSet<GameObject> buildings = new HashSet<GameObject>();
 
+		readonly BeaconController[] beacons = new BeaconController[2];
+
 		PlayerService playerService;
 
 		BuilderController builder;
@@ -27,29 +28,12 @@ namespace src.services.impl
 
 		GameObject                           builderOrigin;
 		Tuple<BuilderController, GameObject> builderAndBeacon;
-		//beacon & cursor;
-		Tuple<GameObject, GameObject>        activeBeacon;
 
 
 
 		public BuilderController ActiveBuilder => builder;
 
-		public GameObject NextBeacon
-		{
-			get
-			{
-				if (beaconsToBuild.Count >= 1)
-				{
-					var toBuild = beaconsToBuild.First();
-					beaconsToBuild.Remove(toBuild);
-					return toBuild;
-				}
 
-				return null;
-			}
-		}
-		
-		
 		/*===============================
          *  Instantiation
          ==============================*/
@@ -59,6 +43,8 @@ namespace src.services.impl
 			
 			Environment.WaveService.NextWave += WaveChange;
 		}
+		
+		
 
 		/*===============================
          *  Handling
@@ -68,20 +54,17 @@ namespace src.services.impl
 			var prototypeBeacon = Resources.Load(Environment.RESOURCE_BEACON)
 				as GameObject;
 			
-			var newBeacon = GameObject.Instantiate(
+			var newBeacon = Object.Instantiate(
 				prototypeBeacon,
 				hit.point,
 				new Quaternion());
 
-			var cursor = Environment.CardService.DetachCursor();
-			
-			if (!cursor.TryGetComponent<CursorBehaviour>(out var cursorBehaviour))
-			{
-				GameObject.Destroy(cursor);
-				cursor = null;
-			}
+			beaconsToBuild.Add(newBeacon);
+		}
 
-			activeBeacon = new Tuple<GameObject, GameObject>(newBeacon, cursor);
+		public void PlaceBuilding(GameObject building)
+		{
+			buildings.Add(building);
 		}
 		
 		void WaveChange(Wave wave)
@@ -106,16 +89,23 @@ namespace src.services.impl
 				Quaternion.LookRotation(direction));
 			builder          =  gO.GetComponent<BuilderController>();
 			builderAndBeacon =  new Tuple<BuilderController, GameObject>(builder, beacon);
-			builder.Built    += Built;
 		}
-
-		void Built(BuilderController builder, GameObject building)
+		
+		
+		
+		/*===============================
+         *  Utility
+         ==============================*/
+		public GameObject GetNextBeacon()
 		{
-			if (builderAndBeacon.Item1 == builder)
+			if (beaconsToBuild.Count >= 1)
 			{
-				beaconsToBuild.Clear();
-				this.builder = null;
+				var toBuild = beaconsToBuild.First();
+				beaconsToBuild.Remove(toBuild);
+				return toBuild;
 			}
+
+			return null;
 		}
 		
 		
@@ -131,7 +121,12 @@ namespace src.services.impl
 			var index = Random.Range(0, buildingArr.Length - 1);
 			return buildingArr[index];
 		}
-		
+
+		public bool CanGetInfrastructureTarget()
+		{
+			return buildings.Count > 0;
+		}
+
 		GameObject GetBuilderSpawn(GameObject beacon)
 		{
 			var buildingArr = buildings.ToArray();
