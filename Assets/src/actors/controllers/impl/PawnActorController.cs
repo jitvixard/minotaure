@@ -26,14 +26,10 @@ namespace src.actors.controllers.impl
             
             pawnSprite        =  new PawnSpriteHandler(this);
             pawnSprite.Loaded += LoadCycle;
-            
             pawnSprite.Load();
-            
             sprite = pawnSprite;
 
             prototypeShot = Resources.Load(Environment.RESOURCE_SHOT) 
-                as GameObject;
-            prototypeSplatter = Resources.Load(Environment.RESOURCE_SPLATTER) 
                 as GameObject;
 
             rb = GetComponentInChildren<Rigidbody>();
@@ -54,6 +50,12 @@ namespace src.actors.controllers.impl
         /*===============================
          *  Handling
          ==============================*/
+        public void Move(Vector3 destination)
+        {
+            if (currentRoutine != null) StopCoroutine(currentRoutine);
+            currentRoutine = StartCoroutine(MoveRoutine(destination));
+        }
+        
         public void Fire(RaycastHit hit)
         {
             if (!canFire) return;
@@ -105,12 +107,12 @@ namespace src.actors.controllers.impl
         {
             var origin = gameObject.transform.position;
             origin.y = 0;
-            var target = sac.transform.position;
-            target.y = 0;
-            var direction = target - origin;
+            var destination = sac.transform.position;
+            destination.y = 0;
+            var direction = destination - origin;
             direction = direction.normalized;
 
-            splatter = Instantiate(
+            Instantiate(
                 prototypeSplatter,
                 transform.position, 
                 Quaternion.LookRotation(direction));
@@ -121,7 +123,7 @@ namespace src.actors.controllers.impl
             rb.AddForce(-direction * Environment.FX_BLAST_FORCE, ForceMode.Impulse);
 
             var t = 0f;
-            var duration = Environment.FX_SPLATTER_TIME / 5;
+            const float duration = Environment.FX_SPLATTER_TIME / 5;
             while (t < duration)
             {
                 t += Time.deltaTime;
@@ -135,6 +137,23 @@ namespace src.actors.controllers.impl
                 t += Time.deltaTime;
                 yield return null;
             }
+        }
+
+        IEnumerator MoveRoutine(Vector3 destination)
+        {
+            agent.SetDestination(destination);
+            while (agent.remainingDistance == 0)
+            {
+                agent.SetDestination(destination);
+                yield return null;
+            }
+
+            while (agent.remainingDistance > Environment.STOPPING_DISTANCE)
+            {
+                yield return null;
+            }
+
+            agent.SetDestination(transform.position);
         }
     }
 }
