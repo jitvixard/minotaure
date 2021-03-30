@@ -46,6 +46,11 @@ namespace src.actors.controllers.impl
             Destroy(gameObject);
         }
 
+        protected override void OnDestroy()
+        {
+            pawnSprite.Loaded -= LoadCycle;
+        }
+
 
         /*===============================
          *  Handling
@@ -86,12 +91,16 @@ namespace src.actors.controllers.impl
         /*===============================
          *  Incoming Event
          ==============================*/
-        public override void Damage(AbstractActorController actorController)
+        public override bool Damage(AbstractActorController actorController)
         {
+            if (actor.health == 0) return false; 
+
             actor.health -= 1;
             pawnSprite.UpdateHealth();
             StartCoroutine(
                 BleedRoutine(actorController as SwarmActorController));
+
+            return true;
         }
 
         public override float ExtraOffset()

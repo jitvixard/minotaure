@@ -35,6 +35,7 @@ namespace src.util
         public const string TAG_FLOOR             = "Floor";
         public const string TAG_MAIN_CAMERA       = "MainCamera";
         public const string TAG_PAWN              = "Pawn";
+        public const string TAG_SEED              = "Seed";
         public const string TAG_SPAWNER           = "Spawner";
         public const string TAG_SWARM             = "SwarmActor";
         public const string TAG_TOWER             = "Tower";
@@ -72,7 +73,9 @@ namespace src.util
          ==============================*/
         //actors
         public const string RESOURCE_BUILDER      = "Actors/builder";
+        public const string RESOURCE_PAWN         = "Actors/pawn-actor";
         public const string RESOURCE_SWARM_MEMBER = "Actors/swarm-actor";
+        public const string RESOURCE_SEED = "Actors/seed";
         //cards
         public const string RESOURCE_CARD_BEACON  = "UI/Cards/card-beacon";
         public const string RESOURCE_CARD_EYE  = "UI/Cards/card-eye";
@@ -97,9 +100,18 @@ namespace src.util
         
         
         /*===============================
-         *  Beacon
+         *  Health
          ==============================*/
-        public const int BEACON_HEALTH = 20;
+        public const int HEALTH_BEACON = 20;
+        public const int HEALTH_BUILDER = 50;
+        
+        
+        
+        /*===============================
+         *  Offsets (for nav)
+         ==============================*/
+        public const float BEACON_OFFSET   = 3f;
+        public const float BUILDING_OFFSET = 9f;
         
         
         
@@ -139,14 +151,18 @@ namespace src.util
         
         
         /*===============================
-         *  Swarm - Spawning
+         *  Chance
          ==============================*/
-        public const float SWARM_SPAWN_FAR    = 65f;
-        public const float SWARM_SPAWN_NEAR   = 50f;
-        public const float SWARM_SPAWN_RADIUS = 15f;
+        public const float BASE_SEED_SPAWN = 0.4f;
         
         
-     
+        
+        /*===============================
+         *  Swarm
+         ==============================*/
+        public const float SWARM_SPAWN_FAR      = 65f;
+        public const float SWARM_SPAWN_NEAR     = 50f;
+        public const float SWARM_SPAWN_RADIUS   = 15f;
         public const float SPAWN_INTERVAL_LOWER = 2f;
         public const float SPAWN_INTERVAL_UPPER = 5f;
         

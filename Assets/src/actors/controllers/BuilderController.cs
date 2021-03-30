@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Linq;
 using src.actors.model;
-using src.services.impl;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -15,8 +14,6 @@ namespace src.actors.controllers
     {
         Image[]           knots;
         ProceduralImage[] healthDots;
-
-        BuilderService builderService;
 
         GameObject beacon;
 
@@ -64,28 +61,9 @@ namespace src.actors.controllers
             Destroy(gameObject);
         }
 
-        public override void Damage(AbstractActorController actorController)
+        protected override void OnDestroy()
         {
-            if (actor.health-- == 1)
-            {
-                Die();
-                return;
-            }
-        
-            var updatedHealth = new ProceduralImage[healthDots.Length - 1];
-            Array.Copy(healthDots, 
-                1,
-                updatedHealth,
-                0,
-                healthDots.Length - 1);
-        
-            Destroy(healthDots[0]);
-            healthDots = updatedHealth;
-        }
-
-        public override float ExtraOffset()
-        {
-            return 1f;
+            return;
         }
 
         void PlaceOnMesh()
@@ -115,6 +93,39 @@ namespace src.actors.controllers
         {
             if (currentRoutine != null) StopCoroutine(currentRoutine);
             currentRoutine = StartCoroutine(UnloadRoutine());
+        }
+        
+        
+        
+        /*===============================
+        *  Destroyable
+        ==============================*/
+        public override bool Damage(AbstractActorController actorController)
+        {
+            if (actor.health == 0) return false;
+            
+            if (actor.health-- == 1)
+            {
+                Die();
+                return true;
+            }
+        
+            var updatedHealth = new ProceduralImage[healthDots.Length - 1];
+            Array.Copy(healthDots, 
+                1,
+                updatedHealth,
+                0,
+                healthDots.Length - 1);
+        
+            Destroy(healthDots[0]);
+            healthDots = updatedHealth;
+
+            return true;
+        }
+
+        public override float ExtraOffset()
+        {
+            return 1f;
         }
     
     
@@ -187,12 +198,10 @@ namespace src.actors.controllers
 
             Destroy(beacon.gameObject);
         
-            var building = Instantiate(
+            Instantiate(
                 prototypeTower,
                 beacon.transform.position,
                 new Quaternion());
-
-            Environment.BuilderService.PlaceBuilding(building);
 
             yield return null;
 

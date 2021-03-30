@@ -1,10 +1,13 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using src.actors.controllers.impl;
 using UnityEngine;
 using Environment = src.util.Environment;
 
 public class ShotBehaviour : MonoBehaviour
 {
+    readonly HashSet<SwarmActorController> blownUp = new HashSet<SwarmActorController>();
+
     Rigidbody rb;
 
     bool launched;
@@ -88,8 +91,10 @@ public class ShotBehaviour : MonoBehaviour
             if (other.gameObject
                 .TryGetComponent<SwarmActorController>(out var sac))
             {
-                sac.Die();
-                Destroy(gameObject);
+                if (blownUp.Add(sac))
+                {
+                    sac.Die();
+                }
             }
     }
 }

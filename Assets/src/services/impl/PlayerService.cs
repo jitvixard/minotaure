@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using src.actors.controllers;
 using src.actors.controllers.impl;
 using src.card.model;
@@ -36,6 +37,8 @@ namespace src.services.impl
 
         CardService cardService;
 
+        GameObject playerPrototype;
+
         BuilderController   builder;
         PawnActorController player;
 
@@ -56,6 +59,9 @@ namespace src.services.impl
             //subscriptions
             Environment.BuilderService.Builder  += BuilderAppeared;
             Environment.LootService.DroppedCard += AddCard;
+            
+            playerPrototype = Resources.Load(Environment.RESOURCE_PAWN)
+                as GameObject;
         }
 
         
@@ -95,6 +101,25 @@ namespace src.services.impl
         public void OnPlayerDeath(PawnActorController pac)
         {
             if (player == pac) Player(null);
+
+            var spawnPoints = GameObject
+                .FindGameObjectsWithTag(Environment.TAG_SEED)
+                .Select(x => x.transform)
+                .ToArray();
+            
+            if (spawnPoints.Length == 0) Environment.GameService.GameOver();
+
+            var closest = spawnPoints[0];
+            foreach (var point in spawnPoints)
+            {
+                if (Vector3.Distance(closest.position, pac.transform.position)
+                    > Vector3.Distance(point.position, pac.transform.position))
+                {
+                    closest = point;
+                }
+            }
+            
+            Respawn(closest.gameObject);
         }
 
         void AddCard(Card card)
@@ -114,6 +139,23 @@ namespace src.services.impl
         {
             this.builder =  builder;
             scrap        -= Environment.BUILD_COST;
+        }
+
+        void Respawn(GameObject spawnPoint)
+        {
+            var pawn = Object.Instantiate(
+                playerPrototype,
+                spawnPoint.transform.position,
+                new Quaternion());
+
+            if (!pawn.TryGetComponent<PawnActorController>(out var pac))
+            {
+                Environment.GameService.GameOver();
+                return;
+            }
+            
+            Possess(pac);
+            Object.Destroy(spawnPoint);
         }
     }
 }

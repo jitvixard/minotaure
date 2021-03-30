@@ -18,6 +18,7 @@ namespace src.services.impl
         public event MembersRemaining Remaining = delegate { };
 
 
+
         /*===============================
         *  Fields
         ==============================*/
@@ -28,6 +29,7 @@ namespace src.services.impl
         
 
         PawnActorController player;
+        GameObject          targetedInfrastructure;
 
         GameObject swarmPrototype;
 
@@ -66,18 +68,24 @@ namespace src.services.impl
          ==============================*/
         void StartSpawning()
         {
-            Environment.Log(GetType(), "Spawning wave::" + wave.waveNumber);
+            Environment.Log(GetType(), "WAVE No -> " + wave.waveNumber);
 
             var index = 0;
             while (index < wave.batches)
             {
                 var toAttackPlayer = ShouldAttackPlayer();
-                
-                var target = 
-                    toAttackPlayer || !Environment.BuilderService.CanGetInfrastructureTarget()
-                    ? player.gameObject
-                    : Environment.BuilderService.GetInfrastructureTarget();
-                
+                GameObject target;
+
+                if (toAttackPlayer || !Environment.BuilderService.CanGetInfrastructureTarget())
+                {
+                    target = player.gameObject;
+                }
+                else
+                {
+                    target                 = Environment.BuilderService.GetInfrastructureTarget();
+                    targetedInfrastructure = target;
+                }
+
                 var spawnPoint = GetSpawnPoint(
                     target.transform.position, 
                     toAttackPlayer);
@@ -165,6 +173,8 @@ namespace src.services.impl
                 }
                 
                 if (spawnPosition == Vector3.zero) continue;
+
+                spawnPosition.y = 0f; //ensuring it is spawning on correct plane
 
                 var spawn = Object.Instantiate(
                     swarmPrototype, 

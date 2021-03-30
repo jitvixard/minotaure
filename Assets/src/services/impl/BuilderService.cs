@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using src.actors.controllers;
+using src.buildings.controllers;
+using src.interfaces;
 using src.level;
 using UnityEngine;
 using Environment = src.util.Environment;
@@ -15,23 +17,27 @@ namespace src.services.impl
 		public delegate void SpawnBuilder(BuilderController builderController);
 		public event SpawnBuilder Builder = delegate {  };
 
+		public delegate void EmitBuildingDestroyed(GameObject destroyed);
+		public event EmitBuildingDestroyed BuildingDestroyed = delegate {  };
+		
+		//stores
 		readonly HashSet<GameObject> beaconsToBuild = new HashSet<GameObject>();
 
-		readonly HashSet<GameObject> buildings = new HashSet<GameObject>();
+		readonly HashSet<BuildingController> buildings = new HashSet<BuildingController>();
+
+		readonly HashSet<IDestroyable> destructables = new HashSet<IDestroyable>();
 
 		readonly BeaconController[] beacons = new BeaconController[2];
-
+		
+		
 		PlayerService playerService;
 
-		BuilderController builder;
-
-
+		BuilderController                    builder;
 		GameObject                           builderOrigin;
 		Tuple<BuilderController, GameObject> builderAndBeacon;
 
 
-
-		public BuilderController ActiveBuilder => builder;
+		public IDestroyable[] Destructibles => destructables.ToArray();
 
 
 		/*===============================
@@ -62,9 +68,29 @@ namespace src.services.impl
 			beaconsToBuild.Add(newBeacon);
 		}
 
-		public void PlaceBuilding(GameObject building)
-		{
+		public void AddBuilding(BuildingController building)
+		{ 
+			if (building is BeaconController beaconController)
+			{
+				for (int i = 0; i < beacons.Length; i++)
+				{
+					if (beacons[i] == null)
+					{
+						beacons[i] = beaconController;
+						break;
+					}
+				}
+
+				if (beacons[0] != beaconController
+				    && beacons[1] != beaconController)
+				{
+					Object.Destroy(beaconController);
+					return;
+				}
+			}
+			
 			buildings.Add(building);
+			destructables.Add(building);
 		}
 		
 		void WaveChange(Wave wave)
@@ -107,6 +133,15 @@ namespace src.services.impl
 
 			return null;
 		}
+
+		public int GetHealth(BuildingController buildingController)
+		{
+			if (buildingController is BeaconController)
+				return Environment.HEALTH_BEACON;
+			
+			return Environment.HEALTH_BUILDER;
+
+		}
 		
 		
 		
@@ -119,7 +154,7 @@ namespace src.services.impl
 			
 			var buildingArr = buildings.ToArray();
 			var index = Random.Range(0, buildingArr.Length - 1);
-			return buildingArr[index];
+			return buildingArr[index].transform.gameObject;
 		}
 
 		public bool CanGetInfrastructureTarget()
@@ -144,7 +179,7 @@ namespace src.services.impl
 				}
 			}
 
-			return origin;
+			return origin.transform.gameObject;
 		}
 	}
 }

@@ -103,16 +103,16 @@ namespace src.actors.handlers.sprite
                     origin.y,
                     Mathf.Lerp(origin.z, targetDistance, t / duration));
                 gameObject.transform.localPosition =  tempVector;
-                
+
                 t += Time.deltaTime;
                 yield return null;
             }
-            
-            if (controller is SwarmActorController sac) target.Damage(sac);
-            
+
             origin         =  gameObject.transform.localPosition;
             targetDistance =  0;
             duration       /= 3;
+
+            target.Damage(controller);
 
             t = 0f;
             while (t < duration)

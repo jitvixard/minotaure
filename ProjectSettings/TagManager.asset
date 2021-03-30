@@ -20,6 +20,7 @@ TagManager:
   - Builder
   - Beacon
   - Tower
+  - Seed
   layers:
   - Default
   - TransparentFX

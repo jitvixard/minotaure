@@ -27,8 +27,9 @@ namespace src.actors.controllers
         protected SpriteHandler sprite;
 
         //services
-        protected PlayerService playerService;
-        protected SwarmService  swarmService;
+        protected BuilderService builderService;
+        protected PlayerService  playerService;
+        protected SwarmService   swarmService;
 
         //tracking
         protected GameObject target;
@@ -54,8 +55,9 @@ namespace src.actors.controllers
             actor = ActorFactory.Create(this);
 
             //assigning services
-            playerService = Environment.PlayerService;
-            swarmService = Environment.SwarmService;
+            builderService = Environment.BuilderService;
+            playerService  = Environment.PlayerService;
+            swarmService   = Environment.SwarmService;
 
             //set prototypes
             prototypeExplosion = Resources.Load(Environment.RESOURCE_EXPLOSION)
@@ -64,16 +66,20 @@ namespace src.actors.controllers
 	            as GameObject;
         }
 
+        protected abstract void OnDestroy();
+
         /*===============================
          *  Destroyable Interface
          ==============================*/
         public abstract void Die();
 
-        public abstract void Damage(AbstractActorController actorController);
+        public abstract bool Damage(AbstractActorController actorController);
 
         public abstract float ExtraOffset();
 
         public int Health() => actor.health;
+
+        public Transform GetTransform() => transform;
 
         /*===============================
          *  Interaction

@@ -54,6 +54,11 @@ namespace src.services.impl
         {
             return true;
         }
+
+        public void GameOver()
+        {
+            Application.Quit();
+        }
         
         void QueueNextWave(Wave wave)
         {
