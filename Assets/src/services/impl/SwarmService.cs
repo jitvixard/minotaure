@@ -4,8 +4,6 @@ using System.Linq;
 using src.actors.controllers.impl;
 using src.actors.model;
 using src.level;
-using src.model;
-using src.scripting.level;
 using src.util;
 using UnityEngine;
 
@@ -17,14 +15,12 @@ namespace src.services.impl
         *  Observable
         ==============================*/
         public delegate void MembersRemaining(int number);
+        public event MembersRemaining Remaining = delegate { };
 
 
         /*===============================
         *  Fields
         ==============================*/
-        readonly List<Vector3> spawnPoints =
-            new List<Vector3>();
-
         readonly HashSet<SwarmActorController> attackingPlayer 
             = new HashSet<SwarmActorController>();
         readonly HashSet<SwarmActorController> attackingInfrastructure 
@@ -32,7 +28,6 @@ namespace src.services.impl
         
 
         PawnActorController player;
-        BuilderController   builder;
 
         GameObject swarmPrototype;
 
@@ -44,192 +39,198 @@ namespace src.services.impl
          ==============================*/
         public SwarmService()
         {
-            Environment.BuilderService.Builder  += controller => builder = controller;
             Environment.GameService.ReadiedWave += SpawnWave;
             Environment.PlayerService.Player    += controller => player = controller;
         }
-
-        /*===============================
-         *  Properties
-         ==============================*/
-        public HeatZone HeatZone { get; set; }
 
         public void Init()
         {
             swarmPrototype =
                 Resources.Load(Environment.RESOURCE_SWARM_MEMBER)
                     as GameObject;
-
-            var parentSpawner = GameObject
-                .FindGameObjectWithTag(Environment.TAG_SPAWNER);
-            spawnPoints.AddRange(
-                parentSpawner
-                    .GetComponentsInChildren<Transform>()
-                    .Where(t => t.name != parentSpawner.name)
-                    .Select(t => t.position)
-                    .ToList());
         }
 
-        public event MembersRemaining Remaining = delegate { };
 
-
+        
         /*===============================
          *  Spawning
          ==============================*/
         void SpawnWave(Wave wave)
         {
             this.wave = wave;
-
-            Environment.GameService
-                       .Mono.StartCoroutine(Spawning());
-        }
-
-        void Spawn(Vector3 position)
-        {
-            var freshSpawn =
-                Object.Instantiate(
-                    swarmPrototype,
-                    position,
-                    new Quaternion());
-
-            freshSpawn.name = //setting name for readability
-                Environment.SWARM_MEMBER
-                + freshSpawn.GetInstanceID();
-
-            if (freshSpawn.TryGetComponent<SwarmActorController>(out var sac))
-            {
-                ((SwarmActor) sac.actor).wave = wave;
-            }
-            else
-            {
-                Object.Destroy(freshSpawn);
-                return;
-            }
-
-            Add(sac);
+            StartSpawning();
         }
 
         /*===============================
          *  Handling
          ==============================*/
-        public GameObject GetTarget(SwarmActorController controller)
+        void StartSpawning()
         {
-            return controller.CurrentState == State.Locate
-                ? GetAttackTarget(controller)
-                : GetSeekTarget(controller);
-        }
+            Environment.Log(GetType(), "Spawning wave::" + wave.waveNumber);
 
-        GameObject GetAttackTarget(SwarmActorController controller)
-        {
-            var colliderArr = new Collider[] { }; //colliders within 'vision'
-            Physics.OverlapSphereNonAlloc(
-                controller.transform.position,
-                Environment.SWARM_VISION_RANGE,
-                colliderArr);
+            var index = 0;
+            var infrastructureTarget 
+                = Environment.BuilderService.GetInfrastructureTarget();
+            while (index < wave.batches)
+            {
+                var toAttackPlayer = ShouldAttackPlayer();
+                var spawnPoint = GetSpawnPoint(
+                    toAttackPlayer
+                        ? player.transform.position
+                        : infrastructureTarget.transform.position, 
+                    toAttackPlayer);
+                var target = toAttackPlayer
+                    ? player.gameObject
+                    : infrastructureTarget;
 
-            if (colliderArr.Length == 0) return null;
-            var colliders = colliderArr.ToList();
-
-            var target = colliders //points of interest in 'vision'
-                         .Select(c => c.gameObject)
-                         .Where(g =>
-                         {
-                             if (!Environment.pointsOfInterest.Contains(g.tag))
-                                 return false;
-                             if (targetedPoi.TryGetValue(g.name, out var attackers))
-                                 if (attackers.Count >= Environment.SWARM_MAX_ATTACKERS)
-                                     return false;
-                             return true;
-                         }) //sorted to find poi that do not exceed max attacker threshold
-                         .OrderBy(g =>
-                         {
-                             var weight = 0f;
-
-                             if (targetedPoi.TryGetValue(g.name, out var attackers))
-                                 weight += attackers.Count;
-
-                             return weight
-                                    + Vector3.Distance(
-                                        g.transform.position,
-                                        controller.transform.position);
-                         }) //sorted by a weight (distance + attackers)
-                         .First();
-
-            if (target is null) return null;
-            if (!targetedPoi.ContainsKey(target.name))
-                targetedPoi.Add(target.name, new List<SwarmActorController>());
-
-            targetedPoi[target.name].Add(controller);
-
-            return target;
-        }
-
-        GameObject GetSeekTarget(SwarmActorController controller)
-        {
-            if (controller.actor is SwarmActor a)
-                if (a.wave.attackPlayer)
-                    if (player)
-                        return player.gameObject;
-
-            return otherAttackPoint ? otherAttackPoint : GetOtherAttackPoint();
+                Environment.GameService.Mono.StartCoroutine(
+                    SpawnRoutine(spawnPoint, target.transform, toAttackPlayer));
+                index++;
+            }
         }
 
 
         /*===============================
          *  Getters & Setters
          ==============================*/
-        public void Add(SwarmActorController controller)
-        {
-            activeMembers.Add(controller);
-            Remaining(activeMembers.Count);
-        }
-
         public void Remove(SwarmActorController controller)
         {
-            var success = activeMembers.Remove(controller);
-            if (!success) return;
+            if (attackingPlayer.Contains(controller)) 
+                attackingPlayer.Remove(controller);
+            else if (attackingInfrastructure.Contains(controller)) 
+                attackingInfrastructure.Remove(controller);
+
+            attackingPlayer.RemoveWhere(c
+                => attackingInfrastructure.Contains(c));
 
             Environment.LootService.DropLoot(controller);
-            Remaining(activeMembers.Count);
+            
+            Remaining(attackingPlayer.Count 
+                      + attackingInfrastructure.Count);
         }
 
-        GameObject GetOtherAttackPoint()
-        {
-            //TODO set other attack point
-            return otherAttackPoint;
-        }
-
+        
+        
         /*===============================
          *  Routines
          ==============================*/
-        IEnumerator Spawning()
+        IEnumerator SpawnRoutine(Vector3 spawnPoint, 
+                                 Component target,  
+                                 bool toAttackPlayer)
         {
-            Environment.Log(GetType(), "Spawning wave::" + wave.waveNumber);
-            var index = 0;
-            while (index < wave.numberOfEntities)
-            {
-                var spawnDelay =
-                    Random.Range(
-                        Environment.SPAWN_DELAY_LOWER,
-                        Environment.SPAWN_DELAY_UPPER);
-                var t = 0f;
+            var store = new List<GameObject>();
+            
+            var multiplier = Mathf.RoundToInt(
+                Random.Range(
+                    Environment.SWARM_WAVE_MULTIPLIER_MIN, 
+                    Environment.SWARM_WAVE_MULTIPLIER_MAX));
+            var numberToSpawn = wave.numberOfEntities * multiplier;
+            
+            const float radius = Environment.SWARM_SPAWN_RADIUS;
 
-                while (t < spawnDelay)
+            while (store.Count < numberToSpawn)
+            {
+                var spawnPosition = Vector3.zero;
+
+                const int maxFrames = 5;
+                var frame = 0;
+                while (spawnPosition.Equals(Vector3.zero))
                 {
-                    t += Time.deltaTime;
+                    var tries = 0;
+                    while (tries < 3)
+                    {
+                        var randPoint2D = Random.insideUnitCircle.normalized * radius;
+                        var randPoint = new Vector3(randPoint2D.x, 0, randPoint2D.y);
+                        randPoint += spawnPoint;
+
+                        Collider[] coll = {};
+                        Physics.OverlapSphereNonAlloc(randPoint, 3f, coll);
+
+                        coll = coll
+                            .Where(c => Environment.noOverlapTags.Contains(c.tag))
+                            .ToArray();
+
+                        if (coll.Length == 0)
+                        {
+                            spawnPosition = randPoint;
+                            break;
+                        }
+
+                        tries++;
+                    }
+                    
+                    if (frame >= maxFrames) break;
+
+                    frame++;
                     yield return null;
                 }
+                
+                if (spawnPosition == Vector3.zero) continue;
 
-                var spawnPoint = spawnPoints[index % spawnPoints.Count];
-                spawnPoint = new Vector3(
-                    Random.Range(-Environment.SPAWN_MARGIN, Environment.SPAWN_MARGIN),
-                    spawnPoint.y,
-                    spawnPoint.z
-                );
+                var spawn = Object.Instantiate(
+                    swarmPrototype, 
+                    spawnPosition, 
+                    new Quaternion());
 
-                Spawn(spawnPoint);
-                index++;
+                if (spawn) store.Add(spawn);
+                yield return null;
             }
+
+            foreach (var swarm in store)
+            {
+                if (swarm
+                    .TryGetComponent<SwarmActorController>(out var sac))
+                {
+                    sac.Ready(target.gameObject, toAttackPlayer);
+                    if (toAttackPlayer) attackingPlayer.Add(sac);
+                    else attackingInfrastructure.Add(sac);
+                }
+            }
+
+            Remaining(attackingInfrastructure.Count + attackingPlayer.Count);
+        }
+
+        
+        
+        /*===============================
+         *  Utility
+         ==============================*/
+        Vector3 GetSpawnPoint(Vector3 target, bool attackingPlayer)
+        {
+            var spawnRadius 
+                = Random.Range(Environment.SWARM_SPAWN_NEAR, Environment.SWARM_SPAWN_FAR);
+
+            var randPoint2D = Random.insideUnitCircle.normalized;
+            var randPoint = new Vector3(randPoint2D.x, 0, randPoint2D.y);
+            var direction = randPoint - Vector3.zero;
+
+            if (attackingPlayer || player is null)
+            {
+                return target + (direction * spawnRadius);
+            }
+            
+            var playerPoint = player.transform.position;
+            var targetPlayerDirection = (target - playerPoint).normalized;
+            var targetPlayerDistance = Vector3.Distance(target, playerPoint);
+
+            if (targetPlayerDistance < Environment.SWARM_SPAWN_NEAR + spawnRadius)
+            {
+                var undershoot = (Environment.SWARM_SPAWN_NEAR + spawnRadius) - targetPlayerDistance;
+                target += targetPlayerDirection * undershoot;
+            }
+
+
+            return target + (direction * spawnRadius);
+        }
+
+        bool ShouldAttackPlayer()
+        {
+            var playerFocusMax = 
+                Mathf.Round(wave.batches * Environment.SWARM_WAVE_PLAYER_MAX);
+            var rollValue = Random.Range(0f, 1f);
+            
+            return rollValue <= wave.playerTargetWeight
+                   && attackingPlayer.Count < playerFocusMax;
         }
     }
 }

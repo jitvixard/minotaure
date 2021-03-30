@@ -7,5 +7,6 @@ namespace src.interfaces
     {
         void Damage(AbstractActorController actorController);
         int Health();
+        float ExtraOffset();
     }
 }

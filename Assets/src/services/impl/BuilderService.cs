@@ -6,6 +6,7 @@ using src.level;
 using UnityEngine;
 using Environment = src.util.Environment;
 using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
 
 namespace src.services.impl
 {
@@ -121,6 +122,15 @@ namespace src.services.impl
 		/*===============================
          *  Utility
          ==============================*/
+		public GameObject GetInfrastructureTarget()
+		{
+			if (!(builder is null)) return builder.gameObject;
+			
+			var buildingArr = buildings.ToArray();
+			var index = Random.Range(0, buildingArr.Length - 1);
+			return buildingArr[index];
+		}
+		
 		GameObject GetBuilderSpawn(GameObject beacon)
 		{
 			var buildingArr = buildings.ToArray();

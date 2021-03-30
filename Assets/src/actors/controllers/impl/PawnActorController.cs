@@ -10,9 +10,6 @@ namespace src.actors.controllers.impl
         PawnSpriteHandler pawnSprite;
         
         GameObject prototypeShot;
-        GameObject prototypeSplatter;
-
-        GameObject splatter;
 
         Rigidbody rb;
 
@@ -50,8 +47,6 @@ namespace src.actors.controllers.impl
         public override void Die()
         {
             playerService.OnPlayerDeath(this);
-            Destroy(stateMachine);
-            Destroy(splatter);
             Destroy(gameObject);
         }
 
@@ -97,8 +92,12 @@ namespace src.actors.controllers.impl
                 BleedRoutine(actorController as SwarmActorController));
         }
 
+        public override float ExtraOffset()
+        {
+            return 0f;
+        }
 
-        
+
         /*===============================
          *  Routine
          ==============================*/

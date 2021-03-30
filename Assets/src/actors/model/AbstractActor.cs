@@ -1,4 +1,5 @@
 using src.actors.controllers;
+using src.actors.controllers.impl;
 using src.util;
 using UnityEngine;
 
@@ -40,6 +41,11 @@ namespace src.actors.model
                     Debug.LogWarning("Defaulting Actor [" + controller.name + "]");
                     return new PawnActor(controller);
             }
+        }
+
+        public static AbstractActor Create(SwarmActorController controller)
+        {
+            return new SwarmActor(controller);
         }
     }
 }

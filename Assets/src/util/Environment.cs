@@ -28,20 +28,24 @@ namespace src.util
         /*===============================
         *  GameObject Tags
         ==============================*/
-        public const string TAG_BUILDER = "Builder";
+        public const string TAG_BEACON            = "Beacon";
+        public const string TAG_BUILDER           = "Builder";
         public const string TAG_CARD_PLACE_HOLDER = "CardPlaceHolder";
         public const string TAG_CARD_TAB          = "CardTab";
         public const string TAG_CURSOR_BASE       = "CursorBase";
         public const string TAG_FLOOR             = "Floor";
-        public const string TAG_HEAT_ZONE         = "HeatZone";
         public const string TAG_MAIN_CAMERA       = "MainCamera";
         public const string TAG_PAWN              = "Pawn";
         public const string TAG_SPAWNER           = "Spawner";
         public const string TAG_SWARM             = "SwarmActor";
+        public const string TAG_TOWER             = "Tower";
         //collection
-        public static string[] pointsOfInterest = 
+        public static string[] noOverlapTags = 
         {
-         TAG_PAWN
+         TAG_BEACON,
+         TAG_BUILDER,
+         TAG_SWARM,
+         TAG_TOWER
         };
 
         
@@ -138,11 +142,21 @@ namespace src.util
         public const float SWARM_ATTACK_JAB_DISTANCE = 1f;
         public const float SWARM_ATTACKING_RANGE     = 2f;
 
+        public const float SWARM_WAVE_MULTIPLIER_MAX = 1.5f;
+        public const float SWARM_WAVE_MULTIPLIER_MIN = 1.1f;
+        public const float SWARM_WAVE_PLAYER_MAX     = 2f / 3f;
+
         
         
         /*===============================
          *  Swarm - Spawning
          ==============================*/
+        public const float SWARM_SPAWN_FAR    = 65f;
+        public const float SWARM_SPAWN_NEAR   = 50f;
+        public const float SWARM_SPAWN_RADIUS = 15f;
+        
+        
+        
         public const float SPAWN_DELAY_LOWER    = 0.5f;
         public const float SPAWN_DELAY_UPPER    = 4f;
         public const float SPAWN_MARGIN         = 10f;

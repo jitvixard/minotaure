@@ -1,133 +1,116 @@
 using System.Collections;
 using src.actors.handlers.sprite;
+using src.actors.model;
 using src.interfaces;
-using src.model;
-using src.util;
 using UnityEngine;
+using UnityEngine.AI;
+using Environment = src.util.Environment;
 
 namespace src.actors.controllers.impl
 {
     public class SwarmActorController : AbstractActorController
     {
         /*===============================
+         *  Fields
+         ==============================*/
+        IDestroyable destroyable;
+
+        bool attackingPlayer;
+
+        float extraReach;
+
+
+
+        /*===============================
          *  LifeCycle
          ==============================*/
         protected override void Awake()
         {
             base.Awake();
-            
-            sprite =  new SpriteHandler(this);
+            sprite = new SpriteHandler(this);
         }
 
         public override void Die()
         {
             Instantiate(prototypeExplosion, transform.position, new Quaternion());
-            
-            Destroy(stateMachine);
+
             swarmService.Remove(this);
             Destroy(gameObject);
         }
-        
-        
-        
-        /*===============================
-         *  Handling
-         ==============================*/
-        public override void Damage(AbstractActorController actorController) { }
 
-
-        
-        /*===============================
-         *  Actions
-         ==============================*/
-        public void Attack()
+        public void Ready(GameObject target, bool attackingPlayer)
         {
-            if (!(currentRoutine is null)) StopCoroutine(currentRoutine);
+            this.target = target;
+            if (target.TryGetComponent<PawnActorController>(out var pac))
+                destroyable = pac;
+
+            this.attackingPlayer = attackingPlayer;
+
             currentRoutine = StartCoroutine(AttackRoutine());
         }
-        
-        public void Locate()
+
+
+
+        /*===============================
+         *  IDestroyable
+         ==============================*/
+        public override void Damage(AbstractActorController actorController)
         {
-            if (!(currentRoutine is null)) StopCoroutine(currentRoutine);
-            currentRoutine = StartCoroutine(LocateRoutine());
+            Die();
+        }
+
+        public override float ExtraOffset()
+        {
+            return 0f;
         }
 
         /*===============================
          *  Routines
          ==============================*/
-
         IEnumerator AttackRoutine()
         {
-            var targetController = target.GetComponent<PawnActorController>();
-            //TODO set building
-            var destroyable = (IDestroyable) targetController;
+            var targetTransform = target.transform;
 
-            agent.SetDestination(target.transform.position);
-            
             while (destroyable.Health() > 0)
             {
-                agent.ResetPath();
-                agent.SetDestination(target.transform.position);
-                var tries = 0;
-                while (agent.remainingDistance == 0)
+                //moving section of the routine *******************************
+                agent.SetDestination(targetTransform.position);
+                while (agent.remainingDistance == 0) yield return null;
+
+                //keep moving till in range ***********************************
+                while (!InRangeToAttack(transform.position, targetTransform.position))
                 {
-                    if (tries++ == 9)
-                    {
-                        tries = 0;
-                        agent.SetDestination(target.transform.position);
-                    } 
-                    yield return null;
-                }
-                
-                while (agent.remainingDistance > Environment.SWARM_ATTACKING_RANGE)
-                {
-                    var pos = target.transform.position;
-                    agent.SetDestination(pos);
-                    transform.LookAt(pos);
+                    agent.SetDestination(targetTransform.position);
+                    transform.LookAt(targetTransform);
                     yield return null;
                 }
 
-                if (Vector3.Distance(
-                    targetController.transform.position, 
-                    transform.position) 
-                    < Environment.SWARM_ATTACKING_RANGE) 
-                    sprite.Slash(targetController);
-                agent.isStopped = true;
-                
-                var t = 0f;
-                while (t < Environment.SWARM_ATTACK_DELAY)
+                //attack then check if we need to move ************************
+                do
                 {
-                    t += Time.deltaTime;
+                    sprite.Slash(destroyable);
                     yield return null;
-                }
+                } while (InRangeToAttack(transform.position, targetTransform.position));
 
-                agent.isStopped = true;
-                agent.SetDestination(target.transform.position);
-                
-                agent.autoBraking = true;
+                yield return null;
             }
 
             agent.SetDestination(transform.position);
-            currentRoutine            = null;
-            stateMachine.CurrentState = State.Idle;
         }
         
-        IEnumerator LocateRoutine()
+        
+        
+        /*===============================
+         *  Utility
+         ==============================*/
+        bool InRangeToAttack(Vector3 currentPosition, Vector3 targetPosition)
         {
-            var attempts = 0;
-            target = null;
-            
-            while (target is null
-                   && attempts++ < Environment.SWARM_MAX_LOCATE_ATTEMPTS)
-            {
-                yield return null;
-                target = swarmService.GetTarget(this); //TODO Check this
-            }
+            var range = Environment.SWARM_ATTACKING_RANGE;
+            if (attackingPlayer)
+                return Vector3.Distance(currentPosition, targetPosition) < range;
 
-            if (target is null)
-                target = playerService.PlayerPawn.gameObject;
-
-            stateMachine.CurrentState = State.Attack;
+            range += destroyable.ExtraOffset();
+            return Vector3.Distance(currentPosition, targetPosition) < range;
         }
     }
 }

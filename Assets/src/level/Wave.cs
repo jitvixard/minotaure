@@ -3,19 +3,22 @@ namespace src.level
     public class Wave
     {
         public static WaveBuilder Builder(int waveNumber) => new WaveBuilder(waveNumber);
-
+        
         public readonly int waveNumber;
+        public readonly int batches;
         public readonly int numberOfEntities;
 
         public readonly float playerTargetWeight;
 
         public Wave(
             int waveNumber,
+            int batches,
             int numberOfEntities,
             float playerTargetWeight)
         {
-            this.waveNumber = waveNumber;
-            this.numberOfEntities = numberOfEntities;
+            this.waveNumber         = waveNumber;
+            this.batches            = batches;
+            this.numberOfEntities   = numberOfEntities;
             this.playerTargetWeight = playerTargetWeight;
         }
     }
@@ -23,7 +26,8 @@ namespace src.level
     public class WaveBuilder
     {
         readonly int waveNumber;
-        int numberOfEntities;
+        int          batches = 1;
+        int          numberOfEntities;
 
         bool  attackPlayer = true;
         float playerTargetWeight;
@@ -36,6 +40,12 @@ namespace src.level
         public WaveBuilder NumberOfEntities(int numberOfEntities)
         {
             this.numberOfEntities = numberOfEntities;
+            return this;
+        }
+        
+        public WaveBuilder Batches(int batches)
+        {
+            this.batches = batches;
             return this;
         }
 
@@ -56,7 +66,7 @@ namespace src.level
             if (numberOfEntities == 0) numberOfEntities = waveNumber + 1;
             if (attackPlayer) playerTargetWeight = 1f;
             
-            return new Wave(waveNumber, numberOfEntities, playerTargetWeight);
+            return new Wave(waveNumber, batches, numberOfEntities, playerTargetWeight);
         }
     }
 }

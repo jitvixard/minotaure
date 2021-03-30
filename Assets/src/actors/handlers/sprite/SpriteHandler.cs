@@ -3,6 +3,7 @@ using System.Linq;
 using src.actors.controllers;
 using src.actors.controllers.impl;
 using src.handlers;
+using src.interfaces;
 using src.util;
 using UnityEngine;
 using UnityEngine.UI.ProceduralImage;
@@ -26,6 +27,8 @@ namespace src.actors.handlers.sprite
         protected Coroutine slashRoutine;
 
         protected ProceduralImage[] possessionIndicators;
+
+        bool slashing;
 
         public SpriteHandler(AbstractActorController controller)
         {
@@ -52,8 +55,9 @@ namespace src.actors.handlers.sprite
             transitionRoutine = controller.StartCoroutine(PossessionRoutine());
         }
 
-        public void Slash(PawnActorController target)
+        public void Slash(IDestroyable target)
         {
+            if (slashing) return;
             if (slashRoutine != null) controller.StopCoroutine(slashRoutine);
             slashRoutine = controller.StartCoroutine(SlashRoutine(target));
         }
@@ -83,8 +87,10 @@ namespace src.actors.handlers.sprite
             }
         }
 
-        IEnumerator SlashRoutine(PawnActorController target)
+        IEnumerator SlashRoutine(IDestroyable target)
         {
+            slashing = true;
+            
             var origin = gameObject.transform.localPosition;
             var targetDistance = origin.z + Environment.SWARM_ATTACK_JAB_DISTANCE;
             var duration = Environment.SWARM_ATTACK_SPEED;
@@ -120,8 +126,8 @@ namespace src.actors.handlers.sprite
                 t += Time.deltaTime;
                 yield return null;
             }
-            
-            
+
+            slashing = false;
         }
     }
 }
