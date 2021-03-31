@@ -19,24 +19,21 @@ namespace src.services.impl
 
 		public delegate void EmitBuildingDestroyed(GameObject destroyed);
 		public event EmitBuildingDestroyed BuildingDestroyed = delegate {  };
+
+		readonly Dictionary<Color, BeaconController> beaconColorMap = new Dictionary<Color, BeaconController>();
 		
 		//stores
 		readonly HashSet<GameObject> beaconsToBuild = new HashSet<GameObject>();
 
-		readonly HashSet<BuildingController> buildings = new HashSet<BuildingController>();
+		readonly HashSet<TowerController> buildings = new HashSet<TowerController>();
 
 		readonly HashSet<IDestroyable> destructables = new HashSet<IDestroyable>();
 
 		readonly BeaconController[] beacons = new BeaconController[2];
-		
-		
-		PlayerService playerService;
+
+		TowerController originTower;
 
 		BuilderController                    builder;
-		GameObject                           builderOrigin;
-		Tuple<BuilderController, GameObject> builderAndBeacon;
-
-		bool builderQueued = false;
 
 
 		public IDestroyable[] Destructibles => destructables.ToArray();
@@ -47,9 +44,10 @@ namespace src.services.impl
          ==============================*/
 		public void Init()
 		{
-			playerService = Environment.PlayerService;
-			
 			Environment.WaveService.NextWave += WaveChange;
+			
+			beaconColorMap.Add(Environment.ButtonColourA, null);
+			beaconColorMap.Add(Environment.ButtonColourB, null);
 		}
 		
 		
@@ -57,17 +55,12 @@ namespace src.services.impl
 		/*===============================
          *  Handling
          ==============================*/
-		public void QueueBuilder() => builderQueued = true;
-		
-		public void PlaceBeacon(RaycastHit hit)
+
+		public bool PlaceBeacon(RaycastHit hit)
 		{
 			if (beaconsToBuild.Count >= Environment.MAX_BEACONS)
-			{
-				QueueBuilder();
-				return;
-			}
-			
-			
+				return false;
+
 			var prototypeBeacon = Resources.Load(Environment.RESOURCE_BEACON)
 				as GameObject;
 			
@@ -76,12 +69,25 @@ namespace src.services.impl
 				hit.point,
 				new Quaternion());
 
-			beaconsToBuild.Add(newBeacon);
+			var beaconController = newBeacon.GetComponent<BeaconController>();
+			var colorArr = beaconColorMap.ToArray();
+			foreach (var entry in colorArr)
+			{
+				if (entry.Value == null)
+				{
+					beaconColorMap.Remove(entry.Key);
+					beaconColorMap.Add(entry.Key, beaconController);
+					beaconController.SelectionColor = entry.Key;
+					break;
+				}
+			}
+
+			return beaconsToBuild.Add(newBeacon);
 		}
 
-		public void AddBuilding(BuildingController building)
+		public void AddBuilding(TowerController tower)
 		{ 
-			if (building is BeaconController beaconController)
+			if (tower is BeaconController beaconController)
 			{
 				for (int i = 0; i < beacons.Length; i++)
 				{
@@ -100,20 +106,24 @@ namespace src.services.impl
 				}
 			}
 			
-			buildings.Add(building);
-			destructables.Add(building);
+			buildings.Add(tower);
+			destructables.Add(tower);
+		}
+
+		public void ReadyBuilder(TowerController originTower)
+		{
+			this.originTower = originTower;
 		}
 		
 		void WaveChange(Wave wave)
 		{
 			if (beaconsToBuild.Count < 1) return;
-			if (!builderQueued) return;
+			if (originTower is null) return;
 			if (!(builder is null)) return;
 
 			var beacon = beaconsToBuild.First();
-
-			var spawnOrigin = GetBuilderSpawn(beacon);
-			var spawnPosition = spawnOrigin.transform.position;
+			
+			var spawnPosition = originTower.transform.position;
 			var direction = (beacon.transform.position - spawnPosition).normalized;
 			direction.y = 0f;
 
@@ -125,7 +135,34 @@ namespace src.services.impl
 				spawnPosition, 
 				Quaternion.LookRotation(direction));
 			builder          =  gO.GetComponent<BuilderController>();
-			builderAndBeacon =  new Tuple<BuilderController, GameObject>(builder, beacon);
+
+			originTower = null;
+		}
+
+		public void TargetDestroyed(IDestroyable destroyable)
+		{
+			if (destroyable is BeaconController beaconController)
+			{
+				beaconsToBuild.Remove(beaconController.gameObject);
+				var colorArr = beaconColorMap.ToArray();
+				foreach (var keyValuePair in colorArr)
+				{
+					if (keyValuePair.Value == beaconController)
+					{
+						beaconColorMap.Remove(keyValuePair.Key);
+						beaconColorMap.Add(keyValuePair.Key, null);
+						break;
+					}
+				}
+			}
+			if (destroyable is TowerController buildingController)
+				buildings.Remove(buildingController);
+			if (destroyable is BuilderController)
+				builder = null;
+			
+			destructables.Remove(destroyable);
+
+			BuildingDestroyed(destroyable.GetTransform().gameObject);
 		}
 		
 		
@@ -145,9 +182,9 @@ namespace src.services.impl
 			return null;
 		}
 
-		public int GetHealth(BuildingController buildingController)
+		public int GetHealth(TowerController towerController)
 		{
-			if (buildingController is BeaconController)
+			if (towerController is BeaconController)
 				return Environment.HEALTH_BEACON;
 			
 			return Environment.HEALTH_BUILDER;
@@ -173,24 +210,17 @@ namespace src.services.impl
 			return buildings.Count > 0;
 		}
 
-		GameObject GetBuilderSpawn(GameObject beacon)
+		public void BuilderFailed(GameObject beacon)
 		{
-			var buildingArr = buildings.ToArray();
-			var origin = buildingArr[0];
-			var closest = origin.transform.position;
-			var beaconPosition = beacon.transform.position;
-
-			foreach (var b in buildingArr)
+			if (beaconsToBuild.Count >= Environment.MAX_BEACONS)
 			{
-				if (Vector3.Distance(b.transform.position, beaconPosition)
-				    < Vector3.Distance(closest, beaconPosition))
-				{
-					origin  = b;
-					closest = origin.transform.position;
-				}
+				BuildingDestroyed(beacon);
+				Object.Destroy(beacon);
 			}
-
-			return origin.transform.gameObject;
+			else
+			{
+				beaconsToBuild.Add(beacon);
+			}
 		}
 	}
 }

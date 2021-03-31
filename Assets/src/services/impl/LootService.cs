@@ -24,32 +24,16 @@ namespace src.services.impl
 
         readonly float baseDropRate = Environment.LOOT_DROP_RATE;
 
-
-        float dynamicDropRate;
-
         /*===============================
          *  Initialization
          ==============================*/
         public void Init()
         {
-            Environment.WaveService.NextWave += ReadyLoot;
-            Environment.SwarmService.Remaining += UpdateLoot;
             Environment.CardService.CardDrops += QueueLoot;
         }
 
-        /*===============================
-         *  Loot Updates
-         ==============================*/
-        void ReadyLoot(Wave wave)
-        {
-            //TODO update scrap????
-        }
-
-        void UpdateLoot(int remaining)
-        {
-            dynamicDropRate = (float) guaranteedDrops / remaining;
-        }
-
+        
+        
         /*===============================
          *  Preparation
          ==============================*/
@@ -57,7 +41,6 @@ namespace src.services.impl
         {
             availableCards.Clear();
             guaranteedCards.Clear();
-            guaranteedDrops = 0;
             
             foreach (var card in cards)
             {
@@ -65,7 +48,6 @@ namespace src.services.impl
                 
                 if (card.dropGuaranteed)
                 {
-                    guaranteedDrops++;
                     var limit = 0;
                     while (limit++ < card.dropWeight) guaranteedCards.Add(card);
                 }
@@ -81,16 +63,19 @@ namespace src.services.impl
         {
             if (!Environment.CardService.CardSpaceAvailable) return;
 
-            var dropRate = baseDropRate > dynamicDropRate
-                ? baseDropRate
-                : dynamicDropRate;
             var drop = Random.Range(0f, 1f); //drop value
 
-            if (drop <= dropRate)
+            if (drop <= baseDropRate)
             {
-                var card = GetCard(dropRate);
+                var card = GetCard(baseDropRate);
                 if (card != null) DroppedCard(card); //drops loot
             }
+        }
+
+        public void ForceDrop(Card card)
+        {
+            if (!Environment.CardService.CardSpaceAvailable) return;
+            DroppedCard(card);
         }
         
         Card GetCard(float dropRate)

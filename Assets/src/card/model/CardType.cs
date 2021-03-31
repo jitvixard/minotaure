@@ -4,6 +4,7 @@ namespace src.card.model
     {
         Beacon,
         Eye,
-        Tabular
+        Explosive,
+        Lure
     }
 }

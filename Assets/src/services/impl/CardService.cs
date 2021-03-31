@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using src.card;
 using src.card.model;
 using src.level;
 using src.util;
@@ -21,7 +22,7 @@ namespace src.services.impl
             = new HashSet<Card>();
         readonly Card[][] cardBatches 
             = CardRepository.AllBatches;
-
+        
         
         
         CardHandler cardHandler;
@@ -53,11 +54,11 @@ namespace src.services.impl
         ==============================*/
         public void Focus(Card card)
         {
-            /*if (!activeCards.Contains(card))
+            if (!activeCards.Contains(card))
             {
                 Debug.Log("Cannot focus card: " + card.behaviour.name);
                 return;
-            }*/
+            }
 
             selectedCard = card;
             CardSelected(card);
@@ -65,20 +66,17 @@ namespace src.services.impl
 
         public void ActivateCard(RaycastHit hit)
         {
-            if (hit.collider.gameObject.CompareTag(Environment.TAG_TOWER))
+            if (selectedCard.behaviour.Play(hit) 
+                && !selectedCard.behaviour.IsButton())
             {
-                Environment.BuilderService.QueueBuilder();
-                
-            }
-            else if (selectedCard.behaviour.Play(hit))
-            {
-                activeCards.Remove(selectedCard);
+                RemoveCard(selectedCard);
+                Object.Destroy(selectedCard.behaviour.gameObject);
             }
 
             CardSelected(null);
-            RemoveCard(selectedCard);
-            Object.Destroy(selectedCard.behaviour.gameObject);
             selectedCard = null;
+            
+            
         }
 
         void AddCard(Card card)

@@ -8,11 +8,9 @@ namespace src.card.model
     [Serializable]
     public class Card
     {
-        public readonly string title;
         public readonly string description;
         
         public readonly GameObject prototype;
-        public readonly GameObject cursor;
         public readonly CardType   type;
         
         public readonly bool dropGuaranteed;
@@ -23,14 +21,12 @@ namespace src.card.model
         public Card(
             CardType type,
             GameObject prototype,
-            string title,
             string description,
             bool dropGuaranteed,
             int dropWeight)
         {
             this.type           = type;
             this.prototype      = prototype;
-            this.title          = title;
             this.description    = description;
             this.dropGuaranteed = dropGuaranteed;
             this.dropWeight     = dropWeight;
@@ -41,7 +37,6 @@ namespace src.card.model
 
     public class CardBuilder
     {
-        string   title;
         string   description;
         
         CardType type;
@@ -54,7 +49,6 @@ namespace src.card.model
             return new Card(
                 type,
                 GetPrototype(),
-                title,
                 description,
                 dropGuaranteed,
                 dropWeight);
@@ -69,12 +63,6 @@ namespace src.card.model
         public CardBuilder Type(CardType type)
         {
             this.type = type;
-            return this;
-        }
-
-        public CardBuilder Title(string title)
-        {
-            this.title = title;
             return this;
         }
 
@@ -100,11 +88,17 @@ namespace src.card.model
         {
             switch (type)
             {
+                case CardType.Beacon:
+                    return Resources.Load(Environment.RESOURCE_CARD_BEACON) 
+                        as GameObject;
+                case CardType.Explosive: 
+                    return Resources.Load(Environment.RESOURCE_CARD_EXPLOSION)
+                        as GameObject;
                 case CardType.Eye:
                     return Resources.Load(Environment.RESOURCE_CARD_EYE) 
                         as GameObject;
-                case CardType.Beacon:
-                    return Resources.Load(Environment.RESOURCE_CARD_BEACON) 
+                case CardType.Lure:
+                    return Resources.Load(Environment.RESOURCE_CARD_LURE) 
                         as GameObject;
                 default:
                     return null;

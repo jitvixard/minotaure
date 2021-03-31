@@ -55,7 +55,7 @@ namespace src.actors.controllers.impl
             
             if (target.TryGetComponent<PawnActorController>(out var pac))
                 destroyable = pac;
-            else if (target.TryGetComponent<BuildingController>(out var bc))
+            else if (target.TryGetComponent<TowerController>(out var bc))
                 destroyable = bc;
             
             this.attackingPlayer = attackingPlayer;

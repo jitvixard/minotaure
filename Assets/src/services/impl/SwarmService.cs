@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using src.actors.controllers.impl;
-using src.actors.model;
+using src.interfaces;
 using src.level;
 using src.util;
 using UnityEngine;
@@ -66,6 +66,15 @@ namespace src.services.impl
         /*===============================
          *  Handling
          ==============================*/
+        public void ItemWasDestroyed(IDestroyable destroyable)
+        {
+            if (destroyable.GetTransform().gameObject
+                == targetedInfrastructure)
+            {
+                targetedInfrastructure = null;
+            }
+        }
+        
         void StartSpawning()
         {
             Environment.Log(GetType(), "WAVE No -> " + wave.waveNumber);

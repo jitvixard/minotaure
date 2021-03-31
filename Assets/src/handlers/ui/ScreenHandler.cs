@@ -1,8 +1,5 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.AI;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
-using Environment = src.util.Environment;
 
 namespace src.handlers.ui
 {

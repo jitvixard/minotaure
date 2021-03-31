@@ -1,10 +1,11 @@
+using System.Collections.Generic;
 using src.actors.controllers;
 using src.actors.controllers.impl;
 using src.card.model;
 using src.config;
 using src.services.impl;
-using src.util;
 using UnityEngine;
+using Environment = src.util.Environment;
 
 namespace src.handlers
 {
@@ -15,20 +16,23 @@ namespace src.handlers
 
         [SerializeField] Color  selectionColor;
         [SerializeField] float  transitionTime;
+
+        readonly Dictionary<RenderTexture, Camera> textureCameraMap 
+            = new Dictionary<RenderTexture, Camera>();
+
+        readonly RenderTexture[] renderTextures = new RenderTexture[2];
         
         public Preferences preferences;
 
-        GameObject cursorBase;
         GameObject cursor;
 
-        CardService   cardService;
+        LootService   lootService;
         PlayerService playerService;
 
         /*===============================
          *  Properties
          ==============================*/
-        public Color                   SelectionColor => selectionColor;
-        public AbstractActorController SelectedActor  { get; set; }
+        public Color SelectionColor => selectionColor;
 
         /*===============================
          *  Unity Lifecycle
@@ -36,15 +40,30 @@ namespace src.handlers
         void Awake()
         {
             //get services
-            cardService   = Environment.CardService;
+            lootService   = Environment.LootService;
             playerService = Environment.PlayerService;
-
-            cursorBase = GameObject.FindGameObjectWithTag(Environment.TAG_CURSOR_BASE);
 
             preferences = new Preferences(
                 accentColor,
                 selectionColor,
                 transitionTime);
+            
+            renderTextures[0] = Resources.Load(Environment.RESOURCE_SCREEN_ONE)
+                as RenderTexture;
+            renderTextures[1] = Resources.Load(Environment.RESOURCE_SCREEN_TWO)
+                as RenderTexture;
+        }
+
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Q)) 
+                lootService.ForceDrop(CardRepository.BeaconCard(true, 1));
+            else if (Input.GetKeyDown(KeyCode.W))
+                lootService.ForceDrop(CardRepository.EyeCard(true, 1));
+            else if (Input.GetKeyDown(KeyCode.E))
+                lootService.ForceDrop(CardRepository.ExplosiveCard(true, 1));
+            else if (Input.GetKeyDown(KeyCode.R))
+                lootService.ForceDrop(CardRepository.LureCard(true, 1));
         }
 
         /*===============================
@@ -55,8 +74,6 @@ namespace src.handlers
             var selected = hit.collider.gameObject;
             if (selected.name.Equals(Environment.OVERHEAD_UI)) HandleSelection(selected.transform.parent.gameObject);
             if (selected.CompareTag(Environment.TAG_FLOOR)) HandleFloor(hit);
-            //TODO Handle Attack Case
-            //TODO Handle PickUp Case
         }
 
         public void HandleAction(RaycastHit hit) => playerService.Action(hit);
@@ -72,30 +89,48 @@ namespace src.handlers
             playerService.FloorClick(hit);
         }
 
-        public GameObject DetachCursor()
-        {
-            var cursorReturn = cursor;
-            cursor = null;
-            return cursorReturn;
-        }
-        
-        void ApplyCursor(Card card)
-        {
-            if (card == null)
-            {
-                Cursor.visible = true;
-                if (cursor != null) Destroy(cursor);
-                return;
-            }
 
-            Cursor.visible            = false;
-            cursor                    = Instantiate(card.cursor, cursorBase.transform);
-            cursor.transform.position = Input.mousePosition;
-        }
 
         /*===============================
          *  Helper Methods
          ==============================*/
+        public bool AttachCameraToTexture(Camera displayCamera)
+        {
+            foreach (var entry in textureCameraMap)
+            {
+                if (entry.Value == null)
+                {
+                    var texture = entry.Key;
+                    textureCameraMap.Remove(texture);
+                    
+                    displayCamera.targetTexture          = texture;
+                    displayCamera.forceIntoRenderTexture = true;
+                    
+                    textureCameraMap.Add(texture, displayCamera);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public void DetachCamera(Camera displayCamera)
+        {
+            foreach (var entry in textureCameraMap)
+            {
+                var texture = entry.Key;
+                if (entry.Value == displayCamera)
+                {
+                    displayCamera.targetTexture = null;
+                    
+                    textureCameraMap.Remove(texture);
+                    textureCameraMap.Add(texture, null);
+                    
+                    Destroy(displayCamera);
+                }
+            }
+        }
+        
         public static Vector3 ScreenClickToViewportPoint(RectTransform screenTransform, Camera inputCamera)
         {
             var anchoredPos = screenTransform.anchoredPosition;

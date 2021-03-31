@@ -12,7 +12,7 @@ using Random = UnityEngine.Random;
 
 namespace src.buildings.controllers
 {
-	public class BuildingController : MonoBehaviour, IDestroyable
+	public class TowerController : MonoBehaviour, IDestroyable
 	{
 		readonly List<GameObject> seeds = new List<GameObject>();
 		
@@ -32,7 +32,7 @@ namespace src.buildings.controllers
 		/*===============================
         *  Lifecycle
         ==============================*/
-		void Awake()
+		protected virtual void Awake()
 		{
 			builderService = Environment.BuilderService;
 			waveService    = Environment.WaveService;
@@ -51,11 +51,6 @@ namespace src.buildings.controllers
 			builderService.AddBuilding(this);
 
 			if (!(this is BeaconController)) waveService.NextWave += TrySpawnSeed;
-		}
-
-		void Update()
-		{
-			if (Input.GetKeyDown(KeyCode.P) && !(this is BeaconController)) TrySpawnSeed(new Wave(3, 3, 3, 3));
 		}
 
 
@@ -118,6 +113,8 @@ namespace src.buildings.controllers
 		
 		protected void Explode()
 		{
+			Environment.BuilderService.TargetDestroyed(this);
+			
 			Instantiate(explosiveEffect, transform.position, new Quaternion());
 			foreach (var seed in seeds)
 				Destroy(seed);

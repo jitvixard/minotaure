@@ -10,7 +10,8 @@ namespace src.util
         /*===============================
         *  GameObject Names
         ==============================*/
-        public const string OVERHEAD_UI    = "overhead-ui";
+        public const string OVERHEAD_UI      = "overhead-ui";
+        public const string BEACON_INDICATOR = "beacon-indicator";
         //pawn
         public const string PAWN_LOAD_INDICATOR   = "loading-indicator";
         public const string PAWN_POSSESSION_INDICATOR   = "possession-indicator";
@@ -18,12 +19,7 @@ namespace src.util
         public const string UI_CARDS_DESK    = "phones-desk";
         public const string UI_BUTTONS_RIGHT = "right-hand-phones";
         public const string UI_POINT_NAMES   = "phone-point";
-        
-        
-        public const string UI_CARD_TEXT        = "card-text";
-        public const string UI_CARD_BUTTON      = "button-box";
-        public const string UI_CARD_BUTTON_TEXT = "button-text";
-        public const string UI_CARD_JOINER      = "joiner";
+        //ui (builder)
         public const string UI_KNOT             = "knot";
         public const string UI_HEALTH_INDICATOR = "health-indicator";
         
@@ -34,14 +30,10 @@ namespace src.util
         ==============================*/
         public const string TAG_BEACON            = "Beacon";
         public const string TAG_BUILDER           = "Builder";
-        public const string TAG_CARD_PLACE_HOLDER = "CardPlaceHolder";
-        public const string TAG_CARD_TAB          = "CardTab";
-        public const string TAG_CURSOR_BASE       = "CursorBase";
         public const string TAG_FLOOR             = "Floor";
         public const string TAG_MAIN_CAMERA       = "MainCamera";
         public const string TAG_PAWN              = "Pawn";
         public const string TAG_SEED              = "Seed";
-        public const string TAG_SPAWNER           = "Spawner";
         public const string TAG_SWARM             = "SwarmActor";
         public const string TAG_TOWER             = "Tower";
         //collection
@@ -58,8 +50,6 @@ namespace src.util
         /*===============================
          *  UI & UX
          ==============================*/
-        //button
-        public const float UI_BUTTON_FADE    = 0.75f;
         //card
         public const float UI_CARD_SLIDE_OUT = 1.5f;
         public const float UI_CARD_TAB_WIDTH = 213f;
@@ -80,10 +70,12 @@ namespace src.util
         public const string RESOURCE_BUILDER      = "Actors/builder";
         public const string RESOURCE_PAWN         = "Actors/pawn-actor";
         public const string RESOURCE_SWARM_MEMBER = "Actors/swarm-actor";
-        public const string RESOURCE_SEED = "Actors/seed";
+        public const string RESOURCE_SEED         = "Actors/seed";
         //cards
-        public const string RESOURCE_CARD_BEACON  = "UI/Cards/card-beacon";
-        public const string RESOURCE_CARD_EYE  = "UI/Cards/card-eye";
+        public const string RESOURCE_CARD_BEACON    = "UI/Cards/card-beacon";
+        public const string RESOURCE_CARD_EXPLOSION = "UI/Cards/card-explosive";
+        public const string RESOURCE_CARD_EYE       = "UI/Cards/card-eye";
+        public const string RESOURCE_CARD_LURE       = "UI/Cards/card-lure";
         //shot
         public const string RESOURCE_EXPLOSION          = "FX/explosion";
         public const string RESOURCE_EXPLOSION_BUILDING = "FX/explosion-building";
@@ -93,6 +85,9 @@ namespace src.util
         //building
         public const string RESOURCE_BEACON   = "Building/beacon";
         public const string RESOURCE_BUILDING = "Building/tower";
+        //textures
+        public const string RESOURCE_SCREEN_ONE = "Textures/screen-one-texture";
+        public const string RESOURCE_SCREEN_TWO = "Textures/screen-two-texture";
 
 
         /*===============================
@@ -111,6 +106,13 @@ namespace src.util
         
         
         /*===============================
+         *  Colours
+         ==============================*/
+        public static readonly Color ButtonColourA = new Color(0f, 0.99f, 1f);
+        public static readonly Color ButtonColourB = new Color(0.9f, 1f, 0.5f);
+
+
+        /*===============================
          *  Offsets (for nav)
          ==============================*/
         public const float BEACON_OFFSET   = 3f;
@@ -121,7 +123,6 @@ namespace src.util
         /*===============================
          *  Builder
          ==============================*/
-        public const int   BUILD_COST              = 450;
         public const float BUILDER_FLOAT_DISTANCE  = 18f;
         public const float BUILDER_FLOAT_TIME      = 2.5f;
         public const float BUILDER_UNLOAD_DISTANCE = 9f;
@@ -162,7 +163,9 @@ namespace src.util
         /*===============================
          *  Beacon
          ==============================*/
-        public const int MAX_BEACONS = 2;
+        public const string BEACON_CAMERA_RIG = "camera-big";
+        public const string BEACON_EXPLOSIVE  = "explosive";
+        public const int    MAX_BEACONS       = 2;
         
         
         /*===============================
@@ -207,6 +210,7 @@ namespace src.util
         
         public static void Init()
         {
+            BuilderService.Init();
             CardService.Init();
             GameService.Init();
             LootService.Init();

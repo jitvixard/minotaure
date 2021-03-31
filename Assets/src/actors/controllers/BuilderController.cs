@@ -53,11 +53,16 @@ namespace src.actors.controllers
 
         public override void Die()
         {
-            if (completed)
-                Instantiate(
-                    prototypeExplosion, 
-                    transform.position, 
-                    new Quaternion());
+            Instantiate(
+                prototypeExplosion, 
+                transform.position, 
+                new Quaternion());
+            
+            builderService.TargetDestroyed(this);
+            
+            if (!completed)
+                builderService.BuilderFailed(beacon);
+
             Destroy(gameObject);
         }
 

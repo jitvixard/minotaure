@@ -1,7 +1,9 @@
-using System.Collections;
+using System.Linq;
+using src.buildings.controllers;
 using src.card.model;
 using src.services.impl;
 using UnityEngine;
+using UnityEngine.UI.ProceduralImage;
 using Environment = src.util.Environment;
 
 namespace src.card.behaviours
@@ -20,18 +22,26 @@ namespace src.card.behaviours
             }
             get => card;
         }
-        public bool IsRunning => routine != null;
 
         protected CardService cardService;
 
+        protected BeaconController attachedBeacon;
+        
         protected Card      card;
         protected Coroutine routine;
 
         protected RaycastHit hit;
 
-        /**************** Card Behaviour ****************/
-        protected abstract IEnumerator BehaviourRoutine(RaycastHit hit);
+        protected bool asButton;
 
+        /**************** Card Behaviour ****************/
+        protected abstract bool BehaviourDirective(RaycastHit hit);
+
+        public abstract bool SetUpAsButton(BeaconController reference);
+        
+        public abstract bool ExecuteAction();
+
+        public bool IsButton() => asButton;
 
         /*===============================
         *  Lifecycle
@@ -44,29 +54,26 @@ namespace src.card.behaviours
         public bool Play(RaycastHit hit)
         {
             this.hit = hit;
-            routine  = StartCoroutine(BehaviourRoutine(hit));
-            return IsRunning;
+            return BehaviourDirective(hit);
         }
 
-        public bool Stop()
+
+
+        /*===============================
+        *  Setup
+        ==============================*/
+        protected void ColorSetup(BeaconController reference)
         {
-            if (routine != null)
+            attachedBeacon = reference;
+            foreach (var img in GetComponentsInChildren<ProceduralImage>(true))
             {
-                StopCoroutine(routine);
-                return true;
+                if (img.name.Contains(Environment.BEACON_INDICATOR))
+                {
+                    img.enabled = true;
+                    img.color   = reference.SelectionColor;
+                    break;
+                }
             }
-
-            return false;
-        }
-        
-        void OnDisable()
-        {
-            Stop();
-        }
-
-        void OnDestroy()
-        {
-            Stop();
         }
     }
 }
